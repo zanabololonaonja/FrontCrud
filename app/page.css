@@ -1,0 +1,33 @@
+.bienvenue{
+  font-size: 40px;
+}
+
+.connecter{
+   font-size:17px;
+    border: 2px black solid;
+    padding: 6px 5px;
+    border-radius: 3px;
+
+}
+
+.label {
+    display: block;
+    margin-top: 25px;
+    margin-bottom: -20px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Poppins',sans-serif;
+    font-weight:700;
+}
+
+.input{
+    display: block;
+    height: 40px;
+    width: 100%;
+    background-color: rgba(37, 122, 202, 0.07);
+    border-radius: 3px;
+    padding: 0 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+}
