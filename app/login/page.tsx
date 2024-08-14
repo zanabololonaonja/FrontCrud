@@ -1,26 +1,72 @@
-// app/login/page.tsx
 "use client";
+import React, { useState } from "react";
+import "./login.css";
 
-import React from "react"
-import "./login.css"; // Assurez-vous que le chemin est correct
+const AddAlbum = () => {
+  const [idalbum, setIdalbum] = useState('');
+  const [namealbum, setNamealbum] = useState('');
+  const [error, setError] = useState('');
 
-export default function Login() {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+  
+    try {
+      const res = await fetch('http://localhost:5000/api/albums', {
+ method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idalbum, namealbum }),
+      });
+  
+      const responseText = await res.text(); // Lire la réponse en tant que texte brut
+      console.log('Response from server:', responseText);
+  
+      if (res.ok) {
+        const jsonData = JSON.parse(responseText); // Convertir en JSON si possible
+        alert('Album added successfully!');
+        setIdalbum('');
+        setNamealbum('');
+      } else {
+        const errorData = JSON.parse(responseText);
+        setError(errorData.message || 'Failed to add album');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError('An unexpected error occurred.');
+    }
+  };
+  
   return (
-    <main className="flex min-h-screen flex-col items-center justify p-24">
-      <h1 className="pconnex">Page de connexion</h1>
-      <form>
-        <label><br />
-          Nom d'utilisateur :
-          <input type="text" name="username" />
-        </label>
-        <br /><br />
-        <label>
-          Mot de passe :
-          <input type="password" name="password" />
-        </label><br />
-        <br /><br />
-        <button type="submit">Se connecter</button>
+    <div>
+      <h1>Add Album</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="idalbum">Album ID:</label><br /><br />
+          <input
+            type="text"
+            id="idalbum"
+            value={idalbum}
+            onChange={(e) => setIdalbum(e.target.value)}
+            required
+          />
+        </div>
+        <div><br /><br />
+          <label htmlFor="namealbum">Album Name:</label><br /><br />
+          <input
+            type="text"
+            id="namealbum"
+            value={namealbum}
+            onChange={(e) => setNamealbum(e.target.value)}
+            required
+          />
+        </div><br /><br />
+        <button className="send" type="submit">Add Album</button>
       </form>
-    </main>
+      {error && <div className="error">{error}</div>}
+    </div>
   );
-}
+};
+
+export default AddAlbum;

@@ -6,3 +6,8 @@
     display: block;
  
 }
+.send {
+  color: white;
+  background-color: #007bff;
+  border-color: #007bff;
+}
