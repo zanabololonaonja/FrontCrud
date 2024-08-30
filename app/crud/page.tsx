@@ -1,151 +1,93 @@
-"use client"; 
 
+"use client";
 import React, { useState } from 'react';
-import { PlusOutlined, CarryOutOutlined } from '@ant-design/icons';
-import { Image, Upload, Space, Switch, TreeSelect } from 'antd';
-import type { GetProp, UploadFile, UploadProps } from 'antd';
+import { IoIosUnlock } from "react-icons/io";
 import './crud.css';
 
-const treeData = [
-  {
-    value: 'parent 1',
-    title: 'parent 1',
-    icon: <CarryOutOutlined />,
-    children: [
-      {
-        value: 'parent 1-0',
-        title: 'parent 1-0',
-        icon: <CarryOutOutlined />,
-        children: [
-          {
-            value: 'leaf1',
-            title: 'leaf1',
-            icon: <CarryOutOutlined />,
-          },
-          {
-            value: 'leaf2',
-            title: 'leaf2',
-            icon: <CarryOutOutlined />,
-          },
-        ],
-      },
-      {
-        value: 'parent 1-1',
-        title: 'parent 1-1',
-        icon: <CarryOutOutlined />,
-        children: [
-          {
-            value: 'sss',
-            title: 'sss',
-            icon: <CarryOutOutlined />,
-          },
-        ],
-      },
-    ],
-  },
-];
+const FormPage = () => {
+  // State to toggle between Sign Up and Sign In
+  const [isSignUp, setIsSignUp] = useState(true);
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-
-const FormPage: React.FC = () => {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  const [fileList, setFileList] = useState<UploadFile[]>([
-    {
-      uid: '-1',
-      name: 'image.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    },
-  ]);
-
-  // Add these state variables inside the FormPage component
-  const [treeLine, setTreeLine] = useState(true);
-  const [showLeafIcon, setShowLeafIcon] = useState(false);
-  const [showIcon, setShowIcon] = useState<boolean>(false);
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
-    }
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
+  // Function to toggle the form state
+  const toggleForm = () => {
+    setIsSignUp(!isSignUp);
   };
 
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
-
-  const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
-
   return (
-    <div className="body-with-form">
-      <Space direction="vertical">
-        <Switch
-          checkedChildren="showIcon"
-          unCheckedChildren="showIcon"
-          checked={showIcon}
-          onChange={() => setShowIcon(!showIcon)}
-        />
-        <Switch
-          checkedChildren="treeLine"
-          unCheckedChildren="treeLine"
-          checked={treeLine}
-          onChange={() => setTreeLine(!treeLine)}
-        />
-        <Switch
-          disabled={!treeLine}
-          checkedChildren="showLeafIcon"    
-          unCheckedChildren="showLeafIcon"
-          checked={showLeafIcon}
-          onChange={() => setShowLeafIcon(!showLeafIcon)}
-        />
-        <TreeSelect
-          treeLine={treeLine && { showLeafIcon }}
-          style={{ width: 300 }}
-          treeData={treeData}
-          treeIcon={showIcon}
-        />
-      </Space>
-      <form>
-        <div className="form__group">
-          <input type="text" className="form__field" placeholder="Nom" name="nom" id="nom" required />
-          <label htmlFor="nom" className="form__label">Nom</label>
+
+          // inscription
+          
+    <div className='full-screen'>
+      <div className="body d-md-flex align-items-center justify-content-between">
+        <div className="box-1">
+          <img
+            src="https://s3-alpha-sig.figma.com/img/1a38/535c/3f9702934d3faeb1b8055c1bb981f014?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=IL1PmGHEVdtcfuJiCDsnl2t~lYv76BQKvAauoS7egs1GFxDwKantHiwuFsdI5ibLOsNe0f7wt~YeYUax5TrxGaU5aG79X-nUDcMdqr~38waNjJOymh9Np00mPF5Rf-KSCFGsxVhtnA8~IRzULGYF0hi1WCnD-gFKP6CdVKzfB-igXPoxnZ0gj7-vj6oPklwDbzf~hAj0RRECgqWD3wKJg5ONoYtDjeqTXecaXWdM0~Pcs2dy0a2gZRxYlztqYLYUWRm-S6ow4s~HbczQE0j41gbUm4Zq3xWStW1ZFi4g74gXeQuKauOqsBAEx~5SLVi64U4QTU3hc-e-TRejZL2auQ__"
+            alt="Decorative"
+            className="img-fluid"
+          />
         </div>
-      
-      </form><br />
-      <Upload
-        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-        listType="picture-card"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={handleChange}
-      >
-        {fileList.length >= 8 ? null : uploadButton}
-      </Upload>
-      {previewImage && (
-        <Image
-          wrapperStyle={{ display: 'none' }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(''),
-          }}
-          src={previewImage}
-        />
-      )}
+        <div className="box-2">
+          <div className="form-container">
+            {isSignUp ? (
+              <>
+                <br />
+                <img
+                  src="https://s3-alpha-sig.figma.com/img/a602/660f/a6b06dcc6d9cc369ee73988f7ed6658e?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nds68SDPMwdwIQJoIwL1~tgDBvdqtkZijJbwmVfzwDgz8NNvbn2Q8s7kmmMLOb9BrmbeHq85WhkLqO3DT~ni0LNvbN86FMfI27IikZzc77TvZfNUV8rBWD7hmXTReBG4l93U8mB3nDZj34sc4lqSKtMii0nH6UlYDBGZHInrgnB96-u2yjqXkxo1o~8s3XD3VJ01drObbf9w2~MvrfsSBKBJBcpVVNS~VmjmDL0bP2aKVxb0EA0F6EEsnHh3eS9WJD7nzD2o4k74ODphDfeHvrmEclsgy84~iDKsdvOMu3wVp1l4vQsAdoIfHpC~UtFkJpZdCq4n2Mv4akx0GRE5sA__"
+                  alt="Decorative"
+                  className="img-logo"
+                />
+                <br />
+
+                <p className='titre1'>Create an account</p>
+                <hr />
+                <form className="d-flex flex-column">
+                  <input type="text" className="form-field" placeholder="Name" name="name" required />
+                  <input type="text" className="form-field" placeholder="Middle Name" name="middleName" />
+                  <input type="text" className="form-field" placeholder="Last Name" name="lastName" required />
+                  <input type="email" className="form-field" placeholder="Email" name="email" required />
+                  <input type="password" className="form-field" placeholder="Password" name="password" required />
+                  <input type="password" className="form-field" placeholder="Confirm Password" name="confirmPassword" required />
+                  <button type="submit" className="btn btn-primary mt-3">Sign up</button>
+                </form>
+                <div className="mt-3">
+                  <p className="mb-0 text-muted d-inline"> Already have an account ? </p>
+                  <button className="btn btn-secondary d-inline" onClick={toggleForm}>  Sign   in</button>
+                </div>
+              </>
+
+
+             // Authentification
+
+            ) : (
+              <>
+                <img
+                  src="https://s3-alpha-sig.figma.com/img/a602/660f/a6b06dcc6d9cc369ee73988f7ed6658e?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nds68SDPMwdwIQJoIwL1~tgDBvdqtkZijJbwmVfzwDgz8NNvbn2Q8s7kmmMLOb9BrmbeHq85WhkLqO3DT~ni0LNvbN86FMfI27IikZzc77TvZfNUV8rBWD7hmXTReBG4l93U8mB3nDZj34sc4lqSKtMii0nH6UlYDBGZHInrgnB96-u2yjqXkxo1o~8s3XD3VJ01drObbf9w2~MvrfsSBKBJBcpVVNS~VmjmDL0bP2aKVxb0EA0F6EEsnHh3eS9WJD7nzD2o4k74ODphDfeHvrmEclsgy84~iDKsdvOMu3wVp1l4vQsAdoIfHpC~UtFkJpZdCq4n2Mv4akx0GRE5sA__"
+                  alt="Decorative"
+                  className="img-logo"
+                />
+                <br />
+
+                <p className='titre1'>Log in to your Account</p>
+                <hr />
+                <form className="d-flex flex-column">
+                  <input type="email" className="form-field" placeholder="Email" name="email" required />
+                  <input type="password" className="form-field" placeholder="Password" name="password" required />
+                  <button type="submit" className="btn btn-primary mt-3">Log in</button>
+                </form>
+                <div className="mt-3">
+                  <p className="mb-0 text-muted d-inline">
+                    <IoIosUnlock style={{ display: 'inline', width: '27px', height: '22px' }} />
+                    Forgot your password ?
+                  </p>
+                  <br /><br />
+                  <p className="mb-0 text-muted d-inline">Don’t have an account ? </p>
+                  <button className="btn btn-secondary d-inline" onClick={toggleForm}> Sign up</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

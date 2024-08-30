@@ -24,10 +24,10 @@ export default function Home() {
         </p>
         <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
           <button type="button" className="connecter" onClick={handleLoginClick}>
-            Se connecter
+            album
           </button>
           <button type="button" className="connecter" onClick={handlecrudClick}>
-           crud
+           se connecter
           </button>
           <button type="button" className="connecter" onClick={handlephotoClick}>
           photo
