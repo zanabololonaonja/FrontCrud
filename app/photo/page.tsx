@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Switch, Table, Tooltip, Button, Modal, Form, Input, Select, Upload } from "antd"; // Import necessary components from Ant Design
+import { Switch, Table, Tooltip, Button, Modal, Form, Input, Select, Upload } from "antd";
 import type { TableColumnsType } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import "./photo.css";
@@ -92,12 +92,14 @@ const AddPhoto: React.FC = () => {
     }
   };
 
+
+  // Supprimer
   const handleDelete = async (photoId: string) => {
     try {
       const res = await fetch(`http://localhost:5000/api/photos/${photoId}`, {
         method: 'DELETE',
       });
-  
+
       if (res.ok) {
         alert('Photo deleted successfully!');
         fetchPhotos(); // Refresh the list after deletion
@@ -110,6 +112,8 @@ const AddPhoto: React.FC = () => {
     }
   };
 
+
+  // modifier avec modal
   const handleEdit = (photo: PhotoType) => {
     setEditingPhoto(photo);
     setIsModalOpen(true);
@@ -151,7 +155,8 @@ const AddPhoto: React.FC = () => {
     setEditingPhoto(null);
   };
 
-  // Define the columns for the Ant Design Table
+
+  //  Design Tableau
   const columns: TableColumnsType<PhotoType> = [
     {
       title: 'N°Photo',
@@ -262,10 +267,11 @@ const AddPhoto: React.FC = () => {
         </div>
         <br /><br />
         <button className="AJOUTER" type="submit">Add Photo</button>
+        
       </form>
       {error && <div className="error">{error}</div>}
 
-      {/* Display photos using Ant Design Table */}
+      {/* affichage Design Tableau */}
       <div className="photo-table">
         <h2>Photos:</h2>
         <Table columns={columns} dataSource={photos} rowKey="idphoto" />

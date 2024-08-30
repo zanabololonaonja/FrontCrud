@@ -14,10 +14,10 @@ html {
 }
 
 .img-logo {
-    width: 80%; /* Ajustez cette valeur pour réduire la taille de l'image */
-    height: auto; /* Maintient le ratio de l'image */
+    width: 80%; 
+    height: auto; 
     display: block;
-    margin: 0 auto; /* Centrer l'image horizontalement */
+    margin: 0 auto; 
 }
 .titre1 {
     font-size: 22px;
