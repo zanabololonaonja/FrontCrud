@@ -1,0 +1,63 @@
+.WHAT{
+  text-align: center;
+  font-size:110px;
+  font-family: 'Poppins', sans-serif; /* Correction de la police */
+  font-weight: 660;
+  color:  #f8394c15;
+
+}
+
+
+.why-choose-us-container {
+  padding: 40px;
+  /* background: #f9f9f9; */
+  color: #333;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.why-choose-us-container h2 {
+  font-size: 2.1em;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: -110px;
+}
+
+.reasons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+S
+
+/* WhyChooseUs.css */
+
+.why-choose-us-carousel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  background: #f0f0f0; /* Light background for contrast */
+}
+
+.reason-item {
+  padding: 20px;
+  background: #fff; /* White background for carousel items */
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 600px; /* Limit the width of the carousel items */
+  margin: auto; /* Center items horizontally */
+}
+
+.reason-item h3 {
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.reason-item p {
+  margin: 0;
+  color: #666;
+}

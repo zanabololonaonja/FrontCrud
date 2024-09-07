@@ -1,9 +1,12 @@
 "use client";
-import React, { useState } from 'react';
-import { IoIosUnlock } from "react-icons/io";
+import React, { useState, useEffect } from 'react';
+import { IoIosUnlock, IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './crud.css';
+import './crud.css'; // Ensure your spinner styles are included here
+import ClipLoader from "react-spinners/ClipLoader"; // Assuming you use this spinner component
+// Importez EmailJS
+import emailjs from 'emailjs-com';
 
 const FormPage = () => {
   const [isSignUp, setIsSignUp] = useState(true);
@@ -14,6 +17,14 @@ const FormPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // New state for spinner visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    emailjs.init("Etba5J10R84bbHQR2"); // Remplacez par votre clé publique EmailJS
+    console.log('EmailJS initialized');
+  }, []);
 
   const toggleForm = () => {
     setIsSignUp(!isSignUp);
@@ -24,8 +35,10 @@ const FormPage = () => {
     e.preventDefault();
     setError('');
 
-    if (password !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas!');
+    if (name === '' || middleName === '' || lastName === '' || email === '' || password === '' || confirmPassword === '') {
+      toast.info('Tous les champs sont obligatoires');
+    } else if (password !== confirmPassword) {
+      toast.error('Les mots de passe ne correspondent pas!');
       return;
     }
 
@@ -40,14 +53,34 @@ const FormPage = () => {
           userpassword: password,
           username: name,
           usermiddlename: middleName,
-          userlastname: lastName
+          userlastname: lastName,
         }),
       });
-
       const responseText = await res.text();
       if (res.ok) {
         const jsonData = JSON.parse(responseText);
         toast.success('Compte créé avec succès!');
+
+        // Envoyer l'email de bienvenue
+      
+    // Configurez les paramètres pour l'email à envoyer
+      // Envoyer l'email de bienvenue
+      // Envoyer l'email de bienvenue
+      const templateParams = {
+        to_name: `${name} ${lastName}`, // Nom complet de l'utilisateur
+        to_email: email, // Email saisi par l'utilisateur dans le formulaire
+        from_name: 'My Life Legacy DB', // Nom de l'application ou un nom générique
+        reply_to: email // Utilisé pour définir l'adresse de retour
+      };
+
+      emailjs.send('service_k58if4k', 'template_i1w40wi', templateParams, 'Etba5J10R84bbHQR2')
+        .then((response) => {
+          console.log('SUCCESS!', response.status, response.text);
+          toast.success('Email envoyé avec succès à ' + email);
+        }, (error) => {
+          console.error('FAILED...', error);
+          toast.error('Échec de l\'envoi de l\'email.');
+        });
         setName('');
         setMiddleName('');
         setLastName('');
@@ -68,6 +101,14 @@ const FormPage = () => {
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true); // Show the spinner
+
+    // Validate form fields
+    if (!email || !password) {
+      toast.error('Tous les champs doivent être remplis!');
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await fetch('http://localhost:5000/api/login', {
@@ -84,20 +125,34 @@ const FormPage = () => {
         toast.success('Connexion réussie!');
         setEmail('');
         setPassword('');
-        // Redirection ou action après connexion réussie
+        setLoading(false);
+        window.location.href = "/login"; // Redirect after hiding spinner
       } else {
         const errorData = JSON.parse(responseText);
         setError(errorData.message || 'Échec de la connexion');
+        setLoading(false);
       }
     } catch (err) {
       console.error('Erreur:', err);
       setError('Une erreur inattendue est survenue.');
+      setLoading(false);
     }
   };
 
   return (
     <div className='full-screen'>
-      <ToastContainer />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <div className="body d-md-flex align-items-center justify-content-between">
         <div className="box-1">
           <img
@@ -108,6 +163,11 @@ const FormPage = () => {
         </div>
         <div className="box-2">
           <div className="form-container">
+            {loading && (
+              <div className="spinner-overlay">
+                <ClipLoader color="#000000" loading={loading} size={50} />
+              </div>
+            )}
             {isSignUp ? (
               <>
                 <br />
@@ -131,14 +191,15 @@ const FormPage = () => {
                   <input
                     type="text"
                     className="form-field"
-                    placeholder="Middle name"
+                    placeholder="Middle Name"
                     value={middleName}
                     onChange={(e) => setMiddleName(e.target.value)}
+                    required
                   />
                   <input
                     type="text"
                     className="form-field"
-                    placeholder="Last name"
+                    placeholder="Last Name"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
@@ -151,22 +212,32 @@ const FormPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
-                  <input
-                    type="password"
-                    className="form-field"
-                    placeholder="Mot de passe"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <input
-                    type="password"
-                    className="form-field"
-                    placeholder="Confirmer le mot de passe"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
+                  <div className="password-container">
+                    <input
+                      type={showPassword ? "text" : "password"}  // Bascule entre le type text et password
+                      className="form-field"
+                      placeholder="Mot de passe"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                    </div>
+                  </div>
+                  <div className="password-container">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}  // Bascule entre le type text et password
+                      className="form-field"
+                      placeholder="Confirmer le mot de passe"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                    <div className="eye-icon" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                      {showConfirmPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                    </div>
+                  </div>
                   <button type="submit" className="btn btn-primary mt-3">Sign up</button>
                 </form>
                 {error && <div className="error">{error}</div>}
@@ -175,6 +246,7 @@ const FormPage = () => {
                   <button className="btn btn-secondary d-inline" onClick={toggleForm}>Sign in </button>
                 </div>
               </>
+                 
             ) : (
               <>
                 <br />
@@ -184,21 +256,37 @@ const FormPage = () => {
                   className="img-logo"
                 />
                 <br />
-              <p className='titre1'>Log in to your Account</p>
+                <p className='titre1'>Sign in</p>
                 <hr />
                 <form className="d-flex flex-column" onSubmit={handleSignInSubmit}>
-                  <input type="email" className="form-field" placeholder="Email" name="email" required />
-                  <input type="password" className="form-field" placeholder="Password" name="password" required />
-                  <button type="submit" className="btn btn-primary mt-3">Log in</button>
+                  <input
+                    type="email"
+                    className="form-field"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <div className="password-container">
+                    <input
+                      type={showPassword ? "text" : "password"}  // Bascule entre le type text et password
+                      className="form-field"
+                      placeholder="Mot de passe"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+                    </div>
+              
+                  </div>
+                  <p className="text-danger">{error}</p>
+                  <button className="btn btn-primary" type="submit">Sign In</button>
                 </form>
                 <div className="mt-3">
-                  <p className="mb-0 text-muted d-inline">
-                    <IoIosUnlock style={{ display: 'inline', width: '27px', height: '22px' }} />
-                    Forgot your password ?
-                  </p>
-                  <br /><br />
-                  <p className="mb-0 text-muted d-inline">Don’t have an account ? </p>
-                  <button className="btn btn-secondary d-inline" onClick={toggleForm}> Sign up</button>
+                  <p className="mb-0 text-muted d-inline">Don't have an account ?</p>
+                  <button className="btn btn-secondary d-inline" onClick={toggleForm}>Sign up</button>
                 </div>
               </>
             )}

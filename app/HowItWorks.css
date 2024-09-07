@@ -1,0 +1,160 @@
+/* HowItWorks.css */
+/* body {
+    color: #333;
+    font: 100% Lato, Arial, Sans Serif;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+} */
+
+#howItWorks {
+  z-index: -1;
+
+}
+
+.how-it-works-container{
+    background: radial-gradient(circle, rgba(85, 2, 2, 0.596), gray, black);
+
+}
+
+.linked-animate-demo-wrapper {
+    overflow: hidden;
+    height: 500px;
+    background: transparent;
+    width: 1492px;
+    margin-left: 11px;
+  min-height: 90vh;
+  position: relative;
+
+  margin-top: -650px;
+  }
+  
+  .linked-animate-demo-box {
+    position: absolute;
+    width: 1280px;
+    height: 600px;
+    display: block;
+    left: -100%;
+    top: 0;
+    bottom: 0;
+    right: -100%;
+    margin: auto;
+  }
+  
+  .linked-animate-demo-block {
+    position: absolute;
+    transition: transform .45s ease;
+  }
+  
+  .linked-animate-demo-block-child {
+    border-radius: 100%; 
+    width: 100%;
+    height: 100%;
+  }
+
+.title-container {
+    flex: 1;
+    margin-right: 20px;
+}
+
+.title-container h2 {
+    font-size: 2.8em;
+    font-weight: bold;
+    margin-top: 273px;
+    margin-left: 200px;
+    width: 440px;
+    color: white;
+}
+
+.title-container p {
+    font-size: 1.5em;
+    margin-left: 200px;
+    margin-top: 2px;
+    color: white;
+   
+}
+
+.steps-container {
+    flex: 2;
+    margin-left: 680px;
+    margin-top: -330px;
+    cursor: pointer;
+}
+
+.ant-steps {
+    max-width: 700px;
+    min-height: 600px;
+    cursor: pointer;
+}
+
+.ant-steps-item-title {
+    font-size: 4em;
+    font-weight: bold;
+    color:  #fff!important;
+}
+
+.ant-steps-item-description {
+    font-size: 1em;
+    color:  #fff!important;
+}
+
+.ant-steps-item-icon {
+    width: 50px;
+    height: 50px;
+    background-color: gray !important;
+    border-color: gray !important;
+    
+}
+
+.ant-steps-item-icon > .ant-steps-icon {
+    color: rgb(121, 24, 24)!important;
+    font-size: 24px;
+    line-height: 50px;
+}
+
+.ant-steps-item-process .ant-steps-item-icon {
+    background-color: gray !important;
+    cursor: pointer;
+}
+
+.ant-steps-item-process .ant-steps-icon {
+    color:white!important;
+    cursor: pointer;
+}
+
+.ant-steps-item-process .ant-steps-item-title{
+    font-size: 27px;
+      
+}
+.ant-steps-item-process .ant-steps-item-description {
+    color:  #fff !important;
+    font-size: 19px;
+    font-family: 'Poppins', sans-serif; /* Correction de la police */
+    font-weight: 660;
+}
+
+.ant-steps-item-finish .ant-steps-item-title,
+.ant-steps-item-wait .ant-steps-item-title {
+    color:  #fff !important;
+    font-size: 25px;
+    font-family: 'Poppins', sans-serif; /* Correction de la police */
+    font-weight: 660;
+}
+.ant-steps-item-wait .ant-steps-item-description {
+    font-size: 19px;
+    color:  #fff ;
+    font-family: 'Poppins', sans-serif; /* Correction de la police */
+    font-weight: 660;
+}
+
+.ant-steps-item-finish .ant-steps-item-icon,
+.ant-steps-item-wait .ant-steps-item-icon {
+    background-color: gray !important;
+    border-color: gray !important;
+}
+
+.ant-steps-item-finish .ant-steps-icon,
+.ant-steps-item-wait .ant-steps-icon {
+    color: white !important;
+}
