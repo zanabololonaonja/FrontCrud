@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Switch, Table, Tooltip, Button, Modal, Form, Input, Select, Upload } from "antd";
-import type { TableColumnsType } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import "./photo.css";
+import { Dropdown, Button, Modal, Form, Input, Upload, Menu } from "antd";
+import { UploadOutlined, MoreOutlined ,InboxOutlined} from "@ant-design/icons";
+import axios from "axios";
+import './photo.css';
 
 interface PhotoType {
   idphoto: string;
@@ -12,298 +12,294 @@ interface PhotoType {
   namephoto: string;
   attachedfile: string;
 }
+const { Dragger } = Upload;
 
-const AddPhoto: React.FC = () => {
-  const [idphoto, setIdphoto] = useState('');
+const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } }> = ({ currentAlbum }) => {
+  const [idphoto, setIdphoto] = useState("");
   const [idalbum, setIdalbum] = useState('');
-  const [namephoto, setNamephoto] = useState('');
+
   const [attachedfile, setAttachedfile] = useState<File | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [photos, setPhotos] = useState<PhotoType[]>([]);
-  const [albums, setAlbums] = useState([]);
-  const [showNames, setShowNames] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState<PhotoType | null>(null);
+  const [showForm, setShowForm] = useState(false); 
+  const [hoveredPhotoId, setHoveredPhotoId] = useState(null);
 
-  const fetchPhotos = async () => {
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+
+  // Fetch photos from the API based on the album ID
+  const fetchPhotos = async (idalbum: string) => {
     try {
-      const res = await fetch('http://localhost:5000/api/photos');
-      if (!res.ok) throw new Error('Failed to fetch photos');
+      const res = await fetch(`http://localhost:5000/api/photos?idalbum=${idalbum}`);
+      if (!res.ok) throw new Error("Failed to fetch photos");
       const data = await res.json();
-      setPhotos(data);
+      setPhotos(data.filter((photo: PhotoType) => photo.idalbum.trim() === idalbum.trim()));
     } catch (err) {
-      console.error('Error fetching photos:', err);
-      setError('An error occurred while fetching photos.');
+      console.error("Error fetching photos:", err);
+      setError("An error occurred while fetching photos.");
     }
   };
 
-  const fetchAlbums = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/api/albums');
-      if (!res.ok) throw new Error('Failed to fetch albums');
-      const data = await res.json();
-      setAlbums(data);
-    } catch (err) {
-      console.error('Error fetching albums:', err);
-      setError('An error occurred while fetching albums.');
-    }
-  };
-
+  // Fetch photos whenever the current album changes
   useEffect(() => {
-    fetchPhotos();
-    fetchAlbums();
-  }, []);
+    if (currentAlbum) {
+      fetchPhotos(currentAlbum.idalbum);
+    }
+  }, [currentAlbum]);
 
+  // Handle form submission for adding a new photo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     const formData = new FormData();
-    formData.append('idphoto', idphoto);
-    formData.append('idalbum', idalbum);
-    formData.append('namephoto', namephoto);
+    formData.append("idphoto", idphoto);
+    formData.append("idalbum", currentAlbum.idalbum);
+    
     if (attachedfile) {
-      formData.append('attachedfile', attachedfile);
+      formData.append("attachedfile", attachedfile);
     }
 
     try {
-      const res = await fetch('http://localhost:5000/api/photos', {
-        method: 'POST',
-        body: formData,
+      await axios.post("http://localhost:5000/api/photos", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-
-      const responseText = await res.text();
-      console.log('Response from server:', responseText);
-
-      if (res.ok) {
-        alert('Photo added successfully!');
-        setIdphoto('');
-        setIdalbum('');
-        setNamephoto('');
-        setAttachedfile(null);
-        fetchPhotos();
-      } else {
-        const errorData = JSON.parse(responseText);
-        setError(errorData.message || 'Failed to add photo');
-      }
-    } catch (err) {
-      console.error('Error:', err);
-      setError('An unexpected error occurred.');
+      alert("Photo added successfully!");
+      setIdphoto("");
+     
+      setAttachedfile(null);
+      setShowForm(false); // Masquer le formulaire après l'ajout
+      fetchPhotos(currentAlbum.idalbum);
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+      setError("Failed to add photo");
     }
   };
 
-
-  // Supprimer
-  const handleDelete = async (photoId: string) => {
-    try {
-      const res = await fetch(`http://localhost:5000/api/photos/${photoId}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        alert('Photo deleted successfully!');
-        fetchPhotos(); // Refresh the list after deletion
-      } else {
-        setError('Failed to delete photo.');
-      }
-    } catch (err) {
-      console.error('Error deleting photo:', err);
-      setError('An error occurred while deleting the photo.');
+  // Handle file change for the file input
+  // Handle file change for both the file input and Dragger component
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
+    if (e.target.files && e.target.files[0]) {
+      setAttachedfile(e.target.files[0]);
+    } else if (e.fileList && e.fileList.length > 0) {
+      setAttachedfile(e.fileList[0].originFileObj);
     }
   };
 
+  
 
-  // modifier avec modal
+  // Handle opening the modal for editing a photo
   const handleEdit = (photo: PhotoType) => {
     setEditingPhoto(photo);
     setIsModalOpen(true);
   };
 
+  // Handle deleting a photo by its ID
+  const handleDelete = async (idphoto: string) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/photos/${idphoto}`);
+      alert("Photo deleted successfully!");
+      fetchPhotos(currentAlbum.idalbum);
+    } catch (error) {
+      console.error("Error deleting photo:", error);
+      setError("Failed to delete photo");
+    }
+  };
+
+  // Handle the save action inside the modal
   const handleModalOk = async () => {
     if (!editingPhoto) return;
 
     const formData = new FormData();
-    formData.append('idphoto', editingPhoto.idphoto);
-    formData.append('idalbum', editingPhoto.idalbum);
-    formData.append('namephoto', editingPhoto.namephoto);
+    formData.append("namephoto", editingPhoto.namephoto);
     if (attachedfile) {
-      formData.append('attachedfile', attachedfile);
+      formData.append("attachedfile", attachedfile);
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/photos/${editingPhoto.idphoto}`, {
-        method: 'PUT',
-        body: formData,
+      await axios.put(`http://localhost:5000/api/photos/${editingPhoto.idphoto}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-
-      if (res.ok) {
-        alert('Photo updated successfully!');
-        fetchPhotos();
-        setIsModalOpen(false);
-        setEditingPhoto(null);
-      } else {
-        setError('Failed to update photo.');
-      }
-    } catch (err) {
-      console.error('Error updating photo:', err);
-      setError('An unexpected error occurred.');
+      alert("Photo updated successfully!");
+      setIsModalOpen(false);
+      setAttachedfile(null);
+      fetchPhotos(currentAlbum.idalbum);
+    } catch (error) {
+      console.error("Error updating photo:", error);
+      setError("Failed to update photo");
     }
   };
 
+   
+
+  // Handle closing the modal
   const handleModalCancel = () => {
     setIsModalOpen(false);
     setEditingPhoto(null);
   };
 
+  const handlePhotoClick = (photo) => {
+    setSelectedPhoto(photo);
+    setIsModalOpen(true);
+  };
 
-  //  Design Tableau
-  const columns: TableColumnsType<PhotoType> = [
-    {
-      title: 'N°Photo',
-      dataIndex: 'idphoto',
-      key: 'idphoto',
-    },
-    {
-      title: 'N°Album',
-      dataIndex: 'idalbum',
-      key: 'idalbum',
-    },
-    {
-      title: 'Nom Photo',
-      dataIndex: 'namephoto',
-      key: 'namephoto',
-    },
-    {
-      title: 'PHOTO',
-      dataIndex: 'attachedfile',
-      key: 'attachedfile',
-      render: (attachedfile: string, record: PhotoType) => (
-        attachedfile ? (
-          <img
-            src={`data:image/jpeg;base64,${attachedfile}`}
-            alt={record.namephoto}
-            style={{ width: '100px', height: '100px' }}
-          />
-        ) : null
-      ),
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <>
-          <Button onClick={() => handleEdit(record)}>Modifier</Button>
-          <Button onClick={() => handleDelete(record.idphoto)}>Supprimer</Button>
-        </>
-      ),
-    }
-  ];
+  // Close the modal
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedPhoto(null);
+  };
+  // Render the menu for the three-dot options (edit and delete)
+  const menu = (idphoto: string) => (
+    <Menu>
+      <Menu.Item key="edit" onClick={() => handleEdit(photos.find((photo) => photo.idphoto === idphoto)!)}>
+        Modifier
+      </Menu.Item>
+      <Menu.Item key="delete" onClick={() => handleDelete(idphoto)}>
+        Supprimer
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
-    <div>
-      <h1>Add Photo</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="form__group">
-          <input
-            type="text"
-            className="form__field"
-            placeholder="Photo ID"
-            id="idphoto"
-            value={idphoto}
-            onChange={(e) => setIdphoto(e.target.value)}
-            required
-          />
-          <label htmlFor="idphoto" className="form__label">Photo ID</label>
-        </div>
-        <div>
-          <br /><br />
-          <label htmlFor="idalbum">Album ID:</label>
-          <br /><br />
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <select
-              value={idalbum}
-              onChange={(e) => setIdalbum(e.target.value)}
-              placeholder="Select an album"
-              style={{ flex: 1 }}
+    <div style={{ marginTop: '20px' }}>
+      {/* Bouton pour afficher le formulaire d'ajout */}
+      {!showForm && (
+      <Button className="btn-wave" type="primary" onClick={() => setShowForm(true)}>
+      <span className="icon">📷</span> {/* Utilisation d'une icône photo */}
+      Ajouter Photo
+    </Button>
+    
+     
+      )}
+
+      {/* Formulaire d'ajout de photo, affiché uniquement si showForm est true */}
+      {showForm && (
+  <form onSubmit={handleSubmit} className="photo-upload-form">
+    <div className="form-group">
+      <label>ID Photo:</label>
+      <input
+        type="text"
+        value={idphoto}
+        onChange={(e) => setIdphoto(e.target.value)}
+        required
+        className="form-input"
+      />
+    </div>
+    <div className="form-group">
+      <label>ID Album:</label>
+      <input
+        type="text"
+        value={idalbum}
+        onChange={(e) => setIdalbum(e.target.value)}
+        required
+        className="form-input"
+      />
+    </div>
+
+    <div className="form-group">
+            <label>Attach File:</label>
+            <Dragger
+              name="file"
+              multiple={false}
+              onChange={handleFileChange}
+              onDrop={(e) => console.log('Dropped files', e.dataTransfer.files)}
+              beforeUpload={(file) => {
+                setAttachedfile(file);
+                return false; // Prevent automatic upload
+              }}
             >
-              <option value="">Select an album</option>
-              {albums.map((album) => (
-                <option key={album.idalbum} value={album.idalbum}>
-                  {album.idalbum} {showNames ? `- ${album.namealbum}` : ''}
-                </option>
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">Click or drag file to this area to upload</p>
+              <p className="ant-upload-hint">
+                Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
+              </p>
+            </Dragger>
+          </div>
+    <div className="form-actions">
+      <button type="submit" className="upload-button">Upload Photo</button>
+      <Button type="default" onClick={() => setShowForm(false)} className="cancel-button">
+        Annuler
+      </Button>
+    </div>
+    {error && <div className="error">{error}</div>}
+  </form>
+)}
+
+      {/* Affichage des photos */}
+      {!showForm && (
+        <div className="photo-table" style={{ marginTop: '20px' }}>
+          {/* <h2>{currentAlbum.namealbum} </h2>
+          <h2>Photos:</h2> */}
+
+          {photos.length > 0 ? (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              {photos.map((photo) => (
+                <div
+                key={photo.idphoto}
+                style={{
+                  position: 'relative',
+                  width: '200px',
+                  height: '150px',
+                  overflow: 'hidden',
+                  borderRadius: '8px',
+                  border: '1px solid #ccc',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={() => setHoveredPhotoId(photo.idphoto)}
+                onMouseLeave={() => setHoveredPhotoId(null)}
+                onClick={() => handlePhotoClick(photo)} // Cette action ne sera pas appelée si l'icône est cliquée
+              >
+              
+                  <img
+                    src={`data:image/jpeg;base64,${photo.attachedfile}`}
+                    alt={photo.namephoto}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+
+
+{hoveredPhotoId === photo.idphoto && (
+  <Dropdown overlay={menu(photo.idphoto)} trigger={['click']}>
+    <Button
+      type="text"
+      icon={<MoreOutlined />}
+      style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        color: '#fff',
+        borderRadius: '50%',
+      }}
+      onClick={(e) => {
+        e.stopPropagation(); // Empêche la propagation de l'événement
+      }}
+    />
+  </Dropdown>
+)}
+
+                </div>
               ))}
-            </select>
-            <Switch
-              checked={showNames}
-              onChange={(checked) => setShowNames(checked)}
-              style={{ marginLeft: 8 }}
-              checkedChildren="avec nom album"
-              unCheckedChildren=" num album"
-            />
-          </div>
-          <div className="form__group">
-            <input
-              type="text"
-              className="form__field"
-              placeholder="Photo Name"
-              id="namephoto"
-              value={namephoto}
-              onChange={(e) => setNamephoto(e.target.value)}
-              required
-            />
-            <label htmlFor="namephoto" className="form__label">Photo Name</label>
-          </div>
+            </div>
+          ) : (
+            <p className="albumVide">Album Vide</p>
+          )}
         </div>
-        <div>
-          <br /><br />
-          <label htmlFor="attachedfile">Attach File:</label>
-          <br /><br />
-          <input
-            type="file"
-            id="attachedfile"
-            onChange={(e) => setAttachedfile(e.target.files[0])}
-            required
-          />
-        </div>
-        <br /><br />
-        <button className="AJOUTER" type="submit">Add Photo</button>
-        
-      </form>
-      {error && <div className="error">{error}</div>}
+      )}
 
-      {/* affichage Design Tableau */}
-      <div className="photo-table">
-        <h2>Photos:</h2>
-        <Table columns={columns} dataSource={photos} rowKey="idphoto" />
-      </div>
 
-      {/* Modal for editing photo */}
-      <Modal
-        title="Edit Photo"
-        visible={isModalOpen}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
+
+
+         {/* Modal pour la modification de la photo */}
+         <Modal title="Edit Photo" open={isModalOpen} onCancel={handleModalCancel} footer={null}>
         {editingPhoto && (
           <Form>
-            <Form.Item label="Photo ID">
-              <Input
-                value={editingPhoto.idphoto}
-                onChange={(e) => setEditingPhoto({ ...editingPhoto, idphoto: e.target.value })}
-              />
-            </Form.Item>
-            <Form.Item label="Album ID">
-              <Select
-                value={editingPhoto.idalbum}
-                onChange={(value) => setEditingPhoto({ ...editingPhoto, idalbum: value })}
-              >
-                {albums.map((album) => (
-                  <Select.Option key={album.idalbum} value={album.idalbum}>
-                    {album.idalbum} {showNames ? `- ${album.namealbum}` : ''}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
             <Form.Item label="Photo Name">
               <Input
                 value={editingPhoto.namephoto}
@@ -314,14 +310,31 @@ const AddPhoto: React.FC = () => {
               <Upload
                 beforeUpload={(file) => {
                   setAttachedfile(file);
-                  return false; // Prevent upload
+                  return false;
                 }}
-                listType="text"
               >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                <Button icon={<UploadOutlined />}>Upload File</Button>
               </Upload>
             </Form.Item>
+            <Button type="primary" onClick={handleModalOk}>
+              Save Changes
+            </Button>
+            <Button type="default" onClick={handleModalCancel}>
+              Cancel
+            </Button>
           </Form>
+        )}
+      </Modal>
+
+
+      {/* Modal pour afficher la photo en taille réelle */}
+      <Modal open={isModalOpen} onCancel={handleModalClose} footer={null}>
+        {selectedPhoto && (
+          <img
+            src={`data:image/jpeg;base64,${selectedPhoto.attachedfile}`}
+            alt={selectedPhoto.namephoto}
+            style={{ width: '100%', height: 'auto' }}
+          />
         )}
       </Modal>
     </div>

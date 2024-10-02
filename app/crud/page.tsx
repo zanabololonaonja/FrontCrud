@@ -1,14 +1,15 @@
-"use client";
-import React, { useState, useEffect } from 'react';
+"use client"; 
+import React, { useState, useEffect, useContext } from 'react';
 import { IoIosUnlock, IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './crud.css'; // Ensure your spinner styles are included here
-import ClipLoader from "react-spinners/ClipLoader"; // Assuming you use this spinner component
-// Importez EmailJS
+import './crud.css'; 
+import ClipLoader from "react-spinners/ClipLoader"; 
+import { UserContext } from '../crud/UserContext'; // Vérifiez que ce chemin est correct
 import emailjs from 'emailjs-com';
 
 const FormPage = () => {
+  const { setUserData } = useContext(UserContext);
   const [isSignUp, setIsSignUp] = useState(true);
   const [name, setName] = useState('');
   const [middleName, setMiddleName] = useState('');
@@ -17,12 +18,12 @@ const FormPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // New state for spinner visibility
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
-    emailjs.init("Etba5J10R84bbHQR2"); // Remplacez par votre clé publique EmailJS
+    emailjs.init("Etba5J10R84bbHQR2");
     console.log('EmailJS initialized');
   }, []);
 
@@ -37,6 +38,7 @@ const FormPage = () => {
 
     if (name === '' || middleName === '' || lastName === '' || email === '' || password === '' || confirmPassword === '') {
       toast.info('Tous les champs sont obligatoires');
+      return;
     } else if (password !== confirmPassword) {
       toast.error('Les mots de passe ne correspondent pas!');
       return;
@@ -61,26 +63,22 @@ const FormPage = () => {
         const jsonData = JSON.parse(responseText);
         toast.success('Compte créé avec succès!');
 
-        // Envoyer l'email de bienvenue
-      
-    // Configurez les paramètres pour l'email à envoyer
-      // Envoyer l'email de bienvenue
-      // Envoyer l'email de bienvenue
-      const templateParams = {
-        to_name: `${name} ${lastName}`, // Nom complet de l'utilisateur
-        to_email: email, // Email saisi par l'utilisateur dans le formulaire
-        from_name: 'My Life Legacy DB', // Nom de l'application ou un nom générique
-        reply_to: email // Utilisé pour définir l'adresse de retour
-      };
+        const templateParams = {
+          to_name: `${name} ${lastName}`,
+          to_email: email,
+          from_name: 'My Life Legacy DB',
+          reply_to: email,
+        };
 
-      emailjs.send('service_k58if4k', 'template_i1w40wi', templateParams, 'Etba5J10R84bbHQR2')
-        .then((response) => {
-          console.log('SUCCESS!', response.status, response.text);
-          toast.success('Email envoyé avec succès à ' + email);
-        }, (error) => {
-          console.error('FAILED...', error);
-          toast.error('Échec de l\'envoi de l\'email.');
-        });
+        emailjs.send('service_k58if4k', 'template_i1w40wi', templateParams, 'Etba5J10R84bbHQR2')
+          .then((response) => {
+            console.log('SUCCESS!', response.status, response.text);
+            toast.success('Email envoyé avec succès à ' + email);
+          }, (error) => {
+            console.error('FAILED...', error);
+            toast.error('Échec de l\'envoi de l\'email.');
+          });
+
         setName('');
         setMiddleName('');
         setLastName('');
@@ -100,15 +98,6 @@ const FormPage = () => {
 
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true); // Show the spinner
-
-    // Validate form fields
-    if (!email || !password) {
-      toast.error('Tous les champs doivent être remplis!');
-      setLoading(false);
-      return;
-    }
 
     try {
       const res = await fetch('http://localhost:5000/api/login', {
@@ -119,25 +108,28 @@ const FormPage = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const responseText = await res.text();
-      if (res.ok) {
-        const jsonData = JSON.parse(responseText);
-        toast.success('Connexion réussie!');
-        setEmail('');
-        setPassword('');
-        setLoading(false);
-        window.location.href = "/login"; // Redirect after hiding spinner
+      const data = await res.json();
+      if (res.ok && data.user) {
+        setUserData({
+          iduser: data.user.id,
+          username: data.user.username,
+          userlastname: data.user.userlastname,
+          usermiddlename: data.user.usermiddlename,
+          useremailaddress: data.user.useremailaddress,
+          userphoto: data.user.userphoto, // Assurez-vous d'ajouter cette ligne
+        });
+        localStorage.setItem('userData', JSON.stringify(data.user));
+        window.location.href = "/container";
       } else {
-        const errorData = JSON.parse(responseText);
-        setError(errorData.message || 'Échec de la connexion');
-        setLoading(false);
+        alert('Erreur de connexion');
       }
     } catch (err) {
-      console.error('Erreur:', err);
-      setError('Une erreur inattendue est survenue.');
-      setLoading(false);
+      console.error(err);
+      alert('Une erreur est survenue');
     }
   };
+
+  
 
   return (
     <div className='full-screen'>
@@ -172,8 +164,7 @@ const FormPage = () => {
               <>
                 <br />
                 <img
-                  src="https://s3-alpha-sig.figma.com/img/a602/660f/a6b06dcc6d9cc369ee73988f7ed6658e?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nds68SDPMwdwIQJoIwL1~tgDBvdqtkZijJbwmVfzwDgz8NNvbn2Q8s7kmmMLOb9BrmbeHq85WhkLqO3DT~ni0LNvbN86FMfI27IikZzc77TvZfNUV8rBWD7hmXTReBG4l93U8mB3nDZj34sc4lqSKtMii0nH6UlYDBGZHInrgnB96-u2yjqXkxo1o~8s3XD3VJ01drObbf9w2~MvrfsSBKBJBcpVVNS~VmjmDL0bP2aKVxb0EA0F6EEsnHh3eS9WJD7nzD2o4k74ODphDfeHvrmEclsgy84~iDKsdvOMu3wVp1l4vQsAdoIfHpC~UtFkJpZdCq4n2Mv4akx0GRE5sA__"
-                  alt="Decorative"
+                      src="/images/LOGO.png"  alt="Decorative"
                   className="img-logo"
                 />
                 <br />
@@ -251,12 +242,11 @@ const FormPage = () => {
               <>
                 <br />
                 <img
-                  src="https://s3-alpha-sig.figma.com/img/a602/660f/a6b06dcc6d9cc369ee73988f7ed6658e?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nds68SDPMwdwIQJoIwL1~tgDBvdqtkZijJbwmVfzwDgz8NNvbn2Q8s7kmmMLOb9BrmbeHq85WhkLqO3DT~ni0LNvbN86FMfI27IikZzc77TvZfNUV8rBWD7hmXTReBG4l93U8mB3nDZj34sc4lqSKtMii0nH6UlYDBGZHInrgnB96-u2yjqXkxo1o~8s3XD3VJ01drObbf9w2~MvrfsSBKBJBcpVVNS~VmjmDL0bP2aKVxb0EA0F6EEsnHh3eS9WJD7nzD2o4k74ODphDfeHvrmEclsgy84~iDKsdvOMu3wVp1l4vQsAdoIfHpC~UtFkJpZdCq4n2Mv4akx0GRE5sA__"
-                  alt="Decorative"
+                     src="/images/LOGO.png"  alt="Decorative"
                   className="img-logo"
                 />
                 <br />
-                <p className='titre1'>Sign in</p>
+                <p className='titre1'>Log in to your Account</p>
                 <hr />
                 <form className="d-flex flex-column" onSubmit={handleSignInSubmit}>
                   <input

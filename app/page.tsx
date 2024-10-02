@@ -10,6 +10,7 @@ import { faLock, faCalendarAlt, faCamera, faUsers, faShieldAlt, faBriefcase, faP
 import { useState } from 'react';
 import HowItWorks from './HowItWorks';
 import WhyChooseUs from './WhyChooseUs';
+import Contact from './Contact';
 
 
 import "./page.css";
@@ -512,10 +513,10 @@ export default function Home() {
       alt="Description de l'image"
       style={{ width: '100px', height: 'auto', marginRight: '20px' }} // Ajuste la taille de l'image ici
     />
-   </div> */}
+   </div> */} 
             <Logo
-              src="https://s3-alpha-sig.figma.com/img/a602/660f/a6b06dcc6d9cc369ee73988f7ed6658e?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nds68SDPMwdwIQJoIwL1~tgDBvdqtkZijJbwmVfzwDgz8NNvbn2Q8s7kmmMLOb9BrmbeHq85WhkLqO3DT~ni0LNvbN86FMfI27IikZzc77TvZfNUV8rBWD7hmXTReBG4l93U8mB3nDZj34sc4lqSKtMii0nH6UlYDBGZHInrgnB96-u2yjqXkxo1o~8s3XD3VJ01drObbf9w2~MvrfsSBKBJBcpVVNS~VmjmDL0bP2aKVxb0EA0F6EEsnHh3eS9WJD7nzD2o4k74ODphDfeHvrmEclsgy84~iDKsdvOMu3wVp1l4vQsAdoIfHpC~UtFkJpZdCq4n2Mv4akx0GRE5sA__"
-              alt="Logo"
+             src="/images/LOGO.png"
+           alt="Logo"
             />
             <LoginButton onClick={handleLoginClick}>Log in</LoginButton>
   
@@ -527,7 +528,7 @@ export default function Home() {
     >
       <span style={{ display: 'block', textAlign: 'left' }}>Centralize your</span> {/* Aligne à droite */}
       <span style={{ display: 'block', textAlign: 'left',marginTop:'-38px' }}>
-      Family{' '}
+      Family{' '} 
         <span
           style={{
             color: '#F8394D',
@@ -575,16 +576,17 @@ export default function Home() {
               Learn more
              
             </ActionButton>
+           
             <ActionButton2
-              href=""
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
-              whileHover={{ scale: 1.05 }}
-            >
-              
-              Log in
-            </ActionButton2>
+        href="#"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.8 }}
+        whileHover={{ scale: 1.05 }}
+        onClick={handleLoginClick} // Ajoutez cette ligne pour déclencher handleLoginClick lors du clic
+      >
+        Log in
+      </ActionButton2>
           </HeroContent>
         </HeroSection>
         {/* Ajoutez votre contenu de bas de page ici */}
@@ -599,6 +601,8 @@ export default function Home() {
         <Features />
         <HowItWorks />
         < WhyChooseUs />
+        
+        < Contact />
    
       </Container>
     </>

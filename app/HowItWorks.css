@@ -102,8 +102,8 @@
 .ant-steps-item-icon {
     width: 50px;
     height: 50px;
-    background-color: gray !important;
-    border-color: gray !important;
+    background-color: rgb(121, 24, 24) !important;
+    border-color: rgb(121, 24, 24) !important;
     
 }
 
@@ -114,7 +114,7 @@
 }
 
 .ant-steps-item-process .ant-steps-item-icon {
-    background-color: gray !important;
+    background-color: rgb(121, 24, 24) !important;
     cursor: pointer;
 }
 
@@ -150,8 +150,8 @@
 
 .ant-steps-item-finish .ant-steps-item-icon,
 .ant-steps-item-wait .ant-steps-item-icon {
-    background-color: gray !important;
-    border-color: gray !important;
+    background-color:rgb(121, 24, 24) !important;
+    border-color: rgb(121, 24, 24)!important;
 }
 
 .ant-steps-item-finish .ant-steps-icon,

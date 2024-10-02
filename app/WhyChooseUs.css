@@ -1,26 +1,46 @@
-.WHAT{
-  text-align: center;
-  font-size:110px;
-  font-family: 'Poppins', sans-serif; /* Correction de la police */
-  font-weight: 660;
-  color:  #f8394c15;
-
+/* Limitation de la taille du carousel */
+.carousel {
+  position: relative;
+  max-width: 100%; /* Assure que le carousel ne dépasse pas la largeur de l'écran */
+  max-height: 500px; /* Limite la hauteur pour éviter qu'il devienne trop grand */
+  overflow: hidden;
 }
 
+.carousel-item img {
+  object-fit: cover; /* Assure que les images ne se déforment pas */
+  width: 100%; /* Les images s'adaptent à la largeur du carousel */
+  height: 100%; /* Les images remplissent la hauteur du carousel */
+}
+
+.icon-top-left-carousel {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 10px;
+  z-index: 10;
+  color: rgb(131, 6, 6); /* Couleur de l'icône */
+}
+
+.WHAT {
+  text-align: center;
+  font-size: 110px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 660;
+  color: #f8394c15;
+}
 
 .why-choose-us-container {
   padding: 40px;
-  /* background: #f9f9f9; */
   color: #333;
   text-align: center;
   margin-top: 30px;
 }
 
 .why-choose-us-container h2 {
-  font-size: 2.1em;
+  font-size: 2.6em;
   font-weight: bold;
   margin-bottom: 20px;
-  margin-top: -110px;
+  margin-top: -100px;
 }
 
 .reasons-container {
@@ -28,28 +48,18 @@
   flex-direction: column;
   align-items: center;
 }
-S
+.carousel-caption d-none d-md-block{
+  color: aqua;
 
-/* WhyChooseUs.css */
-
-.why-choose-us-carousel-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
-  background: #f0f0f0; /* Light background for contrast */
 }
-
 .reason-item {
   padding: 20px;
-  background: #fff; /* White background for carousel items */
+  background: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  max-width: 600px; /* Limit the width of the carousel items */
-  margin: auto; /* Center items horizontally */
+  max-width: 300px;
+  margin: auto;
 }
 
 .reason-item h3 {
