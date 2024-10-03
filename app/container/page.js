@@ -37,7 +37,7 @@ const verticalMenuItems = [
   {
     key: "2",
     icon: <CalendarOutlined />,
-    label: "Biographie",
+    label: "Testament",
   },
   {
     key: "4",
@@ -382,7 +382,7 @@ const App = () => {
         src="/images/LOGO.png"
         alt="Decorative"
         className="img-logo"
-        style={{ width: "120px", height: "auto", marginBottom: "82px", display: "block", margin: "10px auto" }}
+        style={{ width: "120px", height: "auto", marginBottom: "8px", display: "block", margin: "1px auto" }}
       />
       <hr style={{ color: "red" }} />
       <br /><br />
