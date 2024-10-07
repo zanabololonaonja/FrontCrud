@@ -1,5 +1,9 @@
 
 body {
+  background-color: white;
+}
+menu
+body {
   background-color: white; /* Fond de page blanc */
   margin: 0; /* Supprimer les marges par défaut */
   font-family: Arial, sans-serif; /* Police de la page */
@@ -118,6 +122,12 @@ body {
 .btn:hover {
   background-color: #004494;
 }
+
+
+
+
+
+/* album */
 
 .album-container {
   margin-top: 20px;

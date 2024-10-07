@@ -18,6 +18,8 @@ import { Menu, Dropdown, Switch, Avatar, Button, Modal } from "antd";
 import { UserContext } from '../crud/UserContext';
 import AlbumFamille from './AlbumFamille';
 import ArrangementsF from './ArrangementsF';
+
+import Testament from './Testament';
 import { color } from "framer-motion";
 
 
@@ -330,13 +332,13 @@ const App = () => {
          );
         
       case "1": return <h1>Informations Familiales</h1>;
-      case "2": return <h1>Biographie</h1>;
+      case "2":  return <Testament userData={userData} />; 
     
  case "4":
   return <AlbumFamille userData={userData} />; 
 
   case "5":
-    return <ArrangementsF userData={userData} />;
+    return <ArrangementsF userData={userData} />; 
   
 
     }
