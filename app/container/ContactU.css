@@ -1,0 +1,171 @@
+.cards-container {
+    display: flex;
+    justify-content: space-between; /* Aligne les cartes horizontalement */
+    gap: 20px; /* Espace entre les cartes */
+    padding: 20px;
+  }
+  
+  .card {
+    background-size: cover; /* L'image couvre toute la carte */
+    background-position: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 360px;
+    height: 530px;
+    text-align: center;
+    padding: 40px; 
+    transition: transform 0.2s;
+    position: relative;
+    backdrop-filter: blur(22px); /* Applique un effet de flou */
+  }
+  
+  .card:hover {
+    transform: scale(1.05); /* Effet de hover */
+  }
+  
+  .card-image {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 15px;
+    backdrop-filter: blur(22px); /* Applique un effet de flou */
+  }
+  
+  .card-info {
+    padding-top: 10px;
+  }
+  
+  .card-info h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .card-info p {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+  
+  .card-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .card-form .MuiTextField-root {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .card-start h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .phrase{
+    font-family: fantasy;
+    font-weight: 700;
+    text-align: left;
+
+  }
+ 
+  .phraseInfo{
+font-family: fantasy;
+ font-weight: 700;
+
+ text-align: left;
+  }
+
+  .title {     
+    color: black;         /* Texte en blanc */
+    font-size: 2.9rem;    /* Taille du texte grande */
+    font-weight: bold;    /* Texte en gras */
+    text-align: center;   /* Centrer le titre */
+    margin-bottom: 20px;  /* Espacement en bas */
+  }
+  
+ 
+  .btn-returna {
+    background-color: #F8394D;   /* Couleur du bouton */
+    color: white;                /* Couleur du texte du bouton */
+
+    cursor: pointer;             /* Changer le curseur en pointeur */
+    transition: background-color 0.3s ease; /* Animation de transition */
+    font-weight: bold;
+  }
+     
+  .btn-returna:hover {
+  border-color:#F8394D  ;
+    background-color: #464545;
+    color:#F8394D  ;
+        
+   
+  }
+  
+  .rocket-icon {
+    margin-right: 10px;          /* Espace entre l'icône et le texte */
+  }
+  
+  .animated-button {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .animated-button:hover {
+    /* background-color: #0056b3;  */
+    transform: scale(1.05); /* Légère augmentation de la taille au survol */
+  }
+  
+  .add-icon {
+    margin-right: 8px; /* Espace entre l'icône et le texte */
+    transition: transform 0.3s; /* Animation pour l'icône */
+  }
+  
+  .animated-button:hover .add-icon {
+    transform: rotate(45deg); /* Rotation de l'icône au survol */
+  }
+  
+  .card-start p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .card-start button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    /* background-color: #28a745; */
+    color: white;
+    cursor: pointer;
+  }
+  
+  .card.slide-in {
+    animation: slideIn 0.5s forwards;
+  }
+  
+  .card.slide-out {
+    animation: slideOut 0.5s forwards;
+  }
+  
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideOut {
+    0% {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  

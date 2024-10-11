@@ -218,8 +218,7 @@ const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } 
               </p>
               <p className="ant-upload-text">Click or drag file to this area to upload</p>
               <p className="ant-upload-hint">
-                Support for a single or bulk upload. Strictly prohibited from uploading company data or other banned files.
-              </p>
+              Faites glisser une image ici ou importez un fichier   </p>
             </Dragger>
           </div>
     <div className="form-actions">
@@ -248,14 +247,14 @@ const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } 
                   width: '200px',
                   height: '150px',
                   overflow: 'hidden',
-                  borderRadius: '8px',
+                  borderRadius: '8px',   
                   border: '1px solid #ccc',
                   cursor: 'pointer',
                 }}
                 onMouseEnter={() => setHoveredPhotoId(photo.idphoto)}
                 onMouseLeave={() => setHoveredPhotoId(null)}
                 onClick={() => handlePhotoClick(photo)} // Cette action ne sera pas appelée si l'icône est cliquée
-              >
+              >     
               
                   <img
                     src={`data:image/jpeg;base64,${photo.attachedfile}`}

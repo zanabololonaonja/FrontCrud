@@ -7,47 +7,47 @@
     border: 1px solid #ccc;
     border-radius: 10px;
   }
+
+  .monT{
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+  }
+  .testament-declaration{
+    font-size: 20px;
+
+  }
+
+  .testament-intro {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
   
-  h2, h3 {
+  .testament-acceptance {
+    font-style: italic;
+    color: #555;
+    margin-top: 10px;
+  }
+  
+  .testament-revocation {
+    color: #d9534f;
+    margin-top: 10px;
+  }
+  
+  .testament-signature {
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: right;
+  }
+  
+  .heritage {
     text-align: center;
     font-weight: bold;
     text-transform: uppercase;
     margin-bottom: 10px;
   }
   
-  p {
-    text-align: justify;
-    line-height: 1.6;
-    font-size: 19px;   
-    margin: 10px 0;
-  }
-   
-  strong {
-    font-weight: bold;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding-left: 0;
-  }
-  
-  ul li {
-    margin-bottom: 10px;
-  }
-  
-  button {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
+
+
   

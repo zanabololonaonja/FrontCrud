@@ -18,7 +18,7 @@ import { Menu, Dropdown, Switch, Avatar, Button, Modal } from "antd";
 import { UserContext } from '../crud/UserContext';
 import AlbumFamille from './AlbumFamille';
 import ArrangementsF from './ArrangementsF';
-
+import ContactU from './ContactU';
 import Testament from './Testament';
 import { color } from "framer-motion";
 
@@ -217,13 +217,14 @@ const App = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("userName");
-    window.location.reload();
+    // window.location.reload();
+    window.location.href = "/crud";
   };
 
   const showModal = () => {
     setIsModalVisible(true);
   };
-
+      
   const handleOk = () => {
     handleSave();
   };
@@ -331,7 +332,7 @@ const App = () => {
 
          );
         
-      case "1": return <h1>Informations Familiales</h1>;
+      case "1": return <ContactU userData={userData}  />;
       case "2":  return <Testament userData={userData} />; 
     
  case "4":

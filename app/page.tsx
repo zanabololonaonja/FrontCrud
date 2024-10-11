@@ -526,9 +526,9 @@ export default function Home() {
       transition={{ duration: 0.5 }}
       style={{ textShadow: '2px 2px 5px rgba(0, 0, 0, 0.7)' }}
     >
-      <span style={{ display: 'block', textAlign: 'left' }}>Centralize your</span> {/* Aligne à droite */}
-      <span style={{ display: 'block', textAlign: 'left',marginTop:'-38px' }}>
-      Family{' '} 
+      <span style={{ display: 'block', textAlign: 'left' }}>Centralize your</span>
+      <span style={{ display: 'block', textAlign: 'left',marginTop:'-2px' }}>
+      Family{' '}    
         <span
           style={{
             color: '#F8394D',
