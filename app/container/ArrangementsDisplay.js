@@ -84,7 +84,8 @@ const styles = {
 
 
 
-const ArrangementsDisplay = ({ arrangements, onClose }) => {
+const ArrangementsDisplay = ({ arrangements, onClose, isOwner, isEmergencyContact }) => {
+  
     // State pour la gestion de la modale de modification
     const [openModal, setOpenModal] = useState(false);
     const [formValues, setFormValues] = useState(arrangements);
@@ -194,8 +195,7 @@ const ArrangementsDisplay = ({ arrangements, onClose }) => {
         );
     }
     console.log(arrangements);  // Assurez-vous que les données sont complètes
-
-    return (
+ return (
         <Box style={styles.container}>
             <Typography variant="h4" style={styles.title}>Estimation obsèques</Typography>
             <Box style={styles.content}>
@@ -208,6 +208,7 @@ const ArrangementsDisplay = ({ arrangements, onClose }) => {
                     </Typography>
                     <img src="/images/OIP.jpg" alt="Image" style={styles.image1} />
                 </Box>
+
                 <Box style={styles.textWithImages}>
                     <Typography style={styles.text}>
                         La veillée funèbre se tiendra à <strong>{arrangements.lieudeces || 'Non spécifié'}</strong> pour une durée de <strong>{arrangements.transportdistance || 'Non spécifiée'} heures</strong>.
@@ -217,6 +218,7 @@ const ArrangementsDisplay = ({ arrangements, onClose }) => {
                         </span>
                     </Typography>
                 </Box>
+
                 <Box style={styles.textWithImages}>
                     <Typography style={styles.text}>
                         J'ai {arrangements.organisation_ceremonie ? "confirmé" : "refusé"} l'organisation de la cérémonie.
@@ -231,8 +233,6 @@ const ArrangementsDisplay = ({ arrangements, onClose }) => {
                     </Typography>
                 </Box>
 
-
-
                 <Box style={styles.textWithImages}>
                     <Typography style={styles.text}>
                         Concernant le type de cercueil, j'ai opté pour un <strong>{arrangements.typecercueil || 'Non spécifié'}</strong>.
@@ -241,199 +241,190 @@ const ArrangementsDisplay = ({ arrangements, onClose }) => {
                         </span>
                     </Typography>
                 </Box>
-                <Box style={styles.textWithI}>
-                    {/* <img src="/images/ENTR.png" alt="Image" style={styles.image} /> */}
+
+                <Box style={styles.textWithImages}>
                     <Typography style={styles.textbg}>
                         Le lieu de repos sera au <strong>{arrangements.lieu_repos || 'Non spécifié'}</strong> avec une concession prévue pour une durée de <strong>{arrangements.concession_duree || 'Non spécifiée'} ans</strong>.
                         <br />
-                        {arrangements.message_personnel ? ` Le message personnalisé pour la cérémonie est : "${arrangements.message_personnel}".` : " Aucun message personnalisé n'a été ajouté."}
+                        {arrangements.message_personnel ? `Le message personnalisé pour la cérémonie est : "${arrangements.message_personnel}".` : "Aucun message personnalisé n'a été ajouté."}
                     </Typography>
                 </Box>
             </Box>
-            <Box style={{ display: 'flex', justifyContent: 'center' }}>
+
+            <Box style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
                 <Button variant="contained" color="default" onClick={onClose} style={styles.button}>
                     Fermer
                 </Button>
-                <Button
-                    variant="contained"
-                    sx={{
-                        backgroundColor: '#f0f0f0',
-                        
-                    // Fond noir
-                        color: 'black',
-                        marginTop:'9px',
-                       height:'38px',
-                        width: '120px', // Ajustez cette valeur pour modifier la largeur
-                        '&:hover': {
-                            backgroundColor: '#333',
-                            color: 'white', 
-                             // Couleur du bouton en hover (gris foncé)
-                        },
-                    }}
-                    onClick={handleOpenModal}
-                >
-                    Modifier
-                </Button>
-                <Button variant="contained" sx={{
-                    backgroundColor: 'black',  // Fond noir
-                    color: 'white',            // Texte blanc
-                    '&:hover': {
-                        backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
-                    },
-                }}
-                    onClick={generatePDF} style={styles.button}>
-                    Télécharger PDF
-                </Button>
+                {isOwner && (
+                    <Button
+                        variant="contained"
+                        sx={{
+                            backgroundColor: '#f0f0f0',
+                            color: 'black',
+                            marginTop: '9px',
+                            height: '38px',
+                            width: '120px',
+                            '&:hover': {
+                                backgroundColor: '#333',
+                                color: 'white',
+                            },
+                        }}
+                        onClick={handleOpenModal}
+                    >
+                        Modifier
+                    </Button>
+                )}
             </Box>
-            {/* Modale de modification */}
-            <Modal open={openModal} onClose={handleCloseModal}>
-                <Box style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 600,
-                    backgroundColor: 'white',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                }}>
-                    <Typography variant="h6">Modifier les arrangements</Typography>
 
-                    {/* Disposition en deux colonnes */}
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Type de funérailles"
-                                name="typefunerailles"
-                                value={formValues.typefunerailles}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Lieu de décès"
-                                name="lieudeces"
-                                value={formValues.lieudeces}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Distance de transport (km)"
-                                name="transportdistance"
-                                value={formValues.transportdistance}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Type de véhicule"
-                                name="typevehicule"
-                                value={formValues.typevehicule}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Type de cercueil"
-                                name="typecercueil"
-                                value={formValues.typecercueil}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Type d'urne"
-                                name="typeurne"
-                                value={formValues.typeurne}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Fleurs"
-                                name="fleurs"
-                                value={formValues.fleurs}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Lieu de la cérémonie"
-                                name="lieuceremonie"
-                                value={formValues.lieuceremonie}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Type de cérémonie"
-                                name="typeceremonie"
-                                value={formValues.typeceremonie}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Lieu de repos"
-                                name="lieu_repos"
-                                value={formValues.lieu_repos}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
-                                label="Durée de la concession (ans)"
-                                name="concession_duree"
-                                value={formValues.concession_duree}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Message personnalisé"
-                                name="message_personnel"
-                                value={formValues.message_personnel}
-                                onChange={handleChange}
-                                margin="normal"
-                            />
-                        </Grid>
-                    </Grid>
+            {isOwner && (
+                <Modal open={openModal} onClose={handleCloseModal}>
+                    <Box style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 600,
+                        backgroundColor: 'white',
+                        padding: '20px',
+                        borderRadius: '8px',
+                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}>
+                        <Typography variant="h6">Modifier les arrangements</Typography>
 
-                    <Box style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20 }}>
-                        <Button variant="contained" color="secondary" onClick={handleCloseModal}>
-                            Annuler
-                        </Button>
-                        <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Enregistrer
-                        </Button>
+                        <Grid container spacing={2} style={{ marginTop: '16px' }}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Type de funérailles"
+                                    name="typefunerailles"
+                                    value={formValues.typefunerailles}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Lieu de décès"
+                                    name="lieudeces"
+                                    value={formValues.lieudeces}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Distance de transport (km)"
+                                    name="transportdistance"
+                                    value={formValues.transportdistance}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Type de véhicule"
+                                    name="typevehicule"
+                                    value={formValues.typevehicule}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Type de cercueil"
+                                    name="typecercueil"
+                                    value={formValues.typecercueil}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Type d'urne"
+                                    name="typeurne"
+                                    value={formValues.typeurne}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Fleurs"
+                                    name="fleurs"
+                                    value={formValues.fleurs}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Lieu de la cérémonie"
+                                    name="lieuceremonie"
+                                    value={formValues.lieuceremonie}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Type de cérémonie"
+                                    name="typeceremonie"
+                                    value={formValues.typeceremonie}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Lieu de repos"
+                                    name="lieu_repos"
+                                    value={formValues.lieu_repos}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Durée de la concession (ans)"
+                                    name="concession_duree"
+                                    value={formValues.concession_duree}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    label="Message personnalisé"
+                                    name="message_personnel"
+                                    value={formValues.message_personnel}
+                                    onChange={handleChange}
+                                    margin="normal"
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <Box style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+                            <Button variant="contained" color="secondary" onClick={handleCloseModal}>
+                                Annuler
+                            </Button>
+                            <Button variant="contained" color="primary" onClick={handleSubmit}>
+                                Enregistrer
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
-            </Modal>
+                </Modal>
+            )}
         </Box>
     );
 };

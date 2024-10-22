@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Modal, Upload, message } from "antd";
 import { PlusOutlined, EyeOutlined, UploadOutlined } from "@ant-design/icons";
 import AddPhoto from '../photo/page'; 
-const AlbumFamille = ({ userData }) => {
+const AlbumFamille = ({ userData,isOwner }) => { 
     const [albums, setAlbums] = useState([]); // State for albums
     const [currentAlbum, setCurrentAlbum] = useState(null); // State for the current album
     const [albumPhotos, setAlbumPhotos] = useState([]); // State for photos of the current album
@@ -179,6 +179,7 @@ const AlbumFamille = ({ userData }) => {
         Albums
       </h1>
       <div>
+      {isOwner && (
         <Button
           onClick={() => setIsAddingAlbum(true)}
           style={{
@@ -191,6 +192,7 @@ const AlbumFamille = ({ userData }) => {
         >
           <PlusOutlined /> Créer un album
         </Button>
+      )}    
         <Button
           onClick={() => setShowAlbums((prev) => !prev)}
           style={{ fontSize: '18px', border: 'none', color: 'rgb(39, 39, 39)', fontWeight: 'bold' }}
@@ -227,6 +229,7 @@ const AlbumFamille = ({ userData }) => {
         }}
       >
         <img src="/images/album.jpg" width="30%" height="auto" alt="Album" />
+        {isOwner && (
         <Button
           onClick={() => setIsAddingAlbum(true)}
           style={{
@@ -241,10 +244,13 @@ const AlbumFamille = ({ userData }) => {
         >
           Créer un album
         </Button>
+          )}
         <h2 style={{ marginTop: '20px', color: 'rgb(39, 39, 39)', fontWeight: 'bold' }}>
           Les albums que vous créez s'affichent ici
         </h2>
+        
       </div>
+      
     )}
 
     {/* Afficher le contenu de l'album sélectionné */}
@@ -257,10 +263,10 @@ const AlbumFamille = ({ userData }) => {
   style={{ marginTop: '10px' }}
   className="btn-return" // Ajoute une classe pour le style
   onClick={() => setCurrentAlbum(null)} // Retourner à la liste des albums
->
+>    
   <span className="rocket-icon">🚀</span> {/* Icône fusée */}
 Voir albums
-</Button>
+</Button>           
 
       </div>
     ) : (

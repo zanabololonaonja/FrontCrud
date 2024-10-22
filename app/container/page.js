@@ -1,12 +1,12 @@
 
-
-
-
 "use client";
 import React, { useState, useEffect, useContext } from "react";
+import Swal from 'sweetalert2';
 import './container.css';
+import { FiLogOut } from 'react-icons/fi';      
+
 import {
-  AppstoreOutlined,
+  AppstoreOutlined,    
   CalendarOutlined,
   UserOutlined,
   BankOutlined,
@@ -21,21 +21,33 @@ import ArrangementsF from './ArrangementsF';
 import ContactU from './ContactU';
 import Testament from './Testament';
 import { color } from "framer-motion";
+// import Swal from 'sweetalert2';
 
+
+const App = () => {
+ // Récupérez `userData` depuis le contexte
+ const { userData, setUserData } = useContext(UserContext);
+ const [selectedMenu, setSelectedMenu] = useState("0");
 
 const verticalMenuItems = [
   {
-    key: "0",
-    
-    icon: <UserOutlined />,
+    key: "0",    
+    icon: <UserOutlined />,   
     label: "User Profil",
-   
-  },
-  {
+  },  
+  
+ 
+ 
+   // Assurez-vous que `userData` est défini avant d'essayer de vérifier `userData?.typeofuser`
+   ...(userData && userData.typeofuser === 'owner' ? [{
     key: "1",
     icon: <IdcardOutlined />,
     label: "Emergency contact",
-  },
+  }] : []),
+  
+  
+  
+  // Si l'utilisateur n'est pas propriétaire, on ne montre pas ce menu
   {
     key: "2",
     icon: <CalendarOutlined />,
@@ -45,10 +57,6 @@ const verticalMenuItems = [
     key: "4",
     label: "Album",
     icon: <AppstoreOutlined />,
-    // children: [
-    //   { key: "3", label: "Famille" },
-    //   { key: "4", label: "Amis" },
-    // ],
   },
   {
     key: "5",
@@ -57,8 +65,6 @@ const verticalMenuItems = [
   },
 ];
 
-const App = () => {
-  const { userData, setUserData } = useContext(UserContext);
   const [userName, setUserName] = useState("");
   const [userProfile, setUserProfile] = useState({
     firstName: "",
@@ -72,7 +78,6 @@ const App = () => {
     userphoto: "",
   });
    const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState("0");
   const [formData, setFormData] = useState({
     iduser: '',
     userphoto: '',
@@ -88,6 +93,7 @@ const App = () => {
   const [theme, setTheme] = useState("light");
   const [mode, setMode] = useState("vertical");
   const [isCollapsed, setIsCollapsed] = useState(false);
+  
 
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
@@ -216,9 +222,23 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("userName");
-    // window.location.reload();
-    window.location.href = "/crud";
+    Swal.fire({
+      title: ' déconnexion ?',
+      text: "Souhaitez-vous vraiment vous deconnecter?",
+      // icon: 'warning',
+      showCancelButton: true,  
+      confirmButtonColor: '#F8394DE5',
+      cancelButtonColor: '#3D3D3D',
+      confirmButtonText: 'Oui !',
+      cancelButtonText: 'Non'
+    }).then((result) => { 
+      if (result.isConfirmed) {
+        localStorage.removeItem("userName");
+        window.location.href = "/crud"; // Redirige vers la page de CRUD
+      } else {
+        console.log("Déconnexion annulée.");
+      }
+    });
   };
 
   const showModal = () => {
@@ -232,6 +252,11 @@ const App = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+
+
+
+  
   const renderContent = () => {
     switch (selectedMenu) {
       case "0":
@@ -332,8 +357,14 @@ const App = () => {
 
          );
         
-      case "1": return <ContactU userData={userData}  />;
-      case "2":  return <Testament userData={userData} />; 
+         case "1":
+          if (userData?.typeofuser === 'owner') {
+            return <ContactU userData={userData} />;
+          } else {
+            return <div>Accès refusé. Vous n'êtes pas autorisé à voir cette section.</div>;  // Message d'erreur si non-propriétaire
+
+            
+          } case "2":  return <Testament userData={userData} />; 
     
  case "4":
   return <AlbumFamille userData={userData} />; 
@@ -341,11 +372,11 @@ const App = () => {
   case "5":
     return <ArrangementsF userData={userData} />; 
   
-
+  
     }
   };
 
-  
+    
   const userMenu = (
     <Menu>
       <Menu.Item key="theme">
@@ -357,12 +388,15 @@ const App = () => {
         <Switch checked={mode === "vertical"} onChange={changeMode} style={{ marginLeft: "10px" }} />
       </Menu.Item>
       <Menu.Item key="logout" onClick={handleLogout}>
-        <span>Logout</span>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <FiLogOut style={{ marginRight: '8px' }} /> {/* Ajouter l'icône avec un espace à droite */}
+          <span>Logout</span>
+        </div>
       </Menu.Item>
     </Menu>
   );
 
-  const toggleMenu = () => {
+  const toggleMenu = () => {  
     setIsCollapsed(!isCollapsed);
   };
 

@@ -151,8 +151,10 @@ function Testament({ userData }) {
 
 
   const [showTestament, setShowTestament] = useState(false); // Nouvel état pour afficher le testament
-
-
+  const handleShowTestament = () => {
+    setShowTestament(true);
+    handleViewTestament(); // Si une action supplémentaire est nécessaire
+  };
   // Extraire l'iduser à partir de userData
   const iduser = userData?.iduser;
 
@@ -175,22 +177,22 @@ function Testament({ userData }) {
       setShowTestament(true); // Afficher les données du testament
 
       // Afficher une alerte
-      alert(`Détails du testament :
-              Nom du testateur : ${testament.nom_testateur}
-              Date de naissance : ${testament.date_naissance_testateur}
-              Lieu de naissance : ${testament.lieu_naissance_testateur}
-              Adresse : ${testament.adresse_testateur}
-              Bien légué : ${testament.bien_legue}
-              Adresse du bien : ${testament.adresse_bien_legue}
-             ${testament.temoin1_adresse}
-             ${testament.temoin1_nom}
-             ${testament.temoin2_nom}
-             ${testament.temoin2_adresse}
-             ${testament.tuteur_nom}
-             ${testament.tuteur_adresse}
+      // alert(`Détails du testament :
+      //         Nom du testateur : ${testament.nom_testateur}
+      //         Date de naissance : ${testament.date_naissance_testateur}
+      //         Lieu de naissance : ${testament.lieu_naissance_testateur}
+      //         Adresse : ${testament.adresse_testateur}
+      //         Bien légué : ${testament.bien_legue}
+      //         Adresse du bien : ${testament.adresse_bien_legue}
+      //        ${testament.temoin1_adresse}
+      //        ${testament.temoin1_nom}
+      //        ${testament.temoin2_nom}
+      //        ${testament.temoin2_adresse}
+      //        ${testament.tuteur_nom}
+      //        ${testament.tuteur_adresse}
 
-              Description du don : ${testament.gift_type}
-              Montant du don : ${testament.gift_amount}`);
+      //         Description du don : ${testament.gift_type}
+      //         Montant du don : ${testament.gift_amount}`);
     } catch (error) {
       console.error('Erreur lors de la récupération du testament :', error);
       alert("Erreur lors de la récupération des données du testament.");
@@ -1068,14 +1070,17 @@ case 'Other':
 
       {/* Afficher le Stepper ou le contenu du testament en fonction de l'état */}
       <GlobalStyles styles={styles} />
-      {!showTestament ? (
+      {/* {!showTestament ? ( */}
+      {/* Si l'utilisateur est le propriétaire, afficher le stepper */}
+      {userData?.typeofuser === 'owner' && !showTestament && (
         <>
+
           <Stepper activeStep={activeStep} orientation="horizontal">
             {steps.map((step, index) => (
               <Step key={step.label}>
                 <StepLabel
                   icon={
-                    <Box
+                    <Box 
                       sx={{
                         width: '40px',
                         height: '40px',
@@ -1089,7 +1094,7 @@ case 'Other':
                         '&::before': {
                           content: '""',
                           position: 'absolute',
-                          top: '-4px',
+                          top: '-4px',  
                           left: '-4px',
                           width: '48px',
                           height: '48px',
@@ -1126,6 +1131,7 @@ case 'Other':
           </Stepper>
 
           <Box sx={{ marginTop: '20px' }}>
+            {/* Contenu du stepper */}
             {renderStepContent(activeStep)}
           </Box>
 
@@ -1133,27 +1139,27 @@ case 'Other':
             <Button disabled={activeStep === 0} onClick={handleBack}>
               Back
             </Button>
-            <Button variant="contained" color="primary" onClick={handleNextA}>
+            <Button variant="contained" color="primary" onClick={handleNext}>
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
-
-          {/* Le bouton pour afficher le testament */}
-          <Box sx={{ marginTop: '20px', textAlign: 'right' }}> {/* Bouton positionné à droite */}
-            <Button variant="outlined" onClick={handleViewTestament}>
-              Voir mon testament
-            </Button>
-          </Box>
         </>
-      ) : (
-        // Si showTestament est vrai, afficher le contenu de finitestament.js
-        <Box sx={{ marginTop: '20px' }}>
-
-        </Box>
+        
       )}
-    </Box>
-
-  );
-};
+       <Box sx={{ marginTop: '20px', textAlign: 'right' }}>
+          <Button variant="outlined" onClick={handleShowTestament} 
+           sx={{
+            backgroundColor: 'black',  // Fond noir
+            color: 'white',            // Texte blanc
+            '&:hover': {
+              backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
+            },
+          }}>   
+            Voir mon testament  
+          </Button>         
+        </Box>          
+    </Box>    
+  );    
+};   
 
 export default Testament;

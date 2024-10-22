@@ -484,6 +484,7 @@ function ArrangementsF({ userData }) {
                 border: '1px solid #ccc',
                 borderRadius: '8px',
                 width: '22%',  // Chaque cadre prend environ 1/4 de la largeur
+                cursor:'pointer',
               }}>
                 <img src="/images/cercueil1.jpg" alt="Cercueil économique" style={{ width: '100%', height: 'auto' }} />
                 <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Gamme Tradition</p>
@@ -496,6 +497,7 @@ function ArrangementsF({ userData }) {
                 border: '1px solid #ccc',
                 borderRadius: '8px',
                 width: '22%',
+                cursor:'pointer',
               }}>
                 <img src="/images/CERCUEIL-SEATTLE.jpg" alt="Cercueil standard" style={{ width: '100%', height: 'auto' }} />
                 <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Gamme Élégance</p>
@@ -505,9 +507,10 @@ function ArrangementsF({ userData }) {
               <div style={{
                 textAlign: 'center',
                 padding: '10px',
-                border: '1px solid #ccc',
+                border: '1px solid #ccc',  
                 borderRadius: '8px',
                 width: '22%',
+                cursor:'pointer',
               }}>
                 <img src="/images/C2.jpg" alt="Cercueil de luxe" style={{ width: '100%', height: 'auto' }} />
                 <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Gamme Économique</p>
@@ -515,11 +518,12 @@ function ArrangementsF({ userData }) {
 
               {/* Quatrième cadre */}
               <div style={{
-                textAlign: 'center',
+                textAlign: 'center', 
                 padding: '10px',
-                border: '1px solid #ccc',
+                border: '1px solid #ccc', 
                 borderRadius: '8px',
                 width: '22%',
+                cursor:'pointer',
               }}>
                 <img src="/images/C4.jpg" alt="Cercueil premium" style={{ width: '100%', height: 'auto' }} />
                 <p style={{ marginTop: '10px', fontWeight: 'bold' }}>Gamme de capitons</p>
@@ -577,7 +581,7 @@ function ArrangementsF({ userData }) {
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <InfoIcon sx={{ color: 'blue', marginRight: '8px' }} />
                   <span style={{ fontSize: '14px', color: 'grey' }}>
-                    Explication sur le lieu de la veillée funèbre
+                    Explication sur le véhicule funéraire
                   </span>
                 </Box>
 
@@ -979,7 +983,7 @@ function ArrangementsF({ userData }) {
               <Box
                 sx={{
                   border: '1px solid #ccc',
-                  borderRadius: '4px',
+                  borderRadius: '4px',       
                   padding: '15px',
                   marginTop: '10px',
                   textAlign: 'left',

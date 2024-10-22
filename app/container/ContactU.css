@@ -10,6 +10,7 @@
     background-position: center;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
     width: 360px;
     height: 530px;
     text-align: center;
@@ -167,5 +168,31 @@ font-family: fantasy;
       opacity: 1;
       transform: translateX(0);
     }
+  }
+  
+
+
+
+  .pin-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Espace entre les cases */
+    margin: 20px 0; /* Espace autour du conteneur des cases */
+  }
+  
+  .pin-input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pin-input:focus {
+    outline: none;
+    border-color: #6200ea; /* Changer la couleur de bordure lors de la mise au point */
+    box-shadow: 0 0 5px rgba(98, 0, 234, 0.5); /* Effet lumineux au focus */
   }
   
