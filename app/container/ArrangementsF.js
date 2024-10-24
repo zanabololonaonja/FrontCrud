@@ -123,21 +123,21 @@ function ArrangementsF({ userData }) {
       const arrangementsData = data[0];
 
       // Affiche les détails dans une alerte
-      alert(`Détails des arrangements :
-            Type de funérailles : ${arrangementsData.typefunerailles}
-            Lieu de décès : ${arrangementsData.lieudeces}
-            Distance de transport : ${arrangementsData.transportdistance} km
-            Type de véhicule : ${arrangementsData.typevehicule}
-            Type de cercueil : ${arrangementsData.typecercueil}
-            Type d'urne : ${arrangementsData.typeurne || 'Non spécifié'}
-            Fleurs : ${arrangementsData.fleurs || 'Non spécifié'}
-            Organisation de la cérémonie : ${arrangementsData.organisation_ceremonie ? "Oui" : "Non"}
-             ceremonie : ${arrangementsData.lieuceremonie}
+      // alert(`Détails des arrangements :
+      //       Type de funérailles : ${arrangementsData.typefunerailles}
+      //       Lieu de décès : ${arrangementsData.lieudeces}
+      //       Distance de transport : ${arrangementsData.transportdistance} km
+      //       Type de véhicule : ${arrangementsData.typevehicule}
+      //       Type de cercueil : ${arrangementsData.typecercueil}
+      //       Type d'urne : ${arrangementsData.typeurne || 'Non spécifié'}
+      //       Fleurs : ${arrangementsData.fleurs || 'Non spécifié'}
+      //       Organisation de la cérémonie : ${arrangementsData.organisation_ceremonie ? "Oui" : "Non"}
+      //        ceremonie : ${arrangementsData.lieuceremonie}
          
-          typeceremonie : ${arrangementsData.typeceremonie}
-            Lieu de repos : ${arrangementsData.lieu_repos}
-            Durée de la concession : ${arrangementsData.concession_duree} ans
-            Message personnalisé : ${arrangementsData.message_personnel || 'Non spécifié'}`);
+      //     typeceremonie : ${arrangementsData.typeceremonie}
+      //       Lieu de repos : ${arrangementsData.lieu_repos}
+      //       Durée de la concession : ${arrangementsData.concession_duree} ans
+      //       Message personnalisé : ${arrangementsData.message_personnel || 'Non spécifié'}`);
 
       // Met à jour l'état avec les données récupérées
       setArrangements(arrangementsData);
@@ -869,7 +869,7 @@ function ArrangementsF({ userData }) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 border: '1px solid #ccc',
-                padding: '10px',
+                padding: '10px', 
                 borderRadius: '4px',
                 backgroundColor: '#f9f9f9',
                 width: '76%', // Ajuster la largeur pour correspondre au TextField
@@ -1080,29 +1080,21 @@ function ArrangementsF({ userData }) {
               Estimation obsèques
             </h1>
             {/* Bouton Voir Arrangements avec icône */}
-            <Button
-              variant="contained"
-              onClick={handleViewArrangements}
-              startIcon={<GiCoffin />} // Utilisation de l'icône cercueil
-              sx={{
-                backgroundColor: 'black',  // Fond noir
-                color: 'white',            // Texte blanc
-                '&:hover': {
-                  backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
-                },
-              }}
-            >
-              Voir Arrangements
-            </Button>
+            
 
           </Box>
           <Box>
+            
             {showArrangements ? (
               <ArrangementsDisplay arrangements={arrangements} onClose={handleCloseArrangements} />
             ) : null}
           </Box>
 
           <br />  <br />
+          {userData?.typeofuser === 'owner' && !showArrangements && (
+        <>
+
+          
           <Stepper activeStep={activeStep} alternativeLabel>
             {steps.map((label, index) => (
               <Step key={index}>
@@ -1136,14 +1128,37 @@ function ArrangementsF({ userData }) {
                     {activeStep === steps.length - 1 ? 'Terminer' : 'Suivant'}
                   </Button>
                 </div>
+               
 
               </>
             )}
           </Box>
+          </>
+        
+      )}
+       <Box sx={{ marginTop: '20px', textAlign: 'right' }}>
+       <Button
+              variant="contained"
+              onClick={handleViewArrangements}
+              startIcon={<GiCoffin />} // Utilisation de l'icône cercueil
+              sx={{
+                backgroundColor: 'black',  // Fond noir
+                color: 'white',            // Texte blanc
+                '&:hover': {
+                  backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
+                },
+              }}
+            >
+              Voir Arrangements
+            </Button> 
+       </Box>
+              
 
-        </>
+       </>
+        
       )}
     </Box>
+    
   );
 };
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Modal, Upload, message } from "antd";
 import { PlusOutlined, EyeOutlined, UploadOutlined } from "@ant-design/icons";
 import AddPhoto from '../photo/page'; 
-const AlbumFamille = ({ userData,isOwner }) => { 
+const AlbumFamille = ({ userData }) => { 
     const [albums, setAlbums] = useState([]); // State for albums
     const [currentAlbum, setCurrentAlbum] = useState(null); // State for the current album
     const [albumPhotos, setAlbumPhotos] = useState([]); // State for photos of the current album
@@ -178,8 +178,14 @@ const AlbumFamille = ({ userData,isOwner }) => {
       <h1 style={{ margin: 0, fontSize: '20px', color: 'rgb(39, 39, 39)', fontWeight: 'bold' }}>
         Albums
       </h1>
+
       <div>
-      {isOwner && (
+
+      {userData?.typeofuser === 'owner' && !showAlbums && (
+        <>
+
+        
+      
         <Button
           onClick={() => setIsAddingAlbum(true)}
           style={{
@@ -192,7 +198,10 @@ const AlbumFamille = ({ userData,isOwner }) => {
         >
           <PlusOutlined /> Créer un album
         </Button>
-      )}    
+   </>
+        
+  )}
+
         <Button
           onClick={() => setShowAlbums((prev) => !prev)}
           style={{ fontSize: '18px', border: 'none', color: 'rgb(39, 39, 39)', fontWeight: 'bold' }}
@@ -218,22 +227,37 @@ const AlbumFamille = ({ userData,isOwner }) => {
       </div>
     </Modal>
 
-    {/* Afficher ce message si aucun album n'est affiché */}
-    {!showAlbums && (
+ {!showAlbums && (
+    
+    <div
+      style={{
+        display: 'flex',  
+        flexDirection: 'column',
+        alignItems: 'center',    
+        marginTop: '44px',
+      }}
+    >
+       <img src="/images/album.jpg" width="30%" height="auto" alt="Album" />
+    
+        </div>  
+      )}
+    {userData?.typeofuser === 'owner' && !showAlbums && (
+        <>
+
+    {/* {!showAlbums && ( */}
       <div
-        style={{
-          display: 'flex',
+        style={{ 
+          display: 'flex',  
           flexDirection: 'column',
-          alignItems: 'center',
-          marginTop: '90px',
+          alignItems: 'center',    
+          marginTop: '30px',
         }}
       >
-        <img src="/images/album.jpg" width="30%" height="auto" alt="Album" />
-        {isOwner && (
-        <Button
+       
+        <Button 
           onClick={() => setIsAddingAlbum(true)}
-          style={{
-            marginTop: '10px',
+          style={{  
+            marginTop: '1px',
             backgroundColor: '#F8394D',
             fontFamily: "'Roboto', sans-serif",
             color: '#fff',
@@ -242,16 +266,21 @@ const AlbumFamille = ({ userData,isOwner }) => {
             borderRadius: '30px',
           }}
         >
+          
           Créer un album
         </Button>
-          )}
-        <h2 style={{ marginTop: '20px', color: 'rgb(39, 39, 39)', fontWeight: 'bold' }}>
+
+        </div>
+        </>
+        
+      )}
+      {!showAlbums && (
+       
+<h2 style={{ marginTop: '20px', color: 'rgb(39, 39, 39)', fontWeight: 'bold' }}>
           Les albums que vous créez s'affichent ici
         </h2>
-        
-      </div>
-      
-    )}
+  
+)}
 
     {/* Afficher le contenu de l'album sélectionné */}
     {currentAlbum ? (
@@ -263,10 +292,10 @@ const AlbumFamille = ({ userData,isOwner }) => {
   style={{ marginTop: '10px' }}
   className="btn-return" // Ajoute une classe pour le style
   onClick={() => setCurrentAlbum(null)} // Retourner à la liste des albums
->    
+>
   <span className="rocket-icon">🚀</span> {/* Icône fusée */}
 Voir albums
-</Button>           
+</Button>
 
       </div>
     ) : (

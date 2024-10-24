@@ -14,12 +14,8 @@ interface PhotoType {
 }
 const { Dragger } = Upload;
 
-const AddPhoto: React.FC<{ 
-  currentAlbum: { idalbum: string; namealbum: string; ownerId: string }, 
-  userType: string, 
-  currentUserId: string 
-}> = ({ currentAlbum, userType, currentUserId }) => {
-   const [idphoto, setIdphoto] = useState("");
+const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } }> = ({ currentAlbum }) => {
+  const [idphoto, setIdphoto] = useState("");
   const [idalbum, setIdalbum] = useState('');
 
   const [attachedfile, setAttachedfile] = useState<File | null>(null);
@@ -31,9 +27,6 @@ const AddPhoto: React.FC<{
   const [hoveredPhotoId, setHoveredPhotoId] = useState(null);
 
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-
-  const isOwner = currentAlbum.ownerId === currentUserId;
-
 
   // Fetch photos from the API based on the album ID
   const fetchPhotos = async (idalbum: string) => {
@@ -97,17 +90,15 @@ const AddPhoto: React.FC<{
   };
 
   
- 
+
+  // Handle opening the modal for editing a photo
   const handleEdit = (photo: PhotoType) => {
-    if (isOwner && userType !== 'ContactUrgent') {
     setEditingPhoto(photo);
     setIsModalOpen(true);
-  }
-}
+  };
 
   // Handle deleting a photo by its ID
   const handleDelete = async (idphoto: string) => {
-    if (isOwner && userType !== 'ContactUrgent') {
     try {
       await axios.delete(`http://localhost:5000/api/photos/${idphoto}`);
       alert("Photo deleted successfully!");
@@ -117,7 +108,6 @@ const AddPhoto: React.FC<{
       setError("Failed to delete photo");
     }
   };
-};
 
   // Handle the save action inside the modal
   const handleModalOk = async () => {
@@ -166,42 +156,34 @@ const AddPhoto: React.FC<{
   // Render the menu for the three-dot options (edit and delete)
   const menu = (idphoto: string) => (
     <Menu>
-      <Menu.Item 
-        key="edit" 
-        onClick={() => handleEdit(photos.find((photo) => photo.idphoto === idphoto)!)} 
-        disabled={!isOwner || userType === 'ContactUrgent'}
-      >
+      <Menu.Item key="edit" onClick={() => handleEdit(photos.find((photo) => photo.idphoto === idphoto)!)}>
         Modifier
       </Menu.Item>
-      <Menu.Item 
-        key="delete" 
-        onClick={() => handleDelete(idphoto)} 
-        disabled={!isOwner || userType === 'ContactUrgent'}
-      >
+      <Menu.Item key="delete" onClick={() => handleDelete(idphoto)}>
         Supprimer
       </Menu.Item>
     </Menu>
-  
   );
-
 
   return (
     <div style={{ marginTop: '20px' }}>
-      {isOwner && userType !== 'ContactUrgent' && (
-        <Button className="btn-wave" type="primary" onClick={() => setShowForm(true)}>
-          <span className="icon">📷</span> {/* Utilisation d'une icône photo */}
-          Ajouter Photo
-        </Button>
+      {/* Bouton pour afficher le formulaire d'ajout */}
+      {!showForm && (
+      <Button className="btn-wave" type="primary" onClick={() => setShowForm(true)}>
+      <span className="icon">📷</span> {/* Utilisation d'une icône photo */}
+      Ajouter Photo
+    </Button>
+    
+     
       )}
-   
 
       {/* Formulaire d'ajout de photo, affiché uniquement si showForm est true */}
       {showForm && (
   <form onSubmit={handleSubmit} className="photo-upload-form">
     <div className="form-group">
       <label>ID Photo:</label>
-      <input    
-        type="text"     
+      <input
+        type="text"
         value={idphoto}
         onChange={(e) => setIdphoto(e.target.value)}
         required

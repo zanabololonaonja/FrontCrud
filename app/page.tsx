@@ -67,10 +67,11 @@ margin-top:-60px;
   z-index: 10; /* Assure que le bouton est au-dessus des autres éléments */
 
   &:hover {
-    background-color: #363636;
-    color: #F8394D;
+    background-color:F8394D;
+    //  border: #F8394D 3px solid;
+    // color: white;
   }
-`;
+`;     
 const HeroSection = styled(motion.section)`
   width: 100%;
   min-height: 80vh;
@@ -567,7 +568,7 @@ export default function Home() {
               
             </HeroSubheading>
             <ActionButton
-              href="#features"
+             onClick={handleLoginClick}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.8 }}
@@ -578,7 +579,7 @@ export default function Home() {
             </ActionButton>
            
             <ActionButton2
-        href="#"
+    
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.8 }}

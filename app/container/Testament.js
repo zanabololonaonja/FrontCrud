@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './Testament.css';
 import {
   Stepper,
@@ -9,8 +9,8 @@ import {
   TextField, Typography,
   FormControlLabel,
   Checkbox,
-  RadioGroup,
-  Grid, 
+  RadioGroup,  
+  Grid,       
   Radio,
 } from '@mui/material';
 import jsPDF from 'jspdf';
@@ -22,9 +22,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import GavelIcon from '@mui/icons-material/Gavel';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import { GlobalStyles } from '@mui/material';
-
-import FiniTestament from './FiniTestament';
+import { GlobalStyles } from '@mui/material'; 
+import SignatureCanvas from 'react-signature-canvas';
 
 
 const steps = [
@@ -36,7 +35,6 @@ const steps = [
   { label: 'Type de Cadeau', icon: <MonetizationOnIcon /> },
   { label: 'Recapitulatif', icon: <AssignmentIcon /> },
 ];
-
 
 const styles = {
   '@global': {
@@ -83,7 +81,7 @@ function Testament({ userData }) {
         ]
       }
     ]
-  });
+  });         
 
 
   const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
@@ -110,7 +108,7 @@ function Testament({ userData }) {
       } else {
         updatedData[name] = type === 'checkbox' ? checked : value;
       }
-
+   
       return updatedData;
     });
   };
@@ -149,7 +147,7 @@ function Testament({ userData }) {
     });
   };
 
-
+    
   const [showTestament, setShowTestament] = useState(false); // Nouvel état pour afficher le testament
   const handleShowTestament = () => {
     setShowTestament(true);
@@ -177,7 +175,7 @@ function Testament({ userData }) {
       setShowTestament(true); // Afficher les données du testament
 
       // Afficher une alerte
-      // alert(`Détails du testament :
+      // alert(`Détails du testament :  
       //         Nom du testateur : ${testament.nom_testateur}
       //         Date de naissance : ${testament.date_naissance_testateur}
       //         Lieu de naissance : ${testament.lieu_naissance_testateur}
@@ -293,18 +291,33 @@ function Testament({ userData }) {
     }
   };
 
+
+
+  const [signatureData, setSignatureData] = useState(null);
+  const sigCanvas = useRef(null);
+
+  const handleClearSignature = () => {
+    sigCanvas.current.clear();
+  };
+
+  const handleSaveSignature = () => {
+    const signature = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+    setSignatureData(signature);
+  };
+
+  
+
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
-  
-    // Ajuster la taille de la police
     
+    // Ajuster la taille de la police
     doc.setFontSize(14);
     doc.text("Ceci est mon testament", 10, 10);
   
     // Ajouter les informations du testateur avec des phrases
     doc.setFontSize(12);
     doc.text(`Je, soussigné(e) ${testamentData.nom_testateur || "Non spécifié"},  Né(e) le ${testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : "Non spécifiée"} à ${testamentData.lieu_naissance_testateur || "Non spécifié"}`, 10, 30);
-     doc.text(`Domicilié(e) à ${testamentData.adresse_testateur || "Non spécifiée"}, déclare être sain(e) d’esprit,`, 10, 40);
+    doc.text(`Domicilié(e) à ${testamentData.adresse_testateur || "Non spécifiée"}, déclare être sain(e) d’esprit,`, 10, 40);
     doc.text("avoir la capacité juridique à gérer mes biens, et être majeur(e) ou mineur(e) de plus de 16 ans.", 10, 50);
     doc.text("Un mineur entre 16 et 18 ans pourra léguer la moitié de ses biens, sauf s'il est mineur émancipé.", 10, 60);
   
@@ -323,8 +336,6 @@ function Testament({ userData }) {
           beneficiaries.forEach((beneficiaire, benefIndex) => {
             doc.text(`  - ${beneficiaire.nom || "Non spécifié"}, né(e) le ${beneficiaire.date_naissance ? new Date(beneficiaire.date_naissance).toLocaleDateString() : "Non spécifiée"}, qui est mon/ma ${beneficiaire.relation || "Non spécifiée"}.`, 10, currentY);
             currentY += 10;
-            // doc.text(`    qui est mon/ma ${beneficiaire.relation || "Non spécifiée"}.`, 10, currentY);
-            // currentY += 10;
           });
         } else {
           doc.text('  Aucun bénéficiaire spécifié pour cet héritage.', 10, currentY);
@@ -369,24 +380,35 @@ function Testament({ userData }) {
     currentY += 10;
     doc.text("Je révoque par la présente tous les testaments et codicilles antérieurs.", 10, currentY);
   
-
-    const pageWidth = doc.internal.pageSize.getWidth(); // Obtenir la largeur de la page
-  const rightMargin = pageWidth - 10; // Limite à droite pour les marges
- 
-
+    // Ajouter la date à droite
     currentY += 20;
-  const dateText = `Fait le ${new Date().toLocaleDateString()}, en présence des témoins mentionnés.`;
-  const dateTextWidth = doc.getTextWidth(dateText);
-  doc.text(dateText, pageWidth - dateTextWidth - 10, currentY); // Aligner la date à droite
-
-  currentY += 10;
-  const signatureText = "Signature";
-  const signatureTextWidth = doc.getTextWidth(signatureText);
-  doc.text(signatureText, pageWidth - signatureTextWidth - 10, currentY); // Aligner la signature à droite
-
-  // Télécharger le PDF
-  doc.save('testament.pdf');
-};
+    const dateText = `Fait le ${new Date().toLocaleDateString()}, en présence des témoins mentionnés.`;
+    const dateTextWidth = doc.getTextWidth(dateText);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.text(dateText, pageWidth - dateTextWidth - 10, currentY);
+  
+    currentY += 10;
+    const signatureText = "Signature";
+    const signatureTextWidth = doc.getTextWidth(signatureText);
+    doc.text(signatureText, pageWidth - signatureTextWidth - 10, currentY); // Signature text aligned to the right
+  
+    // Vérifiez si l'espace est suffisant pour la signature
+    if (currentY + 30 > doc.internal.pageSize.getHeight()) {
+      doc.addPage(); // Ajouter une nouvelle page si l'espace est insuffisant
+      currentY = 20; // Repositionner le curseur de départ sur la nouvelle page
+    }
+  
+    // Ajouter la signature si elle existe
+    if (signatureData) {
+      doc.addImage(signatureData, 'PNG', 150, currentY + 10, 50, 20); // Position et taille de la signature
+    } else {
+      doc.text("Signature manquante.", 10, currentY + 20);
+    }
+  
+    // Télécharger le PDF
+    doc.save('testament.pdf');
+  };    
+  
      
   
 
@@ -1056,16 +1078,25 @@ case 'Other':
     <br />
     {/* Exécuteur */}
     <p className='testament-signature'>
-    Signature
+    Signature    
     </p>
-    <br />   <br />
+    
+    <div style={{ width: 660, height: 200 }}>
+        <SignatureCanvas  
+          ref={sigCanvas}  
+          canvasProps={{ width: 660, height: 200, className: 'sigCanvas' }}
+        />
+      </div>   
+      <button  style={{ marginLeft: 369}} onClick={handleClearSignature}>Effacer la signature </button>
+      <button   onClick={handleSaveSignature}> Sauvegarder la signature</button>
+  
 
-    <button onClick={handleCloseTestament}>< ArrowBackIcon  /></button>
+    <button  style={{ marginLeft: -630 }} onClick={handleCloseTestament}>< ArrowBackIcon  /></button>
     <button className='btn-return' onClick={handleGeneratePDF}>  <span className="rocket-icon">⬇️</span>Télécharger en PDF</button>
      
-  </div>   
-)}
-
+  </div>           
+)}  
+  
        
 
       {/* Afficher le Stepper ou le contenu du testament en fonction de l'état */}

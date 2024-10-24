@@ -317,13 +317,13 @@ const handleAuthSubmit = async (e) => {
                     <p className="mb-0 text-muted d-inline">Already have an account ?</p>
                     <button className="btn btn-secondary d-inline" onClick={toggleForm}>Sign in</button>
                   </div>
-  
-                  {/* Nouveau bouton pour l'authentification du contact d'urgence */}
                   <div className="mt-3">
-                    <button className="btn btn-primary" onClick={openAuthForm}>
-                      Authentification pour Contact d'urgence  
-                    </button>
+                    <button className="btn btn-secondary d-inline" onClick={openAuthForm}>
+                      Contact d'urgence  
+                    </button>   
                   </div>  
+                  {/* Nouveau bouton pour l'authentification du contact d'urgence */}
+                 
   
                   {/* Affichage conditionnel du formulaire d'authentification */}
                   {isAuthFormOpen && (  
@@ -397,9 +397,10 @@ const handleAuthSubmit = async (e) => {
                     <button className="btn btn-primary" type="submit">Sign In</button>
                   </form>
                   <div className="mt-3">
-                    <p className="mb-0 text-muted d-inline">Don't have an account ?</p>
-                    <button className="btn btn-secondary d-inline" onClick={toggleForm}>Sign up</button>
+                    <p className="mb-0 text-muted d-inline">Don't have an account ? </p>
+                    <button className="btn btn-secondary d-inline" onClick={toggleForm}> Sign up</button>
                   </div>
+                 
                 </>
               )}
             </div>
