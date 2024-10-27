@@ -1,59 +1,99 @@
-/* waves.css */
+/* Footer.css */
+.footer {
+    background-color: #f8f8f8; /* Couleur de fond */
+    padding: 20px;
+    text-align: center;
+    position: relative; /* Assurez-vous que le footer se positionne bien */
+    width: 100%; /* Couvre toute la largeur de la page */
+    bottom: 0; /* Coller au bas */
+  }
+  
+  .footer__logo img {
+    max-width: 170px; /* Taille maximale du logo */
+  
+  }
 
-/* Assurez-vous que le fond est bien visible */
-/* html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-} */
-/* 
-body {
-    background: radial-gradient(ellipse at center, rgba(255,254,234,1) 0%, rgba(255,254,234,1) 35%, #B7E8EB 100%);
-    overflow-x: hidden; 
+  
+.tsipika{
+    margin-left: 391px;
+    margin-top: -30px;
+    width:888px;
+}
+  
+  .footer__social-icons {
+    margin: 10px 0;
+    margin-left:1280px;
+    margin-top: -222px;
+  }
+  
+  .footer__social-icons a {
+    margin: 0 10px;
+    color: #333; /* Couleur des icônes */
+    font-size: 20px; /* Taille des icônes */
+    transition: color 0.3s ease;
+
+  }
+  
+  .footer__social-icons a:hover {
+    color:#F8394D; /* Couleur au survol */
+  }
+  
+  .footer__text {
+    font-size: 18px; /* Taille du texte */
+    color: #666; /* Couleur du texte */
+    margin: 19px 0; /* Espacement entre les phrases */
+ text-align: left;
+margin-left: 180px;
+cursor: pointer;
+
+font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+  .footer__text2 {
+    font-size: 18px; /* Taille du texte */
+    color: #666; /* Couleur du texte */
+    margin: 20px 0; /* Espacement entre les phrases */
+ text-align: left;
+margin-left:730px;
+margin-top: -152px;
+
+font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  }
+  .footer__copyright {
+    font-size: 13px; /* Taille du texte de copyright */
+    color: #999; /* Couleur du texte de copyright */
+    margin-top: 20px; /* Espacement au-dessus du copyright */
+  }
+  
+  /* Ajouter un espace en bas pour éviter que le contenu ne soit collé au footer */
+  body {
+    margin: 0; /* Éliminer les marges par défaut */
+    padding-bottom: 80px; /* Ajoutez de l'espace pour le footer */
+  }
+  
+
+
+  .footer__text3 {
+    font-size: 17px; /* Taille du texte */
+    color: #666; /* Couleur du texte */
+    margin: 18px 0; /* Espacement entre les phrases */
+ text-align: left;
+
+margin-top: -158px;
+  }
+  .gpt3__footer-links_logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.akaiky {
+    display: flex;
+    flex-direction: row;
+    margin:16px;
+    margin-left:771px;
+
 }
 
-
-.ocean {
-    height: 5%;
-    width: 100%;
-    position: fixed; 
-    bottom: 0;
-    left: 0;
-    background: #015871;
-    z-index: 1;
+.elanelana {
+ align-items: left;
+    margin-right: 10px;
 }
-
-
-.wave {
-    background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/85486/wave.svg) repeat-x;
-    position: absolute;
-    top: 0; 
-    width: 6400px;
-    height: 198px;
-    animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-    transform: translate3d(0, 0, 0);
-}
-
-.wave:nth-of-type(2) {
-    top: 23px; 
-    animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
-    opacity: 1;
-}
-
-@keyframes wave {
-    0% {
-        margin-left: 0;
-    }
-    100% {
-        margin-left: -1600px;
-    }
-}
-
-@keyframes swell {
-    0%, 100% {
-        transform: translate3d(0, -25px, 0);
-    }
-    50% {
-        transform: translate3d(0, 5px, 0);
-    }
-} */

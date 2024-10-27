@@ -1136,13 +1136,18 @@ function ArrangementsF({ userData }) {
           </>
         
       )}
-       <Box sx={{ marginTop: '20px', textAlign: 'right' }}>
+       <Box  sx={{ 
+    position: 'absolute', // Permet de positionner le Box relativement à son parent
+    top: '95px', // Ajustez cette valeur pour le placer plus haut
+    right: '20px', // Ajustez cette valeur pour le placer à droite
+    textAlign: 'right' 
+  }}>
        <Button
               variant="contained"
               onClick={handleViewArrangements}
               startIcon={<GiCoffin />} // Utilisation de l'icône cercueil
               sx={{
-                backgroundColor: 'black',  // Fond noir
+                backgroundColor: 'black',  // Fond noir  
                 color: 'white',            // Texte blanc
                 '&:hover': {
                   backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)

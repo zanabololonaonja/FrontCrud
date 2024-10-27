@@ -2,11 +2,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { IoIosUnlock, IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { ToastContainer, toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css'
 import 'react-toastify/dist/ReactToastify.css';
 import './crud.css'; 
 import ClipLoader from "react-spinners/ClipLoader"; 
 import { UserContext } from '../crud/UserContext'; // Vérifiez que ce chemin est correct
 import emailjs from 'emailjs-com';
+import EmergencyContactAuth from './EmergencyContactAuth'; // Assure-toi que le chemin est correct
+
 
 const FormPage = () => {
   const { setUserData } = useContext(UserContext);
@@ -22,6 +26,10 @@ const FormPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isAuthFormOpen, setIsAuthFormOpen] = useState(false);
+  const [contactAuthVisible, setContactAuthVisible] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+const [passwordError, setPasswordError] = useState(false);
+
 
   const [nom, setNom] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -31,11 +39,10 @@ const FormPage = () => {
     console.log('EmailJS initialized');
   }, []);
 
-  const toggleForm = () => {
-    setIsSignUp(!isSignUp);
-    setError('');
-  };
-  
+ 
+
+
+
   const handleSignUpSubmit = async (e) => {  
     e.preventDefault();  
     setError(''); 
@@ -102,10 +109,21 @@ const FormPage = () => {
 
 
 
-
 // Authentification pour le propriétaire de compte
 const handleSignInSubmit = async (e) => {
   e.preventDefault();
+ // Réinitialiser les erreurs
+ setEmailError(false);
+ setPasswordError(false);
+ setErrorMessage('');
+
+ if (email === '' || password === '') {
+   // Vérifier si les champs sont vides
+   setEmailError(email === '');
+   setPasswordError(password === '');
+   setErrorMessage('Veuillez remplir tous les champs.');
+   return;
+ }
 
   try {
     const res = await fetch('http://localhost:5000/api/login', {
@@ -132,18 +150,39 @@ const handleSignInSubmit = async (e) => {
 
       console.log('L’utilisateur connecté est le propriétaire du compte.');
 
-      setTimeout(() => {
-        window.location.href = "/container";
-      }, 1000);
+      let timerInterval; 
+      Swal.fire({
+        title: 'Ouverture de la page',
+        html: 'Apres <b></b> secondes.',
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector('b');
+          timerInterval = setInterval(() => {
+            b.textContent = Swal.getTimerLeft();
+          },119);
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+        },
+      }).then((result) => {
+        // Redirection après que l'alerte Swal a fermé
+        if (result.dismiss === Swal.DismissReason.timer) {
+          window.location.href = "/container";
+        }
+      });
     } else {
-      alert('Erreur de connexion');
+      // Marquer les champs comme invalides
+      setEmailError(true);
+      setPasswordError(true);
+      setErrorMessage('Email ou mot de passe incorrect.');
     }
   } catch (err) {
     console.error(err);
-    alert('Une erreur est survenue');
+    setErrorMessage('Une erreur est survenue lors de la connexion.');
   }
 };
-
 
 
     // Fonction pour ouvrir le formulaire d'authentification
@@ -161,90 +200,52 @@ const handleSignInSubmit = async (e) => {
   
    // Authentification pour le contact d'urgence
 // Authentification pour le contact d'urgence
-// Authentification pour le contact d'urgence
-const handleAuthSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await fetch('http://localhost:5000/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, nom }),  // Utilisation de l'email et du nom pour l'authentification
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      
-      // Vérifier ce que l'API retourne
-      console.log('Données de réponse:', data); // Affiche les données complètes de l'API
-
-      const { contact, owner } = data;
-
-      if (owner) {
-        // Stocker les données du contact d'urgence et celles du propriétaire
-        localStorage.setItem('userData', JSON.stringify({
-          ...data.contact,
-          typeofuser: 'emergency_contact',
-          ownerId: owner.iduser,  // Ajoutez l'ID du propriétaire ici
-          ownerData: owner,  // Stockez les autres données du propriétaire
-        }));
-
-        // Affichage du iduser du propriétaire dans la console
-        console.log('ID du propriétaire:', owner.iduser);
-        console.log('Informations du propriétaire:', owner);
-
-        setTimeout(() => {
-          window.location.href = "/container";  // Redirection vers la page principale
-        }, 9000);
-      } else {
-        console.error('Les informations du propriétaire ne sont pas disponibles.');
-      }
-
-      closeAuthForm();  // Ferme le formulaire d'authentification
-    } else {
-      const errorData = await response.json();
-      setErrorMessage(errorData.message);  // Affiche le message d'erreur de l'API
-    }
-  } catch (err) {
-    console.error('Erreur de connexion:', err);
-    setErrorMessage('Erreur lors de la connexion.');
-  }
+const toggleForm = () => {
+  setIsSignUp(!isSignUp);
+  setError('');
+  setContactAuthVisible(false); // Masquer le formulaire de contact d'urgence
 };
 
+const handleContactAuthClick = () => {
+  setContactAuthVisible(true); // Afficher le formulaire de contact d'urgence
+};
   
-  
+ // Fonction pour fermer le formulaire de contact d'urgence
+ const handleEmergencyContactClose = () => {
+  setContactAuthVisible(false);
+};
  
     return (
       <div className='full-screen'>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="colored"
-        />
-        <div className="body d-md-flex align-items-center justify-content-between">
-          <div className="box-1">
-            <img
-              src="https://s3-alpha-sig.figma.com/img/1a38/535c/3f9702934d3faeb1b8055c1bb981f014?Expires=1725840000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=IL1PmGHEVdtcfuJiCDsnl2t~lYv76BQKvAauoS7egs1GFxDwKantHiwuFsdI5ibLOsNe0f7wt~YeYUax5TrxGaU5aG79X-nUDcMdqr~38waNjJOymh9Np00mPF5Rf-KSCFGsxVhtnA8~IRzULGYF0hi1WCnD-gFKP6CdVKzfB-igXPoxnZ0gj7-vj6oPklwDbzf~hAj0RRECgqWD3wKJg5ONoYtDjeqTXecaXWdM0~Pcs2dy0a2gZRxYlztqYLYUWRm-S6ow4s~HbczQE0j41gbUm4Zq3xWStW1ZFi4g74gXeQuKauOqsBAEx~5SLVi64U4QTU3hc-e-TRejZL2auQ__"
-              alt="Decorative"
-              className="img-fluid"
-            />
-          </div>
-          <div className="box-2">
-            <div className="form-container">
-              {loading && (
-                <div className="spinner-overlay">
-                  <ClipLoader color="#000000" loading={loading} size={50} />
-                </div>
-              )}
-              {isSignUp ? (
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      <div className="body d-md-flex align-items-center justify-content-between">
+        <div className="box-1">
+          <img
+            src="/images/proche.jpg"
+            alt="Decorative"
+            className="img-fluid"
+          />
+        </div>
+        <div className="box-2">
+          <div className="form-container">
+            {loading && (
+              <div className="spinner-overlay">
+                <ClipLoader color="#000000" loading={loading} size={50} />
+              </div>
+            )}
+          {!contactAuthVisible ? (
+              isSignUp ? (
                 <>
                   <br />
                   <img src="/images/LOGO.png" alt="Decorative" className="img-logo" />
@@ -252,7 +253,8 @@ const handleAuthSubmit = async (e) => {
                   <p className='titre1'>Create an account</p>
                   <hr />
                   <form className="d-flex flex-column" onSubmit={handleSignUpSubmit}>
-                    <input
+                  
+                  <input
                       type="text"
                       className="form-field"
                       placeholder="Name"
@@ -314,56 +316,14 @@ const handleAuthSubmit = async (e) => {
                   </form>
                   {error && <div className="error">{error}</div>}
                   <div className="mt-3">
-                    <p className="mb-0 text-muted d-inline">Already have an account ?</p>
+                    <p className="mb-0 text-muted d-inline">Already have an account?</p>
                     <button className="btn btn-secondary d-inline" onClick={toggleForm}>Sign in</button>
                   </div>
                   <div className="mt-3">
-                    <button className="btn btn-secondary d-inline" onClick={openAuthForm}>
-                      Contact d'urgence  
-                    </button>   
-                  </div>  
-                  {/* Nouveau bouton pour l'authentification du contact d'urgence */}
                  
-  
-                  {/* Affichage conditionnel du formulaire d'authentification */}
-                  {isAuthFormOpen && (  
-                    <div style={{
-                      position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                      backgroundColor: 'white', padding: '20px', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)'
-                    }}>
-                      <h2>Authentification Contact d'urgence</h2>
-                      <form onSubmit={handleAuthSubmit}>
-                        <div>
-                          <label>Email :</label>
-                          <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)} 
-                            required 
-                            style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
-                          />
-                        </div>
-                        <div>
-                          <label>Mot de passe (PIN) :</label>
-                          <input
-                            type="text"
-                            value={nom}
-                            onChange={(e) => setNom(e.target.value)}
-                            required
-                            style={{ padding: '8px', width: '100%', marginBottom: '10px' }}
-                          />
-                        </div>
-                        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                        <button type="submit" style={{ padding: '10px 20px', background: 'green', color: 'white', border: 'none', borderRadius: '5px' }}>
-                          Se connecter
-                        </button>
-                        <button onClick={closeAuthForm} style={{ padding: '10px 20px', background: 'red', color: 'white', border: 'none', borderRadius: '5px', marginLeft: '10px' }}>
-                          Annuler
-                        </button>
-                      </form>
+                    <button className="btn btn-secondary d-inline" onClick={handleContactAuthClick}>Contact d'urgence</button> {/* Bouton pour afficher le contact d'urgence */}
                     </div>
-                  )}
-                </>
+                    </>
               ) : (
                 <>
                   <br />
@@ -372,42 +332,52 @@ const handleAuthSubmit = async (e) => {
                   <p className='titre1'>Log in to your Account</p>
                   <hr />
                   <form className="d-flex flex-column" onSubmit={handleSignInSubmit}>
-                    <input
-                      type="email"
-                      className="form-field"
-                      placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
+                  <input
+  type="email"
+  className={`form-field ${emailError ? 'input-error' : ''}`}
+  placeholder="Email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+/>
+{/* {emailError && <p className="error-message">Veuillez entrer un email valide.</p>} */}
+
                     <div className="password-container">
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        className="form-field"
-                        placeholder="Mot de passe"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                      />
-                      <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
-                      </div>
-                    </div>
+                    <input
+    type={showPassword ? "text" : "password"}
+    className={`form-field ${passwordError ? 'input-error' : ''}`}
+    placeholder="Mot de passe"
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    required
+  />
+  <div className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+    {showPassword ? <IoMdEyeOff /> : <IoMdEye />}
+  </div>
+</div>
+{/* {passwordError && <p className="error-message">Veuillez entrer un mot de passe valide.</p>} */}
+{errorMessage && <p className="error-message">{errorMessage}</p>}
                     <p className="text-danger">{error}</p>
                     <button className="btn btn-primary" type="submit">Sign In</button>
-                  </form>
+                  </form>  
                   <div className="mt-3">
-                    <p className="mb-0 text-muted d-inline">Don't have an account ? </p>
-                    <button className="btn btn-secondary d-inline" onClick={toggleForm}> Sign up</button>
+                    <p className="mb-0 text-muted d-inline">Don't have an account?</p>
+                    <button className="btn btn-secondary d-inline" onClick={toggleForm}>Sign up</button>
                   </div>
+                  <div className="mt-3">
                  
-                </>
-              )}
-            </div>
+                    <button className="btn btn-secondary d-inline" onClick={handleContactAuthClick}>Contact d'urgence</button> {/* Bouton pour afficher le contact d'urgence */}
+                    </div>
+                 </>
+              )
+            ) : (    
+              <EmergencyContactAuth onClose={handleEmergencyContactClose} />
+            )}
           </div>
         </div>
       </div>
-    );
-  };
-  
-  export default FormPage;
+    </div>
+  );
+};
+
+export default FormPage;

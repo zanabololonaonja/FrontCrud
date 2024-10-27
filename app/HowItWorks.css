@@ -157,4 +157,5 @@
 .ant-steps-item-finish .ant-steps-icon,
 .ant-steps-item-wait .ant-steps-icon {
     color: white !important;
+    color: rgb(39, 39, 39);
 }

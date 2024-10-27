@@ -1,16 +1,3 @@
-/* Limitation de la taille du carousel */
-.carousel {
-  position: relative;
-  max-width: 100%; /* Assure que le carousel ne dépasse pas la largeur de l'écran */
-  max-height: 500px; /* Limite la hauteur pour éviter qu'il devienne trop grand */
-  overflow: hidden;
-}
-
-.carousel-item img {
-  object-fit: cover; /* Assure que les images ne se déforment pas */
-  width: 100%; /* Les images s'adaptent à la largeur du carousel */
-  height: 100%; /* Les images remplissent la hauteur du carousel */
-}
 
 .icon-top-left-carousel {
   position: absolute;
@@ -48,10 +35,7 @@
   flex-direction: column;
   align-items: center;
 }
-.carousel-caption d-none d-md-block{
-  color: aqua;
 
-}
 .reason-item {
   padding: 20px;
   background: #fff;
@@ -70,4 +54,178 @@
 .reason-item p {
   margin: 0;
   color: #666;
+}
+
+
+
+
+
+
+
+/* ------------ Section Tarifs ------------ */
+
+.section-tarifs {
+  padding-bottom: 150px;
+  /* border-bottom: 1px dashed #333; */
+}
+.section-tarifs h3 {
+  text-align: center;
+margin-left: 100px;
+  font-size: 30px;
+width: 900px;
+
+
+  
+background: linear-gradient(to right, #0785da, #ec0606,#011b2c, #a54545, #074eb8);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+
+font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.section-tarifs hr {
+  width: 200px;
+  margin: 20px auto 100px;
+}
+
+.container-tarifs {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+
+}
+.cartes-tarifs {
+  width: 350px;
+  height: auto;
+  border-radius: 5px;
+  margin: 15px 15px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease-in-out;
+
+  margin-top: -70px;
+}
+.cartes-tarifs:hover {
+  transform: translateY(-5px)
+}
+
+.cartes-tarifs h4 {
+  text-align: center;
+  padding: 25px 20px;
+  font-size: 28px;
+  clip-path: polygon(0 0, 100% 0%, 100% 80%, 0 100%);
+  background: #070707;
+  color: white;
+}
+.cartes-tarifs span {
+  display: block;
+  text-align: center;
+  padding: 15px;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.cartes-tarifs:nth-child(2) h4 {
+  background: rgb(39, 39, 39);
+  color: white;
+}
+.cartes-tarifs:nth-child(3) h4 {
+  background: #b1040d;
+  color: white;
+}
+
+.cartes-tarifs p {
+  font-size: 18px;
+  padding: 20px 10px;
+  border-top: 1px solid rgb(194,197,194);
+  text-align: left;
+  
+font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.cartes-tarifs p:last-of-type{
+  border-bottom: 1px solid rgb(194,197,194);
+}
+.cartes-tarifs p:nth-child(odd) {
+  background: rgba(195,195,195,0.219);
+}
+
+.cartes-tarifs a {
+  display: block;
+  text-decoration: none;
+  border: 1px solid #333;
+  text-align: center;
+  width: 200px;
+  height: 50px;
+  border-radius: 9999px;
+  color: #333;
+  font-size: 18px;
+  line-height: 50px;
+  margin: 20px auto;
+  transition: all 0.2s ease-in-out;
+}
+.cartes-tarifs a:hover {
+  background: #333;
+  color: #f1f1f1;
+}
+
+
+
+
+
+
+
+@media screen and (max-width: 1550px) {
+
+  .section-asymetrique {
+      grid-template: 200px repeat(26, 100px) / 1fr 400px 1fr;
+  }
+
+  .bloc-1 {
+      grid-area: 3 / 2 / 9 / 3;
+  }
+  .bloc-left {
+      left: -150px;
+  }
+  .bloc-txt-left {
+      width: 70%;
+  }
+  .bloc-txt-left p {
+      line-height: 30px;
+      padding: 15px;
+  }
+  .btn-bloc-left {
+      padding: 15px 30px;
+      font-size: 18px;
+      margin: 10px;
+  }
+
+  /* Bloc-2 */
+
+  .bloc-2 {
+      grid-area: 11 / 2 / 17 / 3;
+      right: -150px;
+  }
+  .bloc-txt-2 {
+      width: 70%;
+  }
+  .bloc-2 img {
+      top: 150px;
+  }
+  .bloc-txt-2 h3 {
+      right: 80px;
+  }
+  .bloc-txt-2 p {
+      line-height: 30px;
+      padding: 15px;
+  }
+  .bloc-txt-2 button {
+      padding: 15px 30px;
+      font-size: 18px;
+      margin: 10px;
+  }
+
+  .bloc-3 {
+      grid-area: 19 / 2 / 25 / 3;
+  }
+
 }

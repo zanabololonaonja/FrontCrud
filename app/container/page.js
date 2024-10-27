@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import Swal from 'sweetalert2';
 import './container.css';
+import { FaUser, FaEnvelope } from 'react-icons/fa'; // Importer les icônes
+import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+
 import { FiLogOut } from 'react-icons/fi';      
 
 import {
@@ -19,7 +22,7 @@ import { UserContext } from '../crud/UserContext';
 import AlbumFamille from './AlbumFamille';
 import ArrangementsF from './ArrangementsF';
 import ContactU from './ContactU';
-import Testament from './Testament';
+import Testament from './Testament'; 
 import { color } from "framer-motion";
 // import Swal from 'sweetalert2';
 
@@ -264,12 +267,12 @@ const verticalMenuItems = [
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
   {/* Sidebar gauche */}
   <div style={{ flex: "1", marginRight: "20px", textAlign: "left" }}>
-    <h2 style={{ marginBottom: "20px", color: "#000000", fontWeight: "bold" }}>User Profile</h2>
+    <h2 style={{ marginBottom: "20px", color: "#000000", fontWeight: "bold",marginLeft:"20px",fontSize:"22px" }}>User Profile</h2>
     
     {/* Cadre pour l'image du profil et nom complet */}
     {imagePreview && (
-      <div style={{ 
-          padding: "15px", 
+      <div style={{   
+          padding: "15px",  
           display: "inline-block", 
           marginBottom: "20px", 
           borderRadius: "10px",
@@ -280,26 +283,39 @@ const verticalMenuItems = [
         <img
           src={imagePreview}
           alt="Aperçu"
-          style={{ width: "150px", height: "150px", borderRadius: "10px" }}
+          style={{ width: "280px", height: "280px", borderRadius: "10px" }}
         />
         
         {/* Nom complet sous l'image */}
-        <p style={{ fontSize: "17px", marginTop: "10px", fontWeight: "bold" }}>
-          {userProfile.firstName} {userProfile.middleName} {userProfile.lastName}
+        <p style={{ fontSize: "21px", marginTop: "10px", fontWeight: "bold" }}>
+          {userProfile.firstName}  <br /> {userProfile.middleName} {userProfile.lastName}
         </p>
+        <br /><br /> 
+        <div style={{ marginTop: "20px", textAlign: "left" }}>
+        <Button 
+  type="primary" 
+  onClick={showModal} 
+  className="custom-button"
+  style={{ backgroundColor: "#007bff", border: "none", padding: "10px 20px", fontSize: "16px" }}
+>
+  Ajouter autre informations
+</Button>
+   </div>
       </div>
     )}
   </div>
   
   {/* Ligne de séparation verticale */}
-  <div style={{ width: "1px", backgroundColor: "#ccc", height: "300px", margin: "0 20px" }}></div>
+  <div style={{ width: "1px", backgroundColor: "#ccc", height: "530px", margin: "0 20px" }}></div>
   
   {/* Section droite */}
   <div style={{ flex: "2", textAlign: "left" }}>
   {/* Informations personnelles */}
 <div style={{ backgroundColor: "#fff", padding: "15px", marginBottom: "20px", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
-  <h3 style={{ marginBottom: "15px", color: "#000000", fontWeight: "bold" }}>Informations Personnelles</h3>
-  
+<div className="title-container">
+        <FaUser className="animated-icon" /> {/* Icône animée */}
+        <h3>Informations Personnelles</h3>
+      </div>
   {/* Section pour le nom et le prénom */}
   <div style={{ display: "flex", justifyContent: "space-between" }}>
     <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px", flex: "1" }}>
@@ -329,7 +345,10 @@ const verticalMenuItems = [
 
     {/* Section Contact */}
     <div style={{ backgroundColor: "#fff", padding: "15px", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", marginBottom: "20px" }}>
-      <h3 style={{ marginBottom: "15px", color: "#000000", fontWeight: "bold" }}>Contact</h3>
+    <div className="title-container">
+        <FaEnvelope className="animated-icon" /> {/* Icône animée */}
+        <h3>Contact</h3>
+      </div>
       <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px" }}>
         <span style={{ fontWeight: "bold" }}>Email </span>
         <br />
@@ -346,19 +365,33 @@ const verticalMenuItems = [
         <br />
         {userProfile.besttimeforcall}
       </p>
+      <br />
+      {/* Icônes de réseaux sociaux */}
+      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{ color: "#3b5998" }}>
+          <FaFacebook size={24} />
+        </a>
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" style={{ color: "#00acee" }}>
+          <FaTwitter size={24} />
+        </a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" style={{ color: "#0e76a8" }}>
+          <FaLinkedin size={24} />
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: "#e1306c" }}>
+          <FaInstagram size={24} />
+        </a>    
+      </div>    
     </div>
     
     {/* Bouton d'action */}
-    <div style={{ marginTop: "20px", textAlign: "left" }}>
-      <Button type="primary" onClick={showModal} style={{ backgroundColor: "#007bff", border: "none", padding: "10px 20px", fontSize: "16px" }}>Ajouter autre informations</Button>
-    </div>
+  
   </div>
 </div>
 
          );
         
          case "1":
-          if (userData?.typeofuser === 'owner') {
+          if (userData?.typeofuser === 'owner') {  
             return <ContactU userData={userData} />;
           } else {
             return <div>Accès refusé. Vous n'êtes pas autorisé à voir cette section.</div>;  // Message d'erreur si non-propriétaire
@@ -409,8 +442,9 @@ const verticalMenuItems = [
           left: 0,
           bottom: 0,
           width: isCollapsed ? "80px" : "256px",
-          backgroundColor: "#f0f0f0",
-          transition: "width 0.3s",
+          backgroundColor: theme === "light" ? "#f0f0f0" : "#444", // Couleur change en fonction du thème
+          color: theme === "light" ? "black" : "white", // Texte change en fonction du thème
+          transition: "width 0.3s, background-color 0.3s", // Ajout de la transition de fond
           fontWeight: "bold",
           paddingTop: "20px",
           zIndex: 1,
@@ -423,22 +457,32 @@ const verticalMenuItems = [
       />
       <hr style={{ color: "red" }} />
       <br /><br />
-      <Menu mode={mode} items={verticalMenuItems} onClick={(e) => setSelectedMenu(e.key)} style={{ flexGrow: 1,  backgroundColor: "#f0f0f0"
-        
-       }} />
+      <Menu
+       mode={mode}
+        items={verticalMenuItems}
+         onClick={(e) => setSelectedMenu(e.key)} 
+         style={{
+          flexGrow: 1,
+          backgroundColor: theme === "light" ? "#f0f0f0" : "#444", // Couleur de fond selon le thème
+          color: theme === "light" ? "black" : "white", // Couleur de texte selon le thème
+          borderRight: "none",
+        }}
+        theme={theme === "light" ? "light" : "dark"} // Appliquer le thème clair ou sombre au menu
+      />
     </div>
 
     <div style={{ marginLeft: isCollapsed ? "80px" : "256px", flexGrow: 1 }}>
      
       <Menu
         mode="horizontal"
-        style={{
+        style={{  
           display: "flex",
           marginBottom: "18px",
           padding: "8px 20px",
           backgroundColor: theme === "light" ? "#F8394D" : "#444",
-          color: theme === "light" ? "white" : "black"
-        }}
+          color: theme === "light" ? "white" : "white" // Texte en blanc pour les deux thèmes
+ 
+        }}  
       >
         <Menu.Item
           key="hamburger"
@@ -595,9 +639,8 @@ const verticalMenuItems = [
         </div>
       </div>
     </div>
-  </div>
+  </div> 
 </Modal>
-
 
     </div>
   );

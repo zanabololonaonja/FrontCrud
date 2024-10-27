@@ -3,7 +3,7 @@ import { Avatar, TextField, Button } from '@mui/material'; // Importer Material-
 
 import './ContactU.css';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useRef} from 'react';
 import emailjs from 'emailjs-com';
 import { HiUser } from "react-icons/hi2";
 import MailIcon from '@mui/icons-material/Mail';
@@ -13,7 +13,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import AddIcon from '@mui/icons-material/Add';
 
 
-function ContactCard({ onAdd, title, bgImage, userData }) {
+function ContactCard({ onAdd, title, bgImage, userData }) {  
   const [isAdded, setIsAdded] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
@@ -32,9 +32,11 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
     digit3: '',
     digit4: '',
   });
+  // Références pour les champs
+  const digitRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
 
   // Initialize EmailJS
-  useEffect(() => {  
+  useEffect(() => {
     emailjs.init("Etba5J10R84bbHQR2");
     console.log('EmailJS initialized');
   }, []);
@@ -51,19 +53,32 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
     const { name, value } = e.target;
 
     if (name.startsWith('digit')) {
-      if (/^\d?$/.test(value)) { // Limite à 1 chiffre par case
-        setPin((prevPin) => ({
-          ...prevPin,
-          [name]: value,
-        }));
-        
-        // Combine the PIN digits after updating the state
-        const combinedPin = `${name === 'digit1' ? value : pin.digit1}${name === 'digit2' ? value : pin.digit2}${name === 'digit3' ? value : pin.digit3}${name === 'digit4' ? value : pin.digit4}`;
+      // Vérifie si la valeur est un chiffre (0-9) ou vide
+      if (/^\d?$/.test(value)) {
+        setPin((prevPin) => {
+          const newPin = {
+            ...prevPin,
+            [name]: value,
+          };
 
-        setFormData((prevData) => ({
-          ...prevData,
-          nom: combinedPin, // Met à jour formData.nom avec le PIN combiné
-        }));
+          // Combine les chiffres du PIN après la mise à jour de l'état
+          const combinedPin = `${newPin.digit1}${newPin.digit2}${newPin.digit3}${newPin.digit4}`;
+
+          // Mettez à jour formData avec le PIN combiné
+          setFormData((prevData) => ({
+            ...prevData,
+            nom: combinedPin, // Met à jour formData.nom avec le PIN combiné
+          }));
+
+          // Retourne le nouvel état
+          return newPin;
+        });
+
+        // Si un chiffre est entré, déplacer le focus vers le champ suivant
+        const currentDigitIndex = parseInt(name.charAt(name.length - 1)) - 1; // Récupère l'index actuel (0-3)
+        if (value && currentDigitIndex < digitRefs.length - 1) {
+          digitRefs[currentDigitIndex + 1].current.focus(); // Focus sur le champ suivant
+        }
       }
     } else {
       setFormData((prevData) => ({
@@ -72,6 +87,8 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
       }));
     }
   };
+
+  
 
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
@@ -85,22 +102,22 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
       console.error("L'email de l'utilisateur n'a pas été trouvé.");
       return;
     }
-  
+
     const templateParams = {
-      to_name: contact.prenom,  
+      to_name: contact.prenom,
       to_email: contact.email,
-      message:`Bonjour ${contact.prenom}, 
+      message: `Bonjour ${contact.prenom}, 
 
 Vous avez été désigné comme contact d'urgence par ${userData.useremailaddress}. Il/Elle vous a désigné comme son/sa ${contact.relation}. Voici votre mot de passe pour accéder à votre compte : ${contact.nom}. 
 
 Vous pouvez consulter toutes les informations concernant son testament et les arrangements funéraires. 
 
 Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des questions, n'hésitez pas à contacter ${userData.useremailaddress}.`
-, // Inclure l'email de l'utilisateur
+      , // Inclure l'email de l'utilisateur
       nom_user: userData.useremailaddress, // L'email de l'utilisateur connecté
       contact_name: contact.nom // Le nom du contact ajouté
-    };     
-  
+    };
+
     emailjs.send('service_k58if4k', 'template_0trv6km', templateParams)
       .then((response) => {
         console.log('Email envoyé avec succès !', response.status, response.text);
@@ -221,83 +238,86 @@ Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des que
         </div>
       ) : isAdding ? (
         <div className="card-form">
-          <TextField
-            label="Nom complet"
-            name="prenom"     
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.prenom}      
-            onChange={handleInputChange}
-          />
- <p style={{
-                   textAlign: 'left',
-                   paddingTop:'9px',
-                   marginBottom:'-18px',
-                    marginLeft:'-155px',
-                    color:'#555',
-                  }}>
-            Mot de Passe     </p>
-                  
+         <TextField
+        label="Nom complet"
+        name="prenom"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={formData.prenom}
+        onChange={handleInputChange}
+        InputProps={{
+          style: {
+            fontWeight:  'bold' ,
+          },
+        }}
+      />
+      <p style={{
+      
+        paddingTop: '9px',
+        marginBottom: '-18px',
+        marginLeft: '-211px',
+        color: '#555', 
+      }}>
+        Code
+      </p>
+
       <div className="pin-container">
-            <TextField   
-              name="digit1"
-              variant="outlined"
-              className="pin-input"
-              value={pin.digit1}
-              onChange={handleInputChange}
-              inputProps={{ maxLength: 1 }}
-            />
-            <TextField
-              name="digit2"
-              variant="outlined"
-              className="pin-input"   
-              value={pin.digit2}
-              onChange={handleInputChange}
-              inputProps={{ maxLength: 1 }}
-            />
-            <TextField
-              name="digit3"
-              variant="outlined"
-              className="pin-input"
-              value={pin.digit3}
-              onChange={handleInputChange}
-              inputProps={{ maxLength: 1 }}
-            />
-            <TextField
-              name="digit4"
-              variant="outlined"
-              className="pin-input"
-              value={pin.digit4}
-              onChange={handleInputChange}
-              inputProps={{ maxLength: 1 }}
-            />
-          </div>
+        {['digit1', 'digit2', 'digit3', 'digit4'].map((digit, index) => (
           <TextField
-            label="Email"
-            name="email"
+            key={digit}
+            name={digit}
             variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.email}
+            className="pin-input"
+            value={pin[digit]}
             onChange={handleInputChange}
+            inputProps={{ maxLength: 1 }}
+            inputRef={digitRefs[index]}
+            InputProps={{
+              style: {
+                fontWeight: 'bold' , // Met en gras si la case est remplie
+              },
+            }}
           />
-          <TextField
-            label="Relation avec l'utilisateur"
-            name="relation"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={formData.relation}
-            onChange={handleInputChange}
-          />
+        ))}
+      </div>
+
+      <TextField
+        label="Email"
+        name="email"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={formData.email}
+        onChange={handleInputChange}
+        InputProps={{
+          style: {
+            fontWeight: 'bold' , // Met en gras si le champ est rempli
+          },
+        }}
+      />
+      <TextField
+        label="Relation avec l'utilisateur"
+        name="relation"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={formData.relation}
+        onChange={handleInputChange}
+        InputProps={{
+          style: {
+            fontWeight:  'bold', // Met en gras si le champ est rempli
+          },
+        }}
+      />
           <input
-            type="file"
-            name="photo"
+            type="file"  
+            name="photo"   
             onChange={handleFileChange}
             accept="image/*"
           />
-           <br />   <br />   <br />   <br />  
+          <br /><br /><br /><br />
+
           <Button variant="contained" color="secondary" onClick={handleSubmit}>
             Ajouter
           </Button>
@@ -317,11 +337,9 @@ Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des que
               )}
               <div style={styles.contactInfo}>
                 <h3 style={styles.contactName}>
-                  {contacts[contacts.length - 1].prenom} 
+                  {contacts[contacts.length - 1].prenom}
                 </h3>
-
-
-                <br /> 
+                <br />
                 <div style={styles.contactDetail}>
                   <div>
                     <p style={styles.label}>  <MailIcon style={styles.icon} /> Email:</p>
@@ -332,7 +350,7 @@ Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des que
                 <div style={styles.contactDetail}>
                   <div>
                     <p style={styles.label}>  <LockIcon style={styles.icon} />
-                    Mot de passe:</p>
+                      Code:</p>
                     <p>{contacts[contacts.length - 1].nom || 'Non spécifié'}</p>
                   </div>
                 </div>
@@ -340,7 +358,7 @@ Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des que
                 <div style={styles.contactDetail}>
                   <div>
                     <p style={styles.label}> <PeopleIcon style={styles.icon} />
-                    Relation:</p>
+                      Relation:</p>
                     <p>{contacts[contacts.length - 1].relation || 'Non spécifié'}</p>
                   </div>
                 </div>
@@ -399,13 +417,13 @@ const styles = {
   },
 
   contactDetail: {
-   
+
     alignItems: 'left',
     marginBottom: '10px',
     fontWeight: 'bold',
   },
   icon: {
-   
+
     alignItems: 'left',
     color: ' #525253', // Couleur personnalisée pour l'icône
   },

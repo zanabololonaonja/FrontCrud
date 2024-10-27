@@ -123,6 +123,58 @@ body {
   background-color: #004494;
 }
 
+/* Conteneur pour aligner l'icône et le texte */
+.title-container {
+  display: flex;
+  align-items: center; /* Aligner verticalement l'icône et le texte */
+  margin-bottom: 15px;
+}
+
+.title-container h3 {
+  margin: 0;
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Style et animation pour l'icône */
+.animated-icon {
+  margin-right: 8px;
+  animation: bounce 1.5s infinite;
+  font-size: 1.2em; /* Ajuster la taille si nécessaire */
+  color: #000; /* Personnaliser la couleur */
+}
+
+/* Animation de rebond */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.custom-button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;  
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.custom-button:hover {
+  background-color: #0056b3; /* Couleur de fond au survol */
+  font-weight: bold;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  transform: scale(1.05); /* Effet zoom au survol */
+  cursor: pointer;
+}
 
 
 
@@ -255,3 +307,12 @@ body {
     transform: translateY(0px); /* Redescend */
   }
 }
+/* Style pour l'élément de menu sélectionné dans le menu vertical seulement */
+.ant-menu-vertical .ant-menu-item-selected {
+  background-color: #F8394D !important; /* Couleur de fond rouge */
+  color: white !important; /* Couleur de texte en blanc pour le contraste */
+  font-weight: bold; /* Texte en gras pour plus de visibilité */
+  border-radius: 4px; /* Facultatif : ajoute un léger arrondi */
+}
+    
+         

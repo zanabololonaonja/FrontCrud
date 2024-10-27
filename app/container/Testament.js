@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './Testament.css';
+import BookIcon from '@mui/icons-material/Book'; 
 import {
   Stepper,
   Step,
@@ -1087,16 +1088,16 @@ case 'Other':
           canvasProps={{ width: 660, height: 200, className: 'sigCanvas' }}
         />
       </div>   
-      <button  style={{ marginLeft: 369}} onClick={handleClearSignature}>Effacer la signature </button>
-      <button   onClick={handleSaveSignature}> Sauvegarder la signature</button>
-  
+      <button  style={{ marginLeft: 333,fontWeight:'bold'}} onClick={handleClearSignature}>Effacer la signature / </button>
+      <button    style={{fontWeight:'bold'}} onClick={handleSaveSignature}> Sauvegarder la signature</button>
+    
 
     <button  style={{ marginLeft: -630 }} onClick={handleCloseTestament}>< ArrowBackIcon  /></button>
     <button className='btn-return' onClick={handleGeneratePDF}>  <span className="rocket-icon">⬇️</span>Télécharger en PDF</button>
      
-  </div>           
+  </div>              
 )}  
-  
+       
        
 
       {/* Afficher le Stepper ou le contenu du testament en fonction de l'état */}
@@ -1177,20 +1178,31 @@ case 'Other':
         </>
         
       )}
-       <Box sx={{ marginTop: '20px', textAlign: 'right' }}>
-          <Button variant="outlined" onClick={handleShowTestament} 
-           sx={{
-            backgroundColor: 'black',  // Fond noir
-            color: 'white',            // Texte blanc
-            '&:hover': {
-              backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
-            },
-          }}>   
-            Voir mon testament  
-          </Button>         
-        </Box>          
+      <Box 
+  sx={{ 
+    position: 'absolute', // Permet de positionner le Box relativement à son parent
+    top: '95px', // Ajustez cette valeur pour le placer plus haut
+    right: '20px', // Ajustez cette valeur pour le placer à droite
+    textAlign: 'right' 
+  }}
+>
+  <Button 
+    variant="outlined" 
+    onClick={handleShowTestament}
+    sx={{
+      backgroundColor: 'black',  // Fond noir
+      color: 'white',            // Texte blanc
+      '&:hover': {
+        backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
+      },
+    }}
+  >    <BookIcon sx={{ marginRight: '8px' }} /> 
+    Voir mon testament  
+  </Button>            
+</Box>
+     
     </Box>    
   );    
-};   
+};     
 
 export default Testament;

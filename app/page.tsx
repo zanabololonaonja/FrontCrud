@@ -19,6 +19,7 @@ const handleLoginClick = () => {
   window.location.href = "/crud";
 };
 
+
 const Container = styled.div`
   width: 100%;
   min-height: 100vh;
@@ -67,11 +68,11 @@ margin-top:-60px;
   z-index: 10; /* Assure que le bouton est au-dessus des autres éléments */
 
   &:hover {
-    background-color:F8394D;
-    //  border: #F8394D 3px solid;
-    // color: white;
+ background-color: #F8394D;
+     color:  #fff; 
+      border: #F8394D 3px solid;
   }
-`;     
+`;       
 const HeroSection = styled(motion.section)`
   width: 100%;
   min-height: 80vh;
@@ -137,6 +138,7 @@ const ActionButton = styled(motion.a)`
   padding: 10px 20px;
   background-color: #363636;
   color: white;
+  cursor: pointer;
   border: #363636 3px solid;
   border-radius: 30px;
   text-decoration: none;
@@ -161,6 +163,7 @@ const ActionButton2 = styled(motion.a)`
   color:  #363630;
   border: #F8394D 3px solid;
   border-radius: 30px;
+  cursor: pointer;
   text-decoration: none;
   font-weight: bold;
   transition: background-color 0.3s;
@@ -269,7 +272,7 @@ const List = styled.ul`
 
 const ListItem = styled.li`
   margin-bottom: 20px;
-font-family: 'Poppins', sans-serif; /* Correction de la police */
+font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-size: 1.2rem;
   color: #333;
   padding-left: 60px;

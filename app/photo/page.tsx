@@ -78,14 +78,19 @@ const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } 
       setError("Failed to add photo");
     }
   };
-
-  // Handle file change for the file input
-  // Handle file change for both the file input and Dragger component
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | any) => {
-    if (e.target.files && e.target.files[0]) {
-      setAttachedfile(e.target.files[0]);
-    } else if (e.fileList && e.fileList.length > 0) {
-      setAttachedfile(e.fileList[0].originFileObj);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const handleFileChange = (e: any) => {
+    // Si le changement vient d'un input normal
+    if (e.target && e.target.files && e.target.files[0]) {
+      setAttachedFile(e.target.files[0]);
+    } 
+    // Si le changement vient d'un composant Dragger ou Upload d'Ant Design
+    else if (Array.isArray(e.fileList)) {
+      // Assurez-vous que fileList est un tableau
+      const file = e.fileList[0]?.originFileObj; // Utilise l'opérateur de chaînage optionnel
+      if (file) {
+        setAttachedFile(file);
+      }
     }
   };
 
@@ -165,6 +170,18 @@ const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } 
     </Menu>
   );
 
+   // Fonction pour générer un ID Photo (ici, un ID aléatoire)
+   const generateIdPhoto = () => {
+    // Générer un nombre aléatoire entre 1 et 10000
+    const newId = Math.floor(Math.random() * 10000) + 1; // +1 pour éviter 0
+    setIdphoto(newId); // Met à jour l'état avec le nouvel ID
+  };
+
+  // useEffect exécute la fonction lors du chargement du composant
+  useEffect(() => {
+    generateIdPhoto(); // Remplit automatiquement lors du chargement
+  }, []); // [] signifie que cela ne s'exécute qu'une seule fois
+
   return (
     <div style={{ marginTop: '20px' }}>
       {/* Bouton pour afficher le formulaire d'ajout */}
@@ -216,9 +233,8 @@ const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } 
               <p className="ant-upload-drag-icon">
                 <InboxOutlined />
               </p>
-              <p className="ant-upload-text">Click or drag file to this area to upload</p>
-              <p className="ant-upload-hint">
-              Faites glisser une image ici ou importez un fichier   </p>
+              <p className="ant-upload-text">   Faites glisser une image ici ou importez un fichier  </p>
+              
             </Dragger>
           </div>
     <div className="form-actions">
