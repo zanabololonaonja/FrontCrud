@@ -1148,7 +1148,9 @@ function ArrangementsF({ userData }) {
               startIcon={<GiCoffin />} // Utilisation de l'icône cercueil
               sx={{
                 backgroundColor: 'black',  // Fond noir  
-                color: 'white',            // Texte blanc
+                color: 'white',
+                 fontWeight: '700',
+                // Texte blanc  
                 '&:hover': {
                   backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
                 },

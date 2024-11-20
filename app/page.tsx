@@ -570,6 +570,7 @@ export default function Home() {
               Easily manage your personal data and preserve your memories securely.
               
             </HeroSubheading>
+           
             <ActionButton
              onClick={handleLoginClick}
               initial={{ opacity: 0, y: 20 }}

@@ -66,16 +66,23 @@
     font-family: fantasy;
     font-weight: 700;
     text-align: left;
+    color: #4b4b4bc5;
 
   }
  
   .phraseInfo{
 font-family: fantasy;
  font-weight: 700;
+    color: #4b4b4bc5;
 
  text-align: left;
   }
 
+  .phraseContact{
+    color: #4b4b4bc5;
+    text-align: center;
+    font-size: 16px;
+  }
   .title {     
     color: black;         /* Texte en blanc */
     font-size: 2.9rem;    /* Taille du texte grande */
@@ -84,7 +91,10 @@ font-family: fantasy;
     margin-bottom: 20px;  /* Espacement en bas */
   }
   
- 
+ .bgImage{
+  filter: 'blur(7px)';
+ }
+
   .btn-returna {
     background-color: #F8394D;   /* Couleur du bouton */
     color: white;                /* Couleur du texte du bouton */

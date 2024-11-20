@@ -24,7 +24,7 @@ html {
 }
 
 .img-logo {
-    width: 80%; 
+    width: 60%; 
     height: auto; 
     display: block;
     margin: 0 auto; 
@@ -62,29 +62,34 @@ hr {
 
 
 .box-1 {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%; /* Ajuste la largeur à 100% pour respecter le conteneur parent */
+  height: auto; /* Laisse la hauteur s'adapter automatiquement */
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centrage si nécessaire */
+  position: relative; /* Nécessaire pour appliquer une ombre */
 }
 
 .box-1 img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Couvre la zone entière sans déformation */
+  width: auto; /* S'assure que l'image remplit la largeur du conteneur */
+  
+  height: 100%; /* Préserve le ratio de l'image */
+  object-fit: cover; /* Empêche les déformations */
+  box-shadow: 19px 0 10px rgba(0, 0, 0, 0.2); /* Ajoute une ombre subtile sur la droite */
+ /* Facultatif : ajoute des bords arrondis pour un effet plus élégant */
 }
 
 
+
 .box-2 {
-    width: 50%;
+    width: 80%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: 9px;
 }
+
 
 
 .form-container {

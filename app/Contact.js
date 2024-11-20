@@ -19,10 +19,11 @@ const Contact = () => {
       <div className="footer__text">
       
     
-              <p>Votre confiance est notre priorité.</p>
-        <p>Suivez-nous pour rester informé des nouveautés.</p>
-        <p>Nous nous engageons à vous offrir le meilleur service possible.</p>
-        <p>Pour toute question, n'hésitez pas à nous contacter !</p>
+      <p>Your trust is our priority.</p>
+<p>Follow us to stay updated on the latest news.</p>
+<p>We are committed to providing you with the best service possible.</p>
+<p>For any questions, feel free to contact us!</p>
+
       </div>
 
       <div className="footer__text2">
@@ -37,12 +38,12 @@ const Contact = () => {
 
       
       <div className="footer__text3">
-      <h3 style={{marginLeft: '999px'}}>Contact Us</h3>
-      <br /> 
+      <h3 style={{marginLeft: '960px',marginTop:'-173px'}}>Contact Us</h3>
+      <br />   
       <div className="gpt3__footer-links_logo" >
-        <div className="akaiky">
-          <RiPhoneLine size={22} color='black' className="elanelana"  style={{marginLeft: '-95px',marginTop: '-15px'}} />
-          <p  style={{marginLeft: '4px',marginTop: '-15px'}}>034 93 352 03</p>
+        <div className="akaiky">   
+          <RiPhoneLine size={22} color='black' className="elanelana"  style={{marginLeft: '-150px',marginTop: '-24px'}} />
+          <p  style={{marginLeft: '4px',marginTop: '-22px'}}>(240) 310-4767</p>
         </div>
     
         
@@ -50,23 +51,11 @@ const Contact = () => {
     
       </div>
      
+         
       <div className="gpt3__footer-links_logo" >
         <div className="akaiky">
-          <RiMapPinLine  size={22} color='black' className="elanelana"  style={{marginLeft: '-133px',marginTop: '-15px'}} />
-          <p  style={{marginTop: '-15px'}}>Tambohobe lot 86</p>
-        </div>
-
-        
-       
-    
-      </div>
-    
-   
-    
-      <div className="gpt3__footer-links_logo" >
-        <div className="akaiky">
-          <RiFacebookLine size={22} color='black' className="elanelana"  style={{marginLeft: '-95px',marginTop: '-15px'}} />
-          <p  style={{marginLeft: '4px',marginTop: '-15px'}}>onja RAZAFISAMBATRA</p>
+          <RiFacebookLine size={22} color='black' className="elanelana"  style={{marginLeft: '-150px',marginTop: '-15px'}} />
+          <p  style={{marginLeft: '4px',marginTop: '-15px'}}>Lemursys</p>
         </div>
   
         
@@ -75,12 +64,19 @@ const Contact = () => {
       </div>
       <div className="gpt3__footer-links_logo" >
         <div className="akaiky">
-          <RiMailLine size={22} color='black' className="elanelana"  style={{marginLeft: '-95px',marginTop: '-15px'}} />
-          <p  style={{marginLeft: '4px',marginTop: '-15px'}}>zanabololonaonja@gmail.com</p>
+          <RiMailLine size={22} color='black' className="elanelana"  style={{marginLeft: '-90px',marginTop: '-15px'}} />
+          <p  style={{marginLeft: '4px',marginTop: '-15px'}}>office@lemursys.com</p>
         </div>
 
         
-       
+        <div className="gpt3__footer-links_logo" >
+        <div className="akaiky">
+          <RiMapPinLine  size={22} color='black' className="elanelana"  style={{marginLeft: '-31px',marginTop: '-15px'}} />
+          <p  style={{marginTop: '-15px'}}>285 Frederick St.
+Hagerstown</p>
+        </div>
+    
+      </div> 
     
       </div> 
       <div className="footer__social-icons">

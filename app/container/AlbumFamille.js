@@ -259,7 +259,7 @@ const AlbumFamille = ({ userData }) => {
           style={{  
             marginTop: '1px',
             backgroundColor: '#F8394D',
-            fontFamily: "'Roboto', sans-serif",
+             fontWeight: 'bold',
             color: '#fff',
             padding: '23px 24px',
             fontSize: '18px',

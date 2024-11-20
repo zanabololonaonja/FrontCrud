@@ -1,7 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { Box, Button, Typography, Modal, TextField, Grid } from '@mui/material';
-import { toast } from 'react-toastify'; // Importer Toastify
+
+import { ToastContainer, toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 
 
@@ -106,56 +107,154 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
 
     const generatePDF = () => {
         const doc = new jsPDF();
-
-        // Définir la taille et le style de police pour le titre
-        doc.setFontSize(22);
-        doc.text('Estimation obsèques', 14, 22);
-
-
-        // Définir la taille de police pour le texte
+        
+        // Configuration globale
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const marginX = 14; // Marge horizontale
+        const marginY = 20; // Marge verticale
+        const lineSpacing = 8; // Espacement entre les lignes
+        let currentY = marginY; // Position Y de départ
+        
+        // Titre principal
+        doc.setFont('Helvetica', 'bold');
+        doc.setFontSize(24);
+        doc.text('Estimation des obsèques', marginX, currentY);
+        
+        // Ajouter une image en haut à droite
+        const imgWidth = 30;
+        const imgHeight = 30;
+        doc.addImage('/images/OIP.jpg', 'JPEG', pageWidth - imgWidth - marginX, marginY + 5, imgWidth, imgHeight);
+        
+        currentY += lineSpacing * 2;
+        
+        // Texte général
+        doc.setFont('Helvetica', 'normal');
         doc.setFontSize(12);
-        // Première section
-        // Ajouter l'image en haut à droite du titre
-        const imgWidth = 30; // Largeur de l'image
-        const imgHeight = 30; // Hauteur de l'image
-        doc.addImage("/images/OIP.jpg", "JPEG", doc.internal.pageSize.getWidth() - imgWidth - 14, 10, imgWidth, imgHeight); // Ajustez la position de l'image
-
-        doc.text("J'ai choisi que les funérailles de type ", 14, 40);
-        doc.setFont("Helvetica", "bold");
-        doc.text(arrangements.typefunerailles || 'Non spécifié', 90, 40);
-        doc.setFont("Helvetica", "normal");
-        doc.text("Cela signifie que j'ai opté pour une cérémonie adaptée à mes souhaits et à mes traditions.", 14, 50);
-
-        // Deuxième section
-        // Ajustez la taille et la position selon vos besoins
-        doc.text(`La veillée funèbre se tiendra à ${arrangements.lieudeces || 'Non spécifié'} pour une durée de ${arrangements.transportdistance || 'Non spécifiée'} heures.`, 14, 60);
-        doc.text(`Le défunt sera transporté avec un ${arrangements.typevehicule || 'Non spécifié'}.`, 14, 80);
-        doc.text("Cette veillée me permettra de rassembler mes proches pour rendre hommage avant les funérailles.", 14, 100);
-
-        // Troisième section
-        const organisationText = arrangements.organisation_ceremonie ?
-            `J'ai confirmé l'organisation de la cérémonie. Elle se tiendra à ${arrangements.lieuceremonie || 'Non spécifié'},
-             et ce sera une cérémonie ${arrangements.typeceremonie || 'Non spécifié'}.` :
-            "J'ai refusé l'organisation de la cérémonie.";
-        doc.text(organisationText, 14, 130);
-        doc.text("Cela me permet de m'assurer que mes souhaits sont respectés pour cette occasion importante.", 14, 140);
-
-        // Quatrième section
-        doc.text(`Concernant le type de cercueil, j'ai opté pour un ${arrangements.typecercueil || 'Non spécifié'}.`, 14, 150);
-        doc.text("Je souhaite que le cercueil soit en adéquation avec le type de cérémonie choisie.", 14, 160);
-
-        // Cinquième section
-        doc.text(`Le lieu de repos sera au ${arrangements.lieu_repos || 'Non spécifié'} avec une concession prévue pour une durée de ${arrangements.concession_duree || 'Non spécifiée'} ans.`, 14, 170);
-        const messageText = arrangements.message_personnel ?
-            `Le message personnalisé pour la cérémonie est : "${arrangements.message_personnel}".` :
-            "Aucun message personnalisé n'a été ajouté.";
-        doc.text(messageText, 14, 180);
-
-        // Sauvegarder le PDF
+    
+        
+        currentY += lineSpacing;
+        doc.text("J'ai choisi que les funérailles de type :", marginX, currentY);
+        
+        // Détail du type de funérailles
+        doc.setFont('Helvetica', 'bold');
+        doc.text(arrangements.typefunerailles || 'Non spécifié', marginX + 85, currentY); // Position ajustée pour être alignée
+        doc.setFont('Helvetica', 'normal');
+        
+        currentY += lineSpacing;
+        doc.text(
+          "Cela signifie que j'ai opté pour une cérémonie adaptée à mes souhaits et à mes traditions, pour que mes proches puissent rendre hommage de la manière la plus respectueuse.",
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX } // Justification du texte
+        );
+        
+        // Veillée funèbre
+        currentY += lineSpacing * 2;
+        doc.setFont('Helvetica', 'bold');
+        doc.text('Veillée funèbre :', marginX, currentY);
+        currentY += lineSpacing;
+        doc.setFont('Helvetica', 'normal');
+        doc.text(
+          `La veillée funèbre se tiendra à ${arrangements.lieudeces || 'Non spécifié'} pour une durée de ${arrangements.transportdistance || 'Non spécifiée'} heures.`,
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX }
+        );
+        
+        currentY += lineSpacing;
+        doc.text(
+          `Le défunt sera transporté avec un ${arrangements.typevehicule || 'Non spécifié'}.`,
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX }
+        );
+        
+        currentY += lineSpacing;
+        doc.text(
+          "Cette veillée me permettra de rassembler mes proches pour rendre hommage avant les funérailles, en leur offrant un moment de recueillement et de partage.",
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX }
+        );
+        
+        // Organisation de la cérémonie
+        currentY += lineSpacing * 2;
+        doc.setFont('Helvetica', 'bold');
+        doc.text('Organisation de la cérémonie :', marginX, currentY);
+        currentY += lineSpacing;
+        doc.setFont('Helvetica', 'normal');
+        const organisationText = arrangements.organisation_ceremonie
+          ? `J'ai confirmé l'organisation de la cérémonie. Elle se tiendra à ${arrangements.lieuceremonie || 'Non spécifié'}, et ce sera une cérémonie ${arrangements.typeceremonie || 'Non spécifiée'}.`
+          : "J'ai refusé l'organisation de la cérémonie.";
+        doc.text(organisationText, marginX, currentY, { maxWidth: pageWidth - 2 * marginX });
+        
+        currentY += lineSpacing;
+        doc.text(
+          "Cela me permet de m'assurer que mes souhaits sont respectés pour cette occasion importante, en offrant à mes proches un cadre solennel.",
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX }
+        );
+        
+        // Type de cercueil
+        currentY += lineSpacing * 2;
+        doc.setFont('Helvetica', 'bold');
+        doc.text('Type de cercueil :', marginX, currentY);
+        currentY += lineSpacing;
+        doc.setFont('Helvetica', 'normal');
+        doc.text(
+          `Concernant le type de cercueil, j'ai opté pour un ${arrangements.typecercueil || 'Non spécifié'}.`,
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX }
+        );
+        
+        currentY += lineSpacing;
+        doc.text(
+          "Je souhaite que le cercueil soit en adéquation avec le type de cérémonie choisie, pour garantir la dignité et le respect de l'événement.",
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX }
+        );
+        
+        // Lieu de repos
+        currentY += lineSpacing * 2;
+        doc.setFont('Helvetica', 'bold');
+        doc.text('Lieu de repos :', marginX, currentY);
+        currentY += lineSpacing;
+        doc.setFont('Helvetica', 'normal');
+        doc.text(
+          `Le lieu de repos sera au ${arrangements.lieu_repos || 'Non spécifié'}, avec une concession prévue pour une durée de ${arrangements.concession_duree || 'Non spécifiée'} ans.`,
+          marginX,
+          currentY,
+          { maxWidth: pageWidth - 2 * marginX }
+        );
+        
+        // Message personnalisé
+        currentY += lineSpacing * 2;
+        doc.setFont('Helvetica', 'bold');
+        doc.text('Message personnalisé :', marginX, currentY);
+        currentY += lineSpacing;
+        doc.setFont('Helvetica', 'normal');
+        const messageText = arrangements.message_personnel
+          ? `Le message personnalisé pour la cérémonie est : "${arrangements.message_personnel}".`
+          : "Aucun message personnalisé n'a été ajouté.";
+        doc.text(messageText, marginX, currentY, { maxWidth: pageWidth - 2 * marginX });
+        
+        // Vérifier si une nouvelle page est nécessaire
+        if (currentY + 30 > doc.internal.pageSize.getHeight()) {
+          doc.addPage();
+          currentY = marginY;
+        }
+        
+        // Enregistrer le PDF
         doc.save('estimation_obseques.pdf');
-    };
+      };
+      
+      
 
 
+ 
     // Fonction pour soumettre les changements
     const handleSubmit = async () => {
         try {
@@ -173,9 +272,10 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
 
             const data = await res.json();
             console.log('Mise à jour réussie:', data);
-            alert("Album ajouté avec succès!");
+      
+            alert('Arangement  avec succès ');       
 
-
+   
             setOpenModal(false); // Fermer la modale après la mise à jour
         } catch (error) {
             console.error('Erreur lors de la mise à jour:', error);
@@ -257,15 +357,14 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                 </Button>
 
 
-                {/* {userData?.typeofuser === 'owner' && !handleOpenModal && (
-        <> */}
-
-                <Button
+                 {/* {userData?.typeofuser === 'owner' && ! (
+        <>           */}
+              <Button
                     variant="contained"
                     sx={{
-                        backgroundColor: '#f0f0f0',
+                        backgroundColor: '#f0f0f0',   
                         
-                    // Fond noir
+                    // Fond noir  
                         color: 'black',
                         marginTop:'9px',
                        height:'38px',
@@ -280,6 +379,10 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                 >
                     Modifier
                 </Button>
+                     
+     
+
+    
                 {/* </>     
         
     )} */}
@@ -373,19 +476,19 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                                 margin="normal"
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        {/* <Grid item xs={6}>
                             <TextField
                                 fullWidth
                                 label="Fleurs"
                                 name="fleurs"
                                 value={formValues.fleurs}
                                 onChange={handleChange}
-                                margin="normal"
+                                margin="normal"  
                             />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                fullWidth
+                        </Grid> */}
+                        <Grid item xs={6}> 
+                            <TextField   
+                                fullWidth     
                                 label="Lieu de la cérémonie"
                                 name="lieuceremonie"
                                 value={formValues.lieuceremonie}

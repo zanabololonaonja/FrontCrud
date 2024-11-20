@@ -4,7 +4,10 @@ import React, { useState, useEffect, useContext } from "react";
 import Swal from 'sweetalert2';
 import './container.css';
 import { FaUser, FaEnvelope } from 'react-icons/fa'; // Importer les icônes
+
 import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { FiLogOut } from 'react-icons/fi';      
 
@@ -33,21 +36,16 @@ const App = () => {
  const [selectedMenu, setSelectedMenu] = useState("0");
 
 const verticalMenuItems = [
-  {
-    key: "0",    
+  
+  
+    // Assurez-vous que `userData` est défini avant d'essayer de vérifier `userData?.typeofuser`
+    ...(userData && userData.typeofuser === 'owner' ? [{
+      key: "0",    
     icon: <UserOutlined />,   
     label: "User Profil",
-  },  
-  
+    }] : []),
+    
  
- 
-   // Assurez-vous que `userData` est défini avant d'essayer de vérifier `userData?.typeofuser`
-   ...(userData && userData.typeofuser === 'owner' ? [{
-    key: "1",
-    icon: <IdcardOutlined />,
-    label: "Emergency contact",
-  }] : []),
-  
   
   
   // Si l'utilisateur n'est pas propriétaire, on ne montre pas ce menu
@@ -66,6 +64,14 @@ const verticalMenuItems = [
     icon: <BankOutlined />,
     label: "Arrangements Funéraires",
   },
+  
+   // Assurez-vous que `userData` est défini avant d'essayer de vérifier `userData?.typeofuser`
+   ...(userData && userData.typeofuser === 'owner' ? [{
+    key: "1",
+    icon: <IdcardOutlined />,
+    label: "Emergency contact",
+  }] : []),
+  
 ];
 
   const [userName, setUserName] = useState("");
@@ -183,36 +189,49 @@ const verticalMenuItems = [
 
   const handleSave = async () => {
     try {
-        const res = await fetch('http://localhost:5000/api/update', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-        
-        if (res.ok) {
-            const updatedUser = await res.json();
-            console.log('Données mises à jour:', updatedUser);
+      const res = await fetch('http://localhost:5000/api/update', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-              // Vérification et conversion de userphoto après mise à jour
+      if (res.ok) {
+        const updatedUser = await res.json();
+        console.log('Données mises à jour:', updatedUser);
+
+        // Vérification et conversion de userphoto après mise à jour
         if (updatedUser.userphoto && Buffer.isBuffer(updatedUser.userphoto)) {
           updatedUser.userphoto = `data:image/png;base64,${updatedUser.userphoto.toString('base64')}`;
         }
 
+        setUserData(updatedUser); // Mise à jour du contexte
+        setUserProfile(updatedUser); // Mise à jour du profil pour inclure la nouvelle image
+        setIsModalVisible(false);
 
-            setUserData(updatedUser); // Mise à jour du contexte
-            setUserProfile(updatedUser); // Mise à jour du profil pour inclure la nouvelle image
-            setIsModalVisible(false);
-            alert('Données mises à jour avec succès!');
-            console.log('User Photo:', userProfile.userphoto);
+        // Alerte Toastify
+        toast.success('Données mises à jour avec succès!', {
+          position: "top-right",
+          autoClose: 3000, // La notification disparaît après 3 secondes
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
 
-        } else {
-            alert('Erreur lors de la mise à jour des données');
-        }
+      } else {
+        toast.error('Erreur lors de la mise à jour des données', {
+          position: "top-right"
+        });
+      }
     } catch (err) {
-        console.error('Erreur lors de la mise à jour:', err);
-        alert('Une erreur est survenue lors de la mise à jour');
+      console.error('Erreur lors de la mise à jour:', err);
+      toast.error('Une erreur est survenue lors de la mise à jour', {
+        position: "top-right"
+      });
     }
-};
+  };
+
 
   
 
@@ -263,6 +282,7 @@ const verticalMenuItems = [
   const renderContent = () => {
     switch (selectedMenu) {
       case "0":
+       if (userData?.typeofuser === 'owner') {  
         return (
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
   {/* Sidebar gauche */}
@@ -387,12 +407,17 @@ const verticalMenuItems = [
   
   </div>
 </div>
+)
+ } else {
+            return <div  className="infoCU">En tant que contact d'urgence,<br /> Vous ne pouvez pas apporter de modifications,<br /> mais seulement consulter les contenus</div>;  // Message d'erreur si non-propriétaire
 
-         );
-        
+            
+
+          }
+
          case "1":
           if (userData?.typeofuser === 'owner') {  
-            return <ContactU userData={userData} />;
+            return <ContactU userData={userData} />;  
           } else {
             return <div>Accès refusé. Vous n'êtes pas autorisé à voir cette section.</div>;  // Message d'erreur si non-propriétaire
 
@@ -434,7 +459,9 @@ const verticalMenuItems = [
   };
 
   return (
+    
     <div style={{ display: "flex", height: "100vh" }}>
+      
      <div
         style={{
           position: "fixed",
@@ -521,6 +548,7 @@ const verticalMenuItems = [
   <div style={{ padding: "20px" }}>{renderContent()}</div>
 </div>
 
+<ToastContainer />
 
 <Modal
   title={<h2 style={{ color: 'black', fontWeight: 'bold', fontSize: '19px' }}>Modifier le Profil</h2>}

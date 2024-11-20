@@ -224,7 +224,7 @@ font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida San
   background-image: url('/images/font3.webp');
   background-size: cover;
   background-position: center;
-  filter: blur(1px);
+  filter: blur(3px);
   z-index: 0;
 }
 
@@ -315,4 +315,16 @@ font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida San
   border-radius: 4px; /* Facultatif : ajoute un léger arrondi */
 }
     
-         
+.full-screen {
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  /* Évite le défilement si le contenu dépasse */
+}
+
+.infoCU{
+  text-align: center;
+  color: rgba(7, 7, 7, 0.527);
+  font-size: 24px;
+  margin-top: 180px;
+}

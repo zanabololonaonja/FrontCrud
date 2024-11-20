@@ -310,106 +310,220 @@ function Testament({ userData }) {
 
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
-    
-    // Ajuster la taille de la police
+  
+    // Configuration globale
+    doc.setFont('Times', 'normal'); // Utilisation de la police Times pour un style officiel
+    doc.setFontSize(12); // Police par défaut
+  
+    // Titre principal
+    doc.setFontSize(16);
+    doc.setFont('Times', 'bold');
+    doc.text('TESTAMENT', 105, 20, { align: 'center' }); // Titre centré horizontalement
+  
+    // Sous-titre
     doc.setFontSize(14);
-    doc.text("Ceci est mon testament", 10, 10);
+    doc.setFont('Times', 'italic');
+    doc.text('Acte de disposition de biens après décès', 105, 30, { align: 'center' });
   
-    // Ajouter les informations du testateur avec des phrases
+    // Ligne de séparation
+    doc.setDrawColor(0, 0, 0); // Couleur noire
+    doc.line(10, 35, 200, 35);
+  
+    // Introduction
     doc.setFontSize(12);
-    doc.text(`Je, soussigné(e) ${testamentData.nom_testateur || "Non spécifié"},  Né(e) le ${testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : "Non spécifiée"} à ${testamentData.lieu_naissance_testateur || "Non spécifié"}`, 10, 30);
-    doc.text(`Domicilié(e) à ${testamentData.adresse_testateur || "Non spécifiée"}, déclare être sain(e) d’esprit,`, 10, 40);
-    doc.text("avoir la capacité juridique à gérer mes biens, et être majeur(e) ou mineur(e) de plus de 16 ans.", 10, 50);
-    doc.text("Un mineur entre 16 et 18 ans pourra léguer la moitié de ses biens, sauf s'il est mineur émancipé.", 10, 60);
+    doc.setFont('Times', 'normal');
+    let currentY = 45; // Point de départ vertical
+    const lineSpacing = 8; // Espacement des lignes
   
-    // Informations sur les héritages et bénéficiaires
-    let currentY = 70;
+    // Données de l'utilisateur
+    doc.text(
+      `Je, soussigné(e) ${testamentData.nom_testateur || 'Non spécifié'}, né(e) le ${testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : 'Non spécifiée'} à ${testamentData.lieu_naissance_testateur || 'Non spécifié'},`,
+      20,
+      currentY
+    );
+    currentY += lineSpacing;
+    doc.text(
+      `domicilié(e) à ${testamentData.adresse_testateur || 'Non spécifiée'}, déclare être sain(e) d’esprit et avoir la capacité juridique à gérer mes biens.`,
+      20,
+      currentY
+    );
+    currentY += lineSpacing * 2;
+  
+    // Section Héritages
+    doc.setFont('Times', 'bold');
+    doc.text('Héritages et bénéficiaires :', 20, currentY);
+    doc.setFont('Times', 'normal');
+    currentY += lineSpacing;
+  
     if (testamentData.bien_legue && JSON.parse(testamentData.bien_legue).length > 0) {
       const heritages = JSON.parse(testamentData.bien_legue);
   
       heritages.forEach((heritage, index) => {
-        doc.text(`Héritage ${index + 1}: Je lègue le bien ${heritage.biensL || "Non spécifié"} à :`, 10, currentY);
-        currentY += 10;
+        doc.text(`Héritage ${index + 1} : Bien légué - ${heritage.biensL || 'Non spécifié'}`, 20, currentY);
+        currentY += lineSpacing;
   
         if (testamentData.adresse_bien_legue && JSON.parse(testamentData.adresse_bien_legue).length > 0) {
           const beneficiaries = JSON.parse(testamentData.adresse_bien_legue);
   
-          beneficiaries.forEach((beneficiaire, benefIndex) => {
-            doc.text(`  - ${beneficiaire.nom || "Non spécifié"}, né(e) le ${beneficiaire.date_naissance ? new Date(beneficiaire.date_naissance).toLocaleDateString() : "Non spécifiée"}, qui est mon/ma ${beneficiaire.relation || "Non spécifiée"}.`, 10, currentY);
-            currentY += 10;
+          beneficiaries.forEach((beneficiaire) => {
+            doc.text(
+              `  - Bénéficiaire : ${beneficiaire.nom || 'Non spécifié'}, né(e) le ${
+                beneficiaire.date_naissance
+                  ? new Date(beneficiaire.date_naissance).toLocaleDateString()
+                  : 'Non spécifiée'
+              }, relation : ${beneficiaire.relation || 'Non spécifiée'}.`,
+              20,
+              currentY
+            );
+            currentY += lineSpacing;
           });
         } else {
-          doc.text('  Aucun bénéficiaire spécifié pour cet héritage.', 10, currentY);
-          currentY += 10;
+          doc.text('  Aucun bénéficiaire spécifié.', 20, currentY);
+          currentY += lineSpacing;
         }
   
-        currentY += 10;
+        currentY += lineSpacing;
       });
     } else {
-      doc.text('Aucun héritage spécifié.', 10, currentY);   
-      currentY += 10;
+      doc.text('Aucun héritage spécifié.', 20, currentY);
+      currentY += lineSpacing;
     }
   
-    // Informations sur le tuteur 
-    doc.text(`J'ai désigné ${testamentData.tuteur_nom || "Non spécifié"}, domicilié à ${testamentData.tuteur_adresse || "Non spécifiée"},`, 10, currentY);
-    currentY += 10;
-    doc.text("comme tuteur légal pour assurer la gestion et la protection de mes biens en cas d'incapacité .", 10, currentY);
-    currentY += 10;
-    doc.text("Le tuteur devra veiller à ce que mes volontés soient respectées ", 10, currentY);
+    // Section Tuteur
+    doc.setFont('Times', 'bold');
+    doc.text('Tuteur légal :', 20, currentY);
+    doc.setFont('Times', 'normal');
+    currentY += lineSpacing;
+    doc.text(
+      `J’ai désigné ${testamentData.tuteur_nom || 'Non spécifié'}, domicilié(e) à ${
+        testamentData.tuteur_adresse || 'Non spécifiée'
+      }, comme tuteur légal.`,
+      20,
+      currentY
+    );
+    currentY += lineSpacing;
   
-    // Informations sur l'exécuteur
-    currentY += 15;
-    doc.text(`J’ai désigné comme exécuteur de ce testament ${testamentData.nom_executant || "Non spécifié"}, et en cas d’empêchement, ${testamentData.nom_executant_alternatif || "Non spécifié"},`, 10, currentY);
-    currentY += 10;
-    doc.text("pour garantir la bonne exécution de mes volontés.", 10, currentY);
+    // Section Exécuteur
+    doc.setFont('Times', 'bold');
+    doc.text('Exécuteur testamentaire :', 20, currentY);
+    doc.setFont('Times', 'normal');
+    currentY += lineSpacing;
+    doc.text(
+      `J’ai désigné ${testamentData.nom_executant || 'Non spécifié'}, et en cas d’empêchement, ${
+        testamentData.nom_executant_alternatif || 'Non spécifié'
+      }, comme exécuteur testamentaire.`,
+      20,
+      currentY
+    );
+    currentY += lineSpacing;
   
-    // Informations sur les témoins
-    currentY += 15;
-    doc.text("Ce testament a été établi en présence de témoins dont voici les informations :", 10, currentY);
-    currentY += 10;
-    doc.text(`Témoin 1 : ${testamentData.temoin1_nom || "Non spécifié"}, domicilié à ${testamentData.temoin1_adresse || "Non spécifiée"}.`, 10, currentY);
-    currentY += 10;
-    doc.text(`Témoin 2 : ${testamentData.temoin2_nom || "Non spécifié"}, domicilié à ${testamentData.temoin2_adresse || "Non spécifiée"}.`, 10, currentY);
+    // Section Témoins
+    doc.setFont('Times', 'bold');
+    doc.text('Témoins :', 20, currentY);
+    doc.setFont('Times', 'normal');
+    currentY += lineSpacing;
+    doc.text(
+      `Témoin 1 : ${testamentData.temoin1_nom || 'Non spécifié'}, domicilié(e) à ${
+        testamentData.temoin1_adresse || 'Non spécifiée'
+      }.`,
+      20,
+      currentY
+    );
+    currentY += lineSpacing;
+    doc.text(
+      `Témoin 2 : ${testamentData.temoin2_nom || 'Non spécifié'}, domicilié(e) à ${
+        testamentData.temoin2_adresse || 'Non spécifiée'
+      }.`,
+      20,
+      currentY
+    );
+    currentY += lineSpacing * 2;
   
-    // Informations sur le don
-    currentY += 10;
-    doc.text(`Je lègue un montant de ${testamentData.gift_amount || "Non spécifié"} euros à ${testamentData.gift_recipient || "Non spécifié"}.`, 10, currentY);
+
+    // Section Dons
+doc.setFont('Times', 'bold');
+doc.text('Dons :', 20, currentY);
+doc.setFont('Times', 'normal');
+currentY += lineSpacing;
+
+if (testamentData.gift_type) {
+  switch (testamentData.gift_type) {
+    case 'Cash':
+      doc.text(
+        `Type : Espèces, Montant : ${testamentData.gift_amount || 'Non spécifié'} euros, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
+        20,
+        currentY
+      );
+      break;
+    case 'Vehicle':
+      doc.text(
+        `Type : Véhicule, Description : ${testamentData.gift_vehicle || 'Non spécifiée'}, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
+        20,
+        currentY
+      );
+      break;
+    case 'Real Estate':
+      doc.text(
+        `Type : Immobilier, Description : ${testamentData.gift_property || 'Non spécifiée'}, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
+        20,
+        currentY
+      );
+      break;
+    case 'Charity':
+      doc.text(
+        `Type : Charité, Nom : ${testamentData.gift_charity || 'Non spécifié'}, Montant : ${testamentData.gift_amount || 'Non spécifié'} euros`,
+        20,
+        currentY
+      );
+      break;
+    case 'Other':
+      doc.text(
+        `Type : Autre, Description : ${testamentData.gift_other || 'Non spécifiée'}, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
+        20,
+        currentY
+      );
+      break;
+    default:
+      doc.text('Type de don non spécifié.', 20, currentY);
+  }
+} else {
+  doc.text('Aucun don supplémentaire spécifié.', 20, currentY);
+}
+
+currentY += lineSpacing * 2;
+
+    // Clause finale
+    doc.setFont('Times', 'italic');
+    doc.text('Je reconnais que mes volontés exprimées dans ce testament doivent être respectées.', 20, currentY);
+    currentY += lineSpacing;
+    doc.text('Je révoque tous les testaments antérieurs.', 20, currentY);
   
-    // Clause de révocation
-    currentY += 15;
-    doc.text("J'accepte les conditions de ce testament et je reconnais que mes volontés doivent être respectées.", 10, currentY);
-    currentY += 10;
-    doc.text("Je révoque par la présente tous les testaments et codicilles antérieurs.", 10, currentY);
-  
-    // Ajouter la date à droite
-    currentY += 20;
-    const dateText = `Fait le ${new Date().toLocaleDateString()}, en présence des témoins mentionnés.`;
-    const dateTextWidth = doc.getTextWidth(dateText);
-    const pageWidth = doc.internal.pageSize.getWidth();
-    doc.text(dateText, pageWidth - dateTextWidth - 10, currentY);
-  
-    currentY += 10;
-    const signatureText = "Signature";
-    const signatureTextWidth = doc.getTextWidth(signatureText);
-    doc.text(signatureText, pageWidth - signatureTextWidth - 10, currentY); // Signature text aligned to the right
-  
-    // Vérifiez si l'espace est suffisant pour la signature
-    if (currentY + 30 > doc.internal.pageSize.getHeight()) {
-      doc.addPage(); // Ajouter une nouvelle page si l'espace est insuffisant
-      currentY = 20; // Repositionner le curseur de départ sur la nouvelle page
-    }
-  
-    // Ajouter la signature si elle existe
-    if (signatureData) {
-      doc.addImage(signatureData, 'PNG', 150, currentY + 10, 50, 20); // Position et taille de la signature
-    } else {
-      doc.text("Signature manquante.", 10, currentY + 20);
-    }
-  
-    // Télécharger le PDF
+   // Positionner l'élément à droite
+currentY += lineSpacing * 2;
+doc.setFont('Times', 'bold');
+const dateText = `Fait le ${new Date().toLocaleDateString()}, en présence des témoins.`;
+
+// Afficher la date à droite
+const pageWidth = doc.internal.pageSize.getWidth();
+doc.text(dateText, pageWidth - 20 - doc.getTextWidth(dateText), currentY); // Position calculée pour aligner à droite
+
+currentY += lineSpacing * 2; // Espace pour la section suivante
+
+// Afficher "Signature :" à droite
+doc.text('Signature :', pageWidth - 20 - doc.getTextWidth('Signature :'), currentY);
+
+// Vérifier s'il y a des données de signature
+if (signatureData) {
+  // Ajouter l'image de la signature si elle existe
+  doc.addImage(signatureData, 'PNG', pageWidth - 70, currentY + lineSpacing, 50, 20); // Image ajoutée à droite
+} else {
+  // Afficher "Non fournie." si aucune signature n'est fournie
+  doc.text('Non fournie.', pageWidth - 20 - doc.getTextWidth('Non fournie.'), currentY + lineSpacing);
+}
+
+    // Téléchargement du PDF
     doc.save('testament.pdf');
-  };    
-  
+  };
      
   
 
@@ -1168,13 +1282,18 @@ case 'Other':
           </Box>
 
           <Box sx={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-            <Button disabled={activeStep === 0} onClick={handleBack}>
-              Back
-            </Button>
-            <Button variant="contained" color="primary" onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </Box>
+  <Button disabled={activeStep === 0} onClick={handleBack}>
+    Back
+  </Button>
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={activeStep === steps.length - 1 ? handleNextA : handleNext} // Appel handleNextA à la dernière étape
+  >
+    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+  </Button>
+</Box>
+
         </>
         
       )}

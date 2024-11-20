@@ -104,19 +104,17 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
     }
 
     const templateParams = {
-      to_name: contact.prenom,
-      to_email: contact.email,
-      message: `Bonjour ${contact.prenom}, 
-
-Vous avez été désigné comme contact d'urgence par ${userData.useremailaddress}. Il/Elle vous a désigné comme son/sa ${contact.relation}. Voici votre mot de passe pour accéder à votre compte : ${contact.nom}. 
-
-Vous pouvez consulter toutes les informations concernant son testament et les arrangements funéraires. 
-
-Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des questions, n'hésitez pas à contacter ${userData.useremailaddress}.`
-      , // Inclure l'email de l'utilisateur
-      nom_user: userData.useremailaddress, // L'email de l'utilisateur connecté
-      contact_name: contact.nom // Le nom du contact ajouté
+      to_name: contact.prenom,  // Prénom du destinataire
+      from_name: userData.useremailaddress,  // Email de l'utilisateur
+      to_email: contact.email,  // Email du destinataire
+      message: ``
+      // Vous pouvez laisser `message` vide, car tout est géré dans le modèle HTML ci-dessus
+      ,
+      relation: contact.relation,  // Relation du contact
+      contact_name: contact.nom  // Nom du contact
     };
+    
+    
 
     emailjs.send('service_k58if4k', 'template_0trv6km', templateParams)
       .then((response) => {
@@ -316,9 +314,8 @@ Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des que
             onChange={handleFileChange}
             accept="image/*"
           />
-          <br /><br /><br /><br />
 
-          <Button variant="contained" color="secondary" onClick={handleSubmit}>
+          <Button style={{marginTop:'22px'}}   variant="contained" color="secondary" onClick={handleSubmit}>
             Ajouter
           </Button>
         </div>
@@ -343,7 +340,7 @@ Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des que
                 <div style={styles.contactDetail}>
                   <div>
                     <p style={styles.label}>  <MailIcon style={styles.icon} /> Email:</p>
-                    <p>{contacts[contacts.length - 1].email || 'Non spécifié'}</p>
+                    <p className="phraseContact">{contacts[contacts.length - 1].email || 'Non spécifié'}</p>
                   </div>
                 </div>
 
@@ -351,19 +348,19 @@ Pour cela, connectez-vous sur notre site My Life Legacy DB. Si vous avez des que
                   <div>
                     <p style={styles.label}>  <LockIcon style={styles.icon} />
                       Code:</p>
-                    <p>{contacts[contacts.length - 1].nom || 'Non spécifié'}</p>
+                    <p className="phraseContact">{contacts[contacts.length - 1].nom || 'Non spécifié'}</p>
                   </div>
                 </div>
 
                 <div style={styles.contactDetail}>
-                  <div>
+                  <div>  
                     <p style={styles.label}> <PeopleIcon style={styles.icon} />
                       Relation:</p>
-                    <p>{contacts[contacts.length - 1].relation || 'Non spécifié'}</p>
+                    <p className="phraseContact">{contacts[contacts.length - 1].relation || 'Non spécifié'}</p>
                   </div>
                 </div>
               </div>
-            </div>
+            </div>   
           ) : (
             <p>Aucun contact trouvé.</p>
           )}
@@ -429,27 +426,26 @@ const styles = {
   },
   label: {
     fontWeight: 'bold',
-    textDecoration: 'underline',
-    fontSize: '20px',
+    fontSize: '18px',
 
   },
 };
 
 
 // Main component ContactU
-const ContactU = ({ userData }) => {
+const ContactU = ({ userData }) => {  
   const contacts = [
     {
       title: 'Premier contact d\'urgence',
-      bgImage: '/images/bgg.webp',
-    },
+      // bgImage: '/images/bgg.webp',
+    },  
     {
       title: 'Deuxième contact d\'urgence',
-      bgImage: '/images/bgggg.webp',
+      // bgImage: '/images/bgggg.webp',
     },
     {
       title: 'Troisième contact d\'urgence',
-      bgImage: '/images/bg.webp',
+      // bgImage: '/images/bg.webp',
     },
   ];
 
