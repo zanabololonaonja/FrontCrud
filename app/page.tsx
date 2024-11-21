@@ -599,7 +599,7 @@ export default function Home() {
         <MainSection />
         <div>
     <Heading>
-      <HighlightedText>Les </HighlightedText> Fonctionnalités principales
+    <HighlightedText>The </HighlightedText> main features
     </Heading>
     </div>
 

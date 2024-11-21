@@ -1,6 +1,7 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Box, Button, Typography, Modal, TextField, Grid } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { ToastContainer, toast } from 'react-toastify';
 import jsPDF from 'jspdf';
@@ -86,10 +87,20 @@ const styles = {
 
 
 const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
-  
+    
     // State pour la gestion de la modale de modification    
-    const [openModal, setOpenModal] = useState(false);  
+    const [openModal, setOpenModal] = useState(false);    
     const [formValues, setFormValues] = useState(arrangements);
+    const [isOwner, setIsOwner] = useState(false);
+
+    useEffect(() => {
+      // Vérifiez dans localStorage si l'utilisateur est propriétaire
+      const userData = JSON.parse(localStorage.getItem('userData')); // Récupérer les données de l'utilisateur
+      if (userData && userData.typeofuser === 'owner') {
+        setIsOwner(true); // Si c'est un propriétaire, définir `isOwner` sur true
+      }
+    }, []);
+  
 
     // Gestion de la modale
     const handleOpenModal = () => setOpenModal(true);
@@ -273,8 +284,7 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
             const data = await res.json();
             console.log('Mise à jour réussie:', data);
       
-            alert('Arangement  avec succès ');       
-
+            toast.success('Arangement  avec succès ');       
    
             setOpenModal(false); // Fermer la modale après la mise à jour
         } catch (error) {
@@ -352,37 +362,44 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                 </Box>
             </Box>
             <Box style={{ display: 'flex', justifyContent: 'center' }}>
-                <Button variant="contained" color="default" onClick={onClose} style={styles.button}>
-                    Fermer
-                </Button>
+            <Button
+  variant="text" // Utilisez "text" pour un bouton sans fond
+  onClick={onClose}
+  style={{
+    minWidth: 'auto', // Assurez-vous que la largeur du bouton est adaptée à la flèche
+    padding: 0, // Retirez tout padding inutile
+    color: 'black', // Flèche noire
+  }}
+>
+  <ArrowBackIcon style={{ color: 'black' }} /> {/* Flèche noire */}
+</Button>
+
 
 
                  {/* {userData?.typeofuser === 'owner' && ! (
         <>           */}
-              <Button
-                    variant="contained"
-                    sx={{
-                        backgroundColor: '#f0f0f0',   
-                        
-                    // Fond noir  
-                        color: 'black',
-                        marginTop:'9px',
-                       height:'38px',
-                        width: '120px', // Ajustez cette valeur pour modifier la largeur
-                        '&:hover': {
-                            backgroundColor: '#333',
-                            color: 'white', 
-                             // Couleur du bouton en hover (gris foncé)
-                        },
-                    }}
-                    onClick={handleOpenModal}
-                >
-                    Modifier
-                </Button>
-                     
-     
-
-    
+               <>
+      {isOwner && ( // Affiche le bouton uniquement si l'utilisateur est le propriétaire
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: '#f0f0f0',
+            marginLeft: '200px',
+            color: 'black',
+            marginTop: '9px',
+            height: '38px',
+            width: '120px',
+            '&:hover': {
+              backgroundColor: '#333',
+              color: 'white',
+            },
+          }}
+          onClick={handleOpenModal}
+        >
+          Modifier
+        </Button>
+      )}
+    </>
                 {/* </>     
         
     )} */}

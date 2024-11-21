@@ -196,7 +196,7 @@ const AlbumFamille = ({ userData }) => {
             fontWeight: 'bold',
           }}
         >
-          <PlusOutlined /> Créer un album
+          <PlusOutlined /> Create an album
         </Button>
    </>
         
@@ -221,9 +221,9 @@ const AlbumFamille = ({ userData }) => {
       />
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Button type="primary" onClick={handleAddAlbum} style={{ marginRight: '10px' }}>
-          Sauvegarder
+        Save
         </Button>
-        <Button onClick={() => setIsAddingAlbum(false)}>Annuler</Button>
+        <Button onClick={() => setIsAddingAlbum(false)}>Cancel</Button>
       </div>
     </Modal>
 
@@ -241,9 +241,9 @@ const AlbumFamille = ({ userData }) => {
     
         </div>  
       )}
-    {userData?.typeofuser === 'owner' && !showAlbums && (
-        <>
-
+    {userData?.typeofuser === 'owner' && !showAlbums && (   
+        <>    
+           
     {/* {!showAlbums && ( */}
       <div
         style={{ 
@@ -267,7 +267,7 @@ const AlbumFamille = ({ userData }) => {
           }}
         >
           
-          Créer un album
+          Create an album
         </Button>
 
         </div>
@@ -277,7 +277,7 @@ const AlbumFamille = ({ userData }) => {
       {!showAlbums && (
        
 <h2 style={{ marginTop: '20px', color: 'rgb(39, 39, 39)', fontWeight: 'bold' }}>
-          Les albums que vous créez s'affichent ici
+The albums you create will appear here
         </h2>
   
 )}
@@ -285,16 +285,16 @@ const AlbumFamille = ({ userData }) => {
     {/* Afficher le contenu de l'album sélectionné */}
     {currentAlbum ? (
       <div style={{ marginTop: '20px' }}>
-        <h2> {currentAlbum.namealbum} (ID: {currentAlbum.idalbum})</h2>
-      
+        {/* <h2> {currentAlbum.namealbum} (ID: {currentAlbum.idalbum})</h2>
+       */}
         <AddPhoto currentAlbum={currentAlbum} />
-        <Button
+        <Button  
   style={{ marginTop: '10px' }}
   className="btn-return" // Ajoute une classe pour le style
   onClick={() => setCurrentAlbum(null)} // Retourner à la liste des albums
 >
   <span className="rocket-icon">🚀</span> {/* Icône fusée */}
-Voir albums
+  View albums
 </Button>
 
       </div>
@@ -320,7 +320,7 @@ Voir albums
         }}
       >
         <h3>{album.namealbum}</h3>
-        <button className="view-album-button">Voir l'album</button>
+        <button className="view-album-button">View albums</button>
       </div>
     ))}
   </div>
@@ -334,3 +334,4 @@ Voir albums
 
 
 export default AlbumFamille;
+       

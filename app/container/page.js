@@ -23,6 +23,8 @@ import {
 import { Menu, Dropdown, Switch, Avatar, Button, Modal } from "antd";
 import { UserContext } from '../crud/UserContext';
 import AlbumFamille from './AlbumFamille';
+import { PlusOutlined } from '@ant-design/icons';
+
 import ArrangementsF from './ArrangementsF';
 import ContactU from './ContactU';
 import Testament from './Testament'; 
@@ -47,22 +49,22 @@ const verticalMenuItems = [
     
  
   
-  
+    {
+      key: "4",
+      label: "Album",
+      icon: <AppstoreOutlined />,
+    },
   // Si l'utilisateur n'est pas propriétaire, on ne montre pas ce menu
   {
     key: "2",
     icon: <CalendarOutlined />,
-    label: "Testament",
+    label: "Will",
   },
-  {
-    key: "4",
-    label: "Album",
-    icon: <AppstoreOutlined />,
-  },
+  
   {
     key: "5",
     icon: <BankOutlined />,
-    label: "Arrangements Funéraires",
+    label: "Funeral Arrangements",
   },
   
    // Assurez-vous que `userData` est défini avant d'essayer de vérifier `userData?.typeofuser`
@@ -245,13 +247,13 @@ const verticalMenuItems = [
 
   const handleLogout = () => {
     Swal.fire({
-      title: ' déconnexion ?',
-      text: "Souhaitez-vous vraiment vous deconnecter?",
+      title: 'Log out?',
+      text: "Are you sure you want to log out?",
       // icon: 'warning',
       showCancelButton: true,  
       confirmButtonColor: '#F8394DE5',
       cancelButtonColor: '#3D3D3D',
-      confirmButtonText: 'Oui !',
+      confirmButtonText: 'yes !',
       cancelButtonText: 'Non'
     }).then((result) => { 
       if (result.isConfirmed) {
@@ -312,14 +314,16 @@ const verticalMenuItems = [
         </p>
         <br /><br /> 
         <div style={{ marginTop: "20px", textAlign: "left" }}>
-        <Button 
-  type="primary" 
-  onClick={showModal} 
-  className="custom-button"
-  style={{ backgroundColor: "#007bff", border: "none", padding: "10px 20px", fontSize: "16px" }}
->
-  Ajouter autre informations
-</Button>
+
+        <Button
+      type="primary"
+      onClick={showModal}
+      className="custom-button"
+      style={{ backgroundColor: "#007bff", border: "none", padding: "10px 20px", fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}
+    >
+      <PlusOutlined /> Add more information   
+    </Button>
+   
    </div>
       </div>
     )}
@@ -334,17 +338,17 @@ const verticalMenuItems = [
 <div style={{ backgroundColor: "#fff", padding: "15px", marginBottom: "20px", borderRadius: "10px", boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)" }}>
 <div className="title-container">
         <FaUser className="animated-icon" /> {/* Icône animée */}
-        <h3>Informations Personnelles</h3>
+        <h3>Personal Information</h3>
       </div>
   {/* Section pour le nom et le prénom */}
   <div style={{ display: "flex", justifyContent: "space-between" }}>
     <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px", flex: "1" }}>
-      <span style={{ fontWeight: "bold", display: "block" }}>Prénom </span>
+      <span style={{ fontWeight: "bold", display: "block" }}> First Name </span>
       {userProfile.firstName}
     </p>
     
     <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px", flex: "1" }}>
-      <span style={{ fontWeight: "bold", display: "block" }}>Nom </span>
+      <span style={{ fontWeight: "bold", display: "block" }}>Last Name </span>
       {userProfile.lastName}
     </p>
   </div>
@@ -352,12 +356,12 @@ const verticalMenuItems = [
   {/* Section pour le deuxième prénom et le type d'utilisateur */}
   <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
     <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px", flex: "1" }}>
-      <span style={{ fontWeight: "bold", display: "block" }}>Deuxième prénom </span>
+      <span style={{ fontWeight: "bold", display: "block" }}>Middle Name </span>
       {userProfile.middleName}
     </p>
     
     <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px", flex: "1" }}>
-      <span style={{ fontWeight: "bold", display: "block" }}>Type d'utilisateur </span>
+      <span style={{ fontWeight: "bold", display: "block" }}>User Type </span>
       {userProfile.typeofuser}
     </p>
   </div>
@@ -375,17 +379,17 @@ const verticalMenuItems = [
         {userProfile.email}
       </p>
       <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px" }}>
-        <span style={{ fontWeight: "bold" }}>Téléphone </span>
+        <span style={{ fontWeight: "bold" }}>Phone </span>
         <br />
         {userProfile.phone}
       </p>
       
       <p style={{ margin: "5px 0", fontSize: "16px", backgroundColor: "#f0f8ff", padding: "5px", borderRadius: "5px" }}>
-        <span style={{ fontWeight: "bold" }}>Meilleur moment pour appeler </span>
+        <span style={{ fontWeight: "bold" }}>Address </span>
         <br />
         {userProfile.besttimeforcall}
       </p>
-      <br />
+      <br />  
       {/* Icônes de réseaux sociaux */}
       <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
         <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" style={{ color: "#3b5998" }}>
@@ -409,12 +413,13 @@ const verticalMenuItems = [
 </div>
 )
  } else {
-            return <div  className="infoCU">En tant que contact d'urgence,<br /> Vous ne pouvez pas apporter de modifications,<br /> mais seulement consulter les contenus</div>;  // Message d'erreur si non-propriétaire
-
-            
-
+            return <div className="infoCU">
+            <img src="https://st3.depositphotos.com/1036149/33950/i/600/depositphotos_339503522-stock-illustration-fun-asian-teenager-manga-style.jpg" alt="Description de l'image" style={{ width: '300px', marginBottom: '10px',marginLeft:'450px',marginTop:'-110px' }} />
+            "As an emergency contact,<br /> You cannot make any changes,<br /> but only view the content.
+          </div>
+  
           }
-
+  
          case "1":
           if (userData?.typeofuser === 'owner') {  
             return <ContactU userData={userData} />;  
@@ -422,10 +427,11 @@ const verticalMenuItems = [
             return <div>Accès refusé. Vous n'êtes pas autorisé à voir cette section.</div>;  // Message d'erreur si non-propriétaire
 
             
-          } case "2":  return <Testament userData={userData} />; 
+          } 
     
  case "4":
   return <AlbumFamille userData={userData} />; 
+  case "2":  return <Testament userData={userData} />; 
 
   case "5":
     return <ArrangementsF userData={userData} />; 
@@ -551,11 +557,11 @@ const verticalMenuItems = [
 <ToastContainer />
 
 <Modal
-  title={<h2 style={{ color: 'black', fontWeight: 'bold', fontSize: '19px' }}>Modifier le Profil</h2>}
+  title={<h2 style={{ color: 'black', fontWeight: 'bold', fontSize: '19px' }}>Edit Profile</h2>}  
   visible={isModalVisible}
   onOk={handleOk}
-  onCancel={handleCancel}
-  width={700}
+  onCancel={handleCancel}  
+  width={700}  
   okText="Enregistrer "
 >
   <div className="container rounded bg-white mt-3 mb-3">
@@ -592,7 +598,7 @@ const verticalMenuItems = [
           alignItems: "center",
           boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)"  // Ombre pour bien voir l'icône
         }}
-      >
+      >    
           <EditOutlined /> 
       </label>
       
@@ -631,31 +637,31 @@ const verticalMenuItems = [
     <div className="form-container">
       <div className="row">
         <div className="col-md-6">
-          <label className="labels">Prénom</label>
+          <label className="labels">First Name</label>
           <input type="text" className="form-control" name="username" value={formData.username} onChange={handleInputChange} placeholder="Prénom" required />
         </div>
         <div className="col-md-6">
-          <label className="labels">Deuxième Prénom</label>
+          <label className="labels">Middle Name</label>
           <input type="text" className="form-control" name="usermiddlename" value={formData.usermiddlename} onChange={handleInputChange} placeholder="Deuxième Prénom" />
         </div>
       </div>
       <div className="row">
         <div className="col-md-6">
-          <label className="labels">Nom</label>
+          <label className="labels">Last Name</label>
           <input type="text" className="form-control" name="userlastname" value={formData.userlastname} onChange={handleInputChange} placeholder="Nom" required />
         </div>
         <div className="col-md-6">
-          <label className="labels">Téléphone</label>
+          <label className="labels">Phone</label>
           <input type="text" className="form-control" name="idphone" value={formData.idphone} onChange={handleInputChange} required />
         </div>
       </div>
       <div className="row">
         <div className="col-md-6">
-          <label className="labels">Type d'utilisateur</label>
+          <label className="labels">User Type</label>
           <input type="text" className="form-control" name="typeofuser" value={formData.typeofuser} onChange={handleInputChange} required />
         </div>
         <div className="col-md-6">
-          <label className="labels">Moment pour appeler</label>
+          <label className="labels">Adresse</label>
           <input type="text" className="form-control" name="besttimeforcall" value={formData.besttimeforcall} onChange={handleInputChange} required />
         </div>
       </div>

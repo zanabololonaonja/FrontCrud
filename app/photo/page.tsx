@@ -16,17 +16,25 @@ const { Dragger } = Upload;
 
 const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } }> = ({ currentAlbum }) => {
   const [idphoto, setIdphoto] = useState("");
-  const [idalbum, setIdalbum] = useState('');
-
   const [attachedfile, setAttachedfile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const [photos, setPhotos] = useState<PhotoType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState<PhotoType | null>(null);
-  const [showForm, setShowForm] = useState(false); 
+  const [showForm, setShowForm] = useState(false);
   const [hoveredPhotoId, setHoveredPhotoId] = useState(null);
 
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    // Vérifiez dans localStorage si l'utilisateur est propriétaire
+    const userData = JSON.parse(localStorage.getItem('userData')); // Récupérer les données de l'utilisateur
+    console.log('User Data:', userData); // Debug pour vérifier les données récupérées
+    if (userData && userData.typeofuser === 'owner') {
+      setIsOwner(true); // Si c'est un propriétaire, définir `isOwner` sur true
+    }
+  }, []);
 
   // Fetch photos from the API based on the album ID
   const fetchPhotos = async (idalbum: string) => {
@@ -186,10 +194,18 @@ const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } 
     <div style={{ marginTop: '20px' }}>
       {/* Bouton pour afficher le formulaire d'ajout */}
       {!showForm && (
-      <Button className="btn-wave" type="primary" onClick={() => setShowForm(true)}>
-      <span className="icon">📷</span> {/* Utilisation d'une icône photo */}
-      Ajouter Photo
-    </Button>
+      <>
+      {isOwner && (
+        <Button
+          className="btn-wave"
+          type="primary"
+          onClick={() => setShowForm(true)}
+        >
+          <span className="icon">📷</span> {/* Utilisation d'une icône photo */}
+          Ajouter Photo
+        </Button>
+      )}
+    </>
     
      
       )}
@@ -197,27 +213,19 @@ const AddPhoto: React.FC<{ currentAlbum: { idalbum: string; namealbum: string } 
       {/* Formulaire d'ajout de photo, affiché uniquement si showForm est true */}
       {showForm && (
   <form onSubmit={handleSubmit} className="photo-upload-form">
-    <div className="form-group">
-      <label>ID Photo:</label>
       <input
-        type="text"
-        value={idphoto}
-        onChange={(e) => setIdphoto(e.target.value)}
-        required
-        className="form-input"
-      />
-    </div>
-    <div className="form-group">
-      <label>ID Album:</label>
-      <input
-        type="text"
-        value={idalbum}
-        onChange={(e) => setIdalbum(e.target.value)}
-        required
-        className="form-input"
-      />
-    </div>
+      type="hidden"
+      value={idphoto}
+      onChange={(e) => setIdphoto(e.target.value)}
+    />
 
+    {/* Champ masqué pour ID Album */}
+    <input
+      type="hidden"
+      value={currentAlbum.idalbum}
+      readOnly
+    />
+    
     <div className="form-group">
             <label>Attach File:</label>
             <Dragger

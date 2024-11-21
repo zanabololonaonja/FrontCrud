@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css'
 
 const EmergencyContactAuth = ({ toggleForm, onClose }) => {
   const [email, setEmail] = useState('');
@@ -37,10 +38,27 @@ const EmergencyContactAuth = ({ toggleForm, onClose }) => {
           // Affichage du iduser du propriétaire dans la console
           console.log('ID du propriétaire:', owner.iduser);
           console.log('Informations du propriétaire:', owner);
-  
-          setTimeout(() => {
-            window.location.href = "/container";  // Redirection vers la page principale
+          Swal.fire({
+            title: 'Ouverture de la page...',
+            // html: 'Chargement en cours. Veuillez patienter.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+              Swal.showLoading();
+              // Redirection manuelle
+              window.location.href = "/container";
+            }
           });
+    
+          // Garder Swal ouvert jusqu'à ce que la page cible soit complètement chargée
+          window.onload = () => {
+            Swal.close(); // Fermer l'alerte une fois la page chargée
+          };
+    
+  
+          // setTimeout(() => {
+          //   window.location.href = "/container";  // Redirection vers la page principale
+          // });
         } else {
           console.error('Les informations du propriétaire ne sont pas disponibles.');
         }
@@ -62,7 +80,7 @@ const EmergencyContactAuth = ({ toggleForm, onClose }) => {
     <div className="form-container">
       <img src="/images/LOGO.png" alt="Decorative" className="img-logo" />
       <br />
-      <p className='titre1'>Contact d'Urgence</p>
+      <p className='titre1'>Emergency contact</p>
       <hr />
       <form onSubmit={handleAuthSubmit}>
         <div>

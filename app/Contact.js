@@ -1,11 +1,37 @@
 // components/Footer.js
 "use client";
 import { RiMapPinLine, RiPhoneLine, RiMailLine, RiFacebookLine } from 'react-icons/ri';
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
+import { FaArrowUp  } from 'react-icons/fa'; 
 import './Contact.css'; // Assurez-vous que le chemin est correct
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Contact = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Gérer la visibilité de l'icône en fonction du défilement
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 200) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  // Fonction pour remonter en haut de la page
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <footer className="footer">
       <div className="footer__logo">
@@ -95,9 +121,15 @@ Hagerstown</p>
       </div>
 
       </div>
-
       <div className="footer__copyright">
         <p>&copy; MyLyfeLegacyDB - Copyright 2024</p>
+      </div>
+      <div
+        className={`rocket-to-top ${isVisible ? 'visible' : ''}`}
+        onClick={scrollToTop}
+        title="Retour en haut"
+      >
+        <FaArrowUp  size={30} />
       </div>
     </footer>
   );
