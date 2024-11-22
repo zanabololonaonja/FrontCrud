@@ -3,17 +3,18 @@ import { Avatar, TextField, Button } from '@mui/material'; // Importer Material-
 
 import './ContactU.css';
 
-import React, { useEffect, useState,useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import emailjs from 'emailjs-com';
 import { HiUser } from "react-icons/hi2";
 import MailIcon from '@mui/icons-material/Mail';
 import LockIcon from '@mui/icons-material/Lock';
 import PeopleIcon from '@mui/icons-material/People';
+import { ToastContainer, toast } from 'react-toastify';
 
 import AddIcon from '@mui/icons-material/Add';
 
 
-function ContactCard({ onAdd, title, bgImage, userData }) {  
+function ContactCard({ onAdd, title, bgImage, userData }) {
   const [isAdded, setIsAdded] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({
@@ -88,7 +89,7 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
     }
   };
 
-  
+
 
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
@@ -113,8 +114,8 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
       relation: contact.relation,  // Relation du contact
       contact_name: contact.nom  // Nom du contact
     };
-    
-    
+
+
 
     emailjs.send('service_k58if4k', 'template_0trv6km', templateParams)
       .then((response) => {
@@ -215,12 +216,11 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
           }}
         >
           <h2 className="title">{title}</h2>
+
           <p className="phrase">
-            C'est la personne la plus proche à qui vous pouvez confier tous vos testaments et arrangements funéraires.
-          </p>
+            This is the closest person to whom you can entrust all your wills and funeral arrangements.</p>
           <p className="phraseInfo">
-            💬 Après avoir rempli le formulaire, un email sera envoyé à la personne que vous avez désignée comme contact d'urgence.
-          </p>
+            💬 After filling out the form, an email will be sent to the person you have designated as the emergency contact.</p>
           <button
             onClick={() => setIsAdding(true)}
             className="btn-returna"
@@ -231,92 +231,100 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
             <span className="rocket-icon">
               <AddIcon />
             </span>
-            Ajout de contact
+            Add Contact
+
+
           </button>
         </div>
       ) : isAdding ? (
         <div className="card-form">
-         <TextField
-        label="Nom complet"
-        name="prenom"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={formData.prenom}
-        onChange={handleInputChange}
-        InputProps={{
-          style: {
-            fontWeight:  'bold' ,
-          },
-        }}
-      />
-      <p style={{
-      
-        paddingTop: '9px',
-        marginBottom: '-18px',
-        marginLeft: '-211px',
-        color: '#555', 
-      }}>
-        Code
-      </p>
-
-      <div className="pin-container">
-        {['digit1', 'digit2', 'digit3', 'digit4'].map((digit, index) => (
           <TextField
-            key={digit}
-            name={digit}
+            label="Full Name"
+
+            name="prenom"
             variant="outlined"
-            className="pin-input"
-            value={pin[digit]}
+            fullWidth
+            margin="normal"
+            value={formData.prenom}
             onChange={handleInputChange}
-            inputProps={{ maxLength: 1 }}
-            inputRef={digitRefs[index]}
             InputProps={{
               style: {
-                fontWeight: 'bold' , // Met en gras si la case est remplie
+                fontWeight: 'bold',
               },
             }}
           />
-        ))}
-      </div>
+          <p style={{
 
-      <TextField
-        label="Email"
-        name="email"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={formData.email}
-        onChange={handleInputChange}
-        InputProps={{
-          style: {
-            fontWeight: 'bold' , // Met en gras si le champ est rempli
-          },
-        }}
-      />
-      <TextField
-        label="Relation avec l'utilisateur"
-        name="relation"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={formData.relation}
-        onChange={handleInputChange}
-        InputProps={{
-          style: {
-            fontWeight:  'bold', // Met en gras si le champ est rempli
-          },
-        }}
-      />
+            paddingTop: '9px',
+            marginBottom: '-18px',
+            marginLeft: '-211px',
+            color: '#555',
+          }}>
+            Code
+          </p>
+
+          <div className="pin-container">
+            {['digit1', 'digit2', 'digit3', 'digit4'].map((digit, index) => (
+              <TextField
+                key={digit}
+                name={digit}
+                variant="outlined"
+                className="pin-input"
+                value={pin[digit]}
+                onChange={handleInputChange}
+                inputProps={{ maxLength: 1 }}
+                inputRef={digitRefs[index]}
+                InputProps={{
+                  style: {
+                    fontWeight: 'bold', // Met en gras si la case est remplie
+                    textAlign: 'center',
+                    fontSize:'20px',
+                    paddingLeft:'11px',
+                    backgroundColor:'white',
+                  },  
+                }}
+              />
+            ))}
+          </div>
+  
+          <TextField
+            label="Email"
+
+            name="email"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={formData.email}
+            onChange={handleInputChange}
+            InputProps={{
+              style: {
+                fontWeight: 'bold', // Met en gras si le champ est rempli
+              },
+            }}
+          />
+          <TextField
+            label="Relationship with the user"
+            name="relation"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={formData.relation}
+            onChange={handleInputChange}
+            InputProps={{
+              style: {
+                fontWeight: 'bold', // Met en gras si le champ est rempli
+              },
+            }}
+          />
           <input
-            type="file"  
-            name="photo"   
+            type="file"
+            name="photo"
             onChange={handleFileChange}
             accept="image/*"
           />
 
-          <Button style={{marginTop:'22px'}}   variant="contained" color="secondary" onClick={handleSubmit}>
-            Ajouter
+          <Button style={{ marginTop: '22px' }} variant="contained" color="secondary" onClick={handleSubmit}>
+            Add
           </Button>
         </div>
       ) : isAdded ? (
@@ -348,19 +356,19 @@ function ContactCard({ onAdd, title, bgImage, userData }) {
                   <div>
                     <p style={styles.label}>  <LockIcon style={styles.icon} />
                       Code:</p>
-                    <p className="phraseContact">{contacts[contacts.length - 1].nom || 'Non spécifié'}</p>
+                    <p className="phraseCode">{contacts[contacts.length - 1].nom || 'Non spécifié'}</p>
                   </div>
                 </div>
 
                 <div style={styles.contactDetail}>
-                  <div>  
+                  <div>
                     <p style={styles.label}> <PeopleIcon style={styles.icon} />
-                      Relation:</p>
+                      Relationship:</p>
                     <p className="phraseContact">{contacts[contacts.length - 1].relation || 'Non spécifié'}</p>
                   </div>
                 </div>
               </div>
-            </div>   
+            </div>
           ) : (
             <p>Aucun contact trouvé.</p>
           )}
@@ -433,18 +441,19 @@ const styles = {
 
 
 // Main component ContactU
-const ContactU = ({ userData }) => {  
+const ContactU = ({ userData }) => {
   const contacts = [
     {
-      title: 'Premier contact d\'urgence',
+      title: 'First emergency contact'
       // bgImage: '/images/bgg.webp',
-    },  
+    },
     {
-      title: 'Deuxième contact d\'urgence',
+      title: 'Second emergency contact'
       // bgImage: '/images/bgggg.webp',
     },
     {
-      title: 'Troisième contact d\'urgence',
+      title: 'Third emergency contact'
+
       // bgImage: '/images/bg.webp',
     },
   ];

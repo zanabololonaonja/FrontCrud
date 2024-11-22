@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './Testament.css';
-import BookIcon from '@mui/icons-material/Book'; 
+import BookIcon from '@mui/icons-material/Book';
 import {
   Stepper,
   Step,
@@ -10,8 +10,8 @@ import {
   TextField, Typography,
   FormControlLabel,
   Checkbox,
-  RadioGroup,  
-  Grid,       
+  RadioGroup,
+  Grid,
   Radio,
 } from '@mui/material';
 import jsPDF from 'jspdf';
@@ -23,19 +23,28 @@ import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import GavelIcon from '@mui/icons-material/Gavel';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import { GlobalStyles } from '@mui/material'; 
+import { GlobalStyles } from '@mui/material';
 import SignatureCanvas from 'react-signature-canvas';
-
-
 const steps = [
-  { label: 'Informations Testateur', icon: <PersonIcon /> },
-  { label: 'Exécuteur', icon: <AssignmentIcon /> },
-  { label: 'Biens à Léguer', icon: <HomeIcon /> },
-  { label: ' Témoins', icon: <GroupIcon /> },
-  { label: 'Tuteur ', icon: <GavelIcon /> },
-  { label: 'Type de Cadeau', icon: <MonetizationOnIcon /> },
-  { label: 'Recapitulatif', icon: <AssignmentIcon /> },
+  { label: 'Testator Information', icon: <PersonIcon /> },
+  { label: 'Executor', icon: <AssignmentIcon /> },
+  { label: 'Assets to Bequeath', icon: <HomeIcon /> },
+  { label: 'Witnesses', icon: <GroupIcon /> },
+  { label: 'Guardian', icon: <GavelIcon /> },
+  { label: 'Gift Type', icon: <MonetizationOnIcon /> },
+  { label: 'Summary', icon: <AssignmentIcon /> },
 ];
+
+
+// const steps = [
+//   { label: 'Informations Testateur', icon: <PersonIcon /> },
+//   { label: 'Exécuteur', icon: <AssignmentIcon /> },
+//   { label: 'Biens à Léguer', icon: <HomeIcon /> },
+//   { label: ' Témoins', icon: <GroupIcon /> },
+//   { label: 'Tuteur ', icon: <GavelIcon /> },
+//   { label: 'Type de Cadeau', icon: <MonetizationOnIcon /> },
+//   { label: 'Recapitulatif', icon: <AssignmentIcon /> },
+// ];
 
 const styles = {
   '@global': {
@@ -82,7 +91,7 @@ function Testament({ userData }) {
         ]
       }
     ]
-  });         
+  });
 
 
   const handleNext = () => setActiveStep((prevStep) => prevStep + 1);
@@ -109,7 +118,7 @@ function Testament({ userData }) {
       } else {
         updatedData[name] = type === 'checkbox' ? checked : value;
       }
-   
+
       return updatedData;
     });
   };
@@ -148,7 +157,7 @@ function Testament({ userData }) {
     });
   };
 
-    
+
   const [showTestament, setShowTestament] = useState(false); // Nouvel état pour afficher le testament
   const handleShowTestament = () => {
     setShowTestament(true);
@@ -212,7 +221,7 @@ function Testament({ userData }) {
       gift_type: event.target.value // On enregistre le type de don sélectionné
     }));
   };
-  
+
   // Fonction pour gérer les champs spécifiques au don (par exemple montant, bénéficiaire)
   const handleGiftFieldsChange = (field, value) => {
     setTestamentData(prevData => ({
@@ -220,7 +229,7 @@ function Testament({ userData }) {
       [field]: value
     }));
   };
-  
+
 
 
 
@@ -245,7 +254,7 @@ function Testament({ userData }) {
       console.error("L'utilisateur n'est pas connecté ou iduser est manquant");
       return;
     }
-  
+
     const testamentDataWithUser = {
       ...testamentData,
       iduser: userData.iduser,
@@ -253,8 +262,8 @@ function Testament({ userData }) {
       gift_description: testamentData.gift_description || null, // Description du don (si applicable)
       gift_amount: testamentData.gift_amount || null, // Montant du don
       gift_recipient: testamentData.gift_recipient || null, // Bénéficiaire du don
-      gift_charity_name: testamentData.gift_charity_name || null ,// Nom de la charité (si applicable)
-    
+      gift_charity_name: testamentData.gift_charity_name || null,// Nom de la charité (si applicable)
+
       heritages: testamentData.heritages.map(heritage => ({
         bien_legue: heritage.bien_legue, // Le bien légué
         valeur: heritage.valeur || 'Non spécifié', // Optionnel : ajouter une valeur
@@ -265,9 +274,9 @@ function Testament({ userData }) {
         }))
       }))
     };
-  
+
     console.log('Données du testament envoyées:', testamentDataWithUser);
-  
+
     if (activeStep === steps.length - 1) {
       try {
         const response = await fetch('http://localhost:5000/api/testamentsadd', {
@@ -277,7 +286,7 @@ function Testament({ userData }) {
           },
           body: JSON.stringify(testamentDataWithUser),
         });
-  
+
         const data = await response.json();
         if (response.ok) {
           console.log('Testament ajouté avec succès:', data);
@@ -306,350 +315,351 @@ function Testament({ userData }) {
     setSignatureData(signature);
   };
 
-  
+
 
   const handleGeneratePDF = () => {
     const doc = new jsPDF();
-  
+
     // Configuration globale
     doc.setFont('Times', 'normal'); // Utilisation de la police Times pour un style officiel
     doc.setFontSize(12); // Police par défaut
-  
-    // Titre principal
+
+    // Main Title
     doc.setFontSize(16);
     doc.setFont('Times', 'bold');
-    doc.text('TESTAMENT', 105, 20, { align: 'center' }); // Titre centré horizontalement
-  
-    // Sous-titre
+    doc.text('LAST WILL AND TESTAMENT', 105, 20, { align: 'center' }); // Centered title horizontally
+
+    // Subtitle
     doc.setFontSize(14);
     doc.setFont('Times', 'italic');
-    doc.text('Acte de disposition de biens après décès', 105, 30, { align: 'center' });
-  
-    // Ligne de séparation
-    doc.setDrawColor(0, 0, 0); // Couleur noire
+    doc.text('Document for Disposition of Property After Death', 105, 30, { align: 'center' });
+
+    // Separator Line
+    doc.setDrawColor(0, 0, 0); // Black color
     doc.line(10, 35, 200, 35);
-  
+
     // Introduction
     doc.setFontSize(12);
     doc.setFont('Times', 'normal');
-    let currentY = 45; // Point de départ vertical
-    const lineSpacing = 8; // Espacement des lignes
-  
-    // Données de l'utilisateur
+    let currentY = 45; // Starting vertical point
+    const lineSpacing = 8; // Line spacing
+
+    // User Information
     doc.text(
-      `Je, soussigné(e) ${testamentData.nom_testateur || 'Non spécifié'}, né(e) le ${testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : 'Non spécifiée'} à ${testamentData.lieu_naissance_testateur || 'Non spécifié'},`,
+      `I, the undersigned ${testamentData.nom_testateur || 'Not specified'}, born on ${testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : 'Not specified'} in ${testamentData.lieu_naissance_testateur || 'Not specified'},`,
       20,
       currentY
     );
     currentY += lineSpacing;
     doc.text(
-      `domicilié(e) à ${testamentData.adresse_testateur || 'Non spécifiée'}, déclare être sain(e) d’esprit et avoir la capacité juridique à gérer mes biens.`,
+      `residing at ${testamentData.adresse_testateur || 'Not specified'}, declare to be of sound mind and legally capable of managing my assets.`,
       20,
       currentY
     );
     currentY += lineSpacing * 2;
-  
-    // Section Héritages
+
+    // Inheritance Section
     doc.setFont('Times', 'bold');
-    doc.text('Héritages et bénéficiaires :', 20, currentY);
+    doc.text('Article I.  INHERITANCE AND BENEFICIARIES :', 20, currentY);
     doc.setFont('Times', 'normal');
     currentY += lineSpacing;
-  
+
     if (testamentData.bien_legue && JSON.parse(testamentData.bien_legue).length > 0) {
       const heritages = JSON.parse(testamentData.bien_legue);
-  
+
       heritages.forEach((heritage, index) => {
-        doc.text(`Héritage ${index + 1} : Bien légué - ${heritage.biensL || 'Non spécifié'}`, 20, currentY);
+        doc.text(`Inheritance ${index + 1}: Bequeathed Asset - ${heritage.biensL || 'Not specified'}`, 20, currentY);
         currentY += lineSpacing;
-  
+
         if (testamentData.adresse_bien_legue && JSON.parse(testamentData.adresse_bien_legue).length > 0) {
           const beneficiaries = JSON.parse(testamentData.adresse_bien_legue);
-  
-          beneficiaries.forEach((beneficiaire) => {
+
+          beneficiaries.forEach((beneficiary) => {
             doc.text(
-              `  - Bénéficiaire : ${beneficiaire.nom || 'Non spécifié'}, né(e) le ${
-                beneficiaire.date_naissance
-                  ? new Date(beneficiaire.date_naissance).toLocaleDateString()
-                  : 'Non spécifiée'
-              }, relation : ${beneficiaire.relation || 'Non spécifiée'}.`,
+              `  - Beneficiary: ${beneficiary.nom || 'Not specified'}, born on ${beneficiary.date_naissance
+                ? new Date(beneficiary.date_naissance).toLocaleDateString()
+                : 'Not specified'
+              }, relation: ${beneficiary.relation || 'Not specified'}.`,
               20,
               currentY
             );
             currentY += lineSpacing;
           });
         } else {
-          doc.text('  Aucun bénéficiaire spécifié.', 20, currentY);
+          doc.text('  No beneficiary specified.', 20, currentY);
           currentY += lineSpacing;
         }
-  
+
         currentY += lineSpacing;
       });
     } else {
-      doc.text('Aucun héritage spécifié.', 20, currentY);
+      doc.text('No inheritance specified.', 20, currentY);
       currentY += lineSpacing;
     }
-  
-    // Section Tuteur
+
+    // Guardian Section
     doc.setFont('Times', 'bold');
-    doc.text('Tuteur légal :', 20, currentY);
+    doc.text('Article II. GUARDIAN AND EXECUTOR:', 20, currentY);
     doc.setFont('Times', 'normal');
     currentY += lineSpacing;
     doc.text(
-      `J’ai désigné ${testamentData.tuteur_nom || 'Non spécifié'}, domicilié(e) à ${
-        testamentData.tuteur_adresse || 'Non spécifiée'
-      }, comme tuteur légal.`,
+      `I have appointed ${testamentData.tuteur_nom || 'Not specified'}, residing at ${testamentData.tuteur_adresse || 'Not specified'
+      }, as the legal guardian.`,
       20,
       currentY
     );
     currentY += lineSpacing;
-  
-    // Section Exécuteur
+
+    // Executor Section
     doc.setFont('Times', 'bold');
-    doc.text('Exécuteur testamentaire :', 20, currentY);
+    doc.text('Testamentary Executor:', 20, currentY);
     doc.setFont('Times', 'normal');
     currentY += lineSpacing;
     doc.text(
-      `J’ai désigné ${testamentData.nom_executant || 'Non spécifié'}, et en cas d’empêchement, ${
-        testamentData.nom_executant_alternatif || 'Non spécifié'
-      }, comme exécuteur testamentaire.`,
+      `I have appointed ${testamentData.nom_executant || 'Not specified'}, and in case of incapacity, ${testamentData.nom_executant_alternatif || 'Not specified'
+      }, as the testamentary executor.`,
       20,
       currentY
     );
     currentY += lineSpacing;
-  
-    // Section Témoins
+
+    // Witness Section
     doc.setFont('Times', 'bold');
-    doc.text('Témoins :', 20, currentY);
+    doc.text('Witnesses:', 20, currentY);
     doc.setFont('Times', 'normal');
     currentY += lineSpacing;
     doc.text(
-      `Témoin 1 : ${testamentData.temoin1_nom || 'Non spécifié'}, domicilié(e) à ${
-        testamentData.temoin1_adresse || 'Non spécifiée'
+      `Witness 1: ${testamentData.temoin1_nom || 'Not specified'}, residing at ${testamentData.temoin1_adresse || 'Not specified'
       }.`,
       20,
       currentY
     );
     currentY += lineSpacing;
     doc.text(
-      `Témoin 2 : ${testamentData.temoin2_nom || 'Non spécifié'}, domicilié(e) à ${
-        testamentData.temoin2_adresse || 'Non spécifiée'
+      `Witness 2: ${testamentData.temoin2_nom || 'Not specified'}, residing at ${testamentData.temoin2_adresse || 'Not specified'
       }.`,
       20,
       currentY
     );
-    currentY += lineSpacing * 2;
-  
+    
+   
+    currentY += lineSpacing *2 ;
 
-    // Section Dons
-doc.setFont('Times', 'bold');
-doc.text('Dons :', 20, currentY);
-doc.setFont('Times', 'normal');
-currentY += lineSpacing;
 
-if (testamentData.gift_type) {
-  switch (testamentData.gift_type) {
-    case 'Cash':
-      doc.text(
-        `Type : Espèces, Montant : ${testamentData.gift_amount || 'Non spécifié'} euros, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
-        20,
-        currentY
-      );
-      break;
-    case 'Vehicle':
-      doc.text(
-        `Type : Véhicule, Description : ${testamentData.gift_vehicle || 'Non spécifiée'}, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
-        20,
-        currentY
-      );
-      break;
-    case 'Real Estate':
-      doc.text(
-        `Type : Immobilier, Description : ${testamentData.gift_property || 'Non spécifiée'}, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
-        20,
-        currentY
-      );
-      break;
-    case 'Charity':
-      doc.text(
-        `Type : Charité, Nom : ${testamentData.gift_charity || 'Non spécifié'}, Montant : ${testamentData.gift_amount || 'Non spécifié'} euros`,
-        20,
-        currentY
-      );
-      break;
-    case 'Other':
-      doc.text(
-        `Type : Autre, Description : ${testamentData.gift_other || 'Non spécifiée'}, Donné à : ${testamentData.gift_recipient || 'Non spécifié'}`,
-        20,
-        currentY
-      );
-      break;
-    default:
-      doc.text('Type de don non spécifié.', 20, currentY);
-  }
-} else {
-  doc.text('Aucun don supplémentaire spécifié.', 20, currentY);
-}
+    // Donations Section
+    doc.setFont('Times', 'bold');
+    doc.text('Aerticle III. DONATIONS:', 20, currentY);
+    doc.setFont('Times', 'normal');
+    currentY += lineSpacing;
+    doc.text(
+      ` I wish to make the following donation:`,
+      20,
+      currentY
+    );
+    currentY += lineSpacing;
 
-currentY += lineSpacing * 2;
-
-    // Clause finale
+    if (testamentData.gift_type) {
+      switch (testamentData.gift_type) {
+        case 'Cash':
+          doc.text(
+            `Type: Cash, Amount: ${testamentData.gift_amount || 'Not specified'} euros, Given to: ${testamentData.gift_recipient || 'Not specified'}`,
+            20,
+            currentY
+          );
+          break;
+        case 'Vehicle':
+          doc.text(
+            `Type: Vehicle, Description: ${testamentData.gift_vehicle || 'Not specified'}, Given to: ${testamentData.gift_recipient || 'Not specified'}`,
+            20,
+            currentY
+          );
+          break;
+        case 'Real Estate':
+          doc.text(
+            `Type: Real Estate, Description: ${testamentData.gift_property || 'Not specified'}, Given to: ${testamentData.gift_recipient || 'Not specified'}`,
+            20,
+            currentY
+          );
+          break;
+        case 'Charity':
+          doc.text(
+            `Type: Charity, Name: ${testamentData.gift_charity || 'Not specified'}, Amount: ${testamentData.gift_amount || 'Not specified'} euros`,
+            20,
+            currentY
+          );
+          break;
+        case 'Other':
+          doc.text(
+            `Type: Other, Description: ${testamentData.gift_other || 'Not specified'}, Given to: ${testamentData.gift_recipient || 'Not specified'}`,
+            20,
+            currentY
+          );
+          break;
+        default:
+          doc.text('Donation type not specified.', 20, currentY);
+      }
+    } else {
+      doc.text('No additional donation specified.', 20, currentY);
+    }
+   
+    currentY += lineSpacing *2;
+    // Final Clause
     doc.setFont('Times', 'italic');
-    doc.text('Je reconnais que mes volontés exprimées dans ce testament doivent être respectées.', 20, currentY);
+    doc.text('I acknowledge that my wishes expressed in this will must be respected.', 20, currentY);
     currentY += lineSpacing;
-    doc.text('Je révoque tous les testaments antérieurs.', 20, currentY);
-  
-   // Positionner l'élément à droite
-currentY += lineSpacing * 2;
-doc.setFont('Times', 'bold');
-const dateText = `Fait le ${new Date().toLocaleDateString()}, en présence des témoins.`;
+    doc.text('I revoke all prior wills.', 20, currentY);
 
-// Afficher la date à droite
-const pageWidth = doc.internal.pageSize.getWidth();
-doc.text(dateText, pageWidth - 20 - doc.getTextWidth(dateText), currentY); // Position calculée pour aligner à droite
+    // Position element to the right
+    currentY += lineSpacing * 2;
+    doc.setFont('Times', 'bold');
+    const dateText = `Done on ${new Date().toLocaleDateString()}, in the presence of witnesses.`;
 
-currentY += lineSpacing * 2; // Espace pour la section suivante
+    // Display date to the right
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.text(dateText, pageWidth - 20 - doc.getTextWidth(dateText), currentY); // Right-aligned text
 
-// Afficher "Signature :" à droite
-doc.text('Signature :', pageWidth - 20 - doc.getTextWidth('Signature :'), currentY);
+    currentY += lineSpacing * 2; // Space for the next section
 
-// Vérifier s'il y a des données de signature
-if (signatureData) {
-  // Ajouter l'image de la signature si elle existe
-  doc.addImage(signatureData, 'PNG', pageWidth - 70, currentY + lineSpacing, 50, 20); // Image ajoutée à droite
-} else {
-  // Afficher "Non fournie." si aucune signature n'est fournie
-  doc.text('Non fournie.', pageWidth - 20 - doc.getTextWidth('Non fournie.'), currentY + lineSpacing);
-}
+    // Display "Signature:" on the right
+    doc.text('Signature:', pageWidth - 20 - doc.getTextWidth('Signature:'), currentY);
 
-    // Téléchargement du PDF
-    doc.save('testament.pdf');
-  };
-     
-  
+    // Check for signature data
+    if (signatureData) {
+      // Add signature image if available
+      doc.addImage(signatureData, 'PNG', pageWidth - 70, currentY + lineSpacing, 50, 20); // Image added to the right
+    } else {
+      // Display "Not provided." if no signature is provided
+      doc.text('Not provided.', pageWidth - 20 - doc.getTextWidth('Not provided.'), currentY + lineSpacing);
+    }
 
-// Define image paths for different gift typess  
-const cashImage = '/images/vola.jpg';
+    // Download the PDF
+    doc.save('will.pdf');
+  }
 
-const vehicleImage = '/images/o.jpg';
-const realEstateImage = '/images/trano.jpg';
-const charityImage = '/images/coeur.jpg';
-const otherImage = '/images/cc.jpg';
 
-const renderGiftFields = () => {
-  switch (giftType) {
-    case 'Cash':
-      return (
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <TextField
-            label="Montant"
-            value={testamentData.gift_amount}
-            onChange={(e) => handleGiftFieldsChange('gift_amount', e.target.value)}
-            margin="normal"
-            fullWidth
-            sx={{ width: '200%' }} // Champ plus large
-          />
-          <TextField
-            label="Bénéficiaire"
-            value={testamentData.gift_recipient}
-            onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
-            margin="normal"
-            fullWidth
-            sx={{ width: '200%' }} // Champ plus large
-          />
-        </Box>
-      );  
-    case 'Vehicle':
-      return (
-        <Box display="flex" flexDirection="column" alignItems="center">
-          <TextField
-            label="Description du véhicule"
-            value={testamentData.gift_vehicle}
-            onChange={(e) => handleGiftFieldsChange('gift_vehicle', e.target.value)}
-            margin="normal"
-            fullWidth
-            sx={{ width: '200%' }} // Champ plus large
-          />
-          <TextField
-            label="Bénéficiaire"
-            value={testamentData.gift_recipient}
-            onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
-            margin="normal"
-            fullWidth 
+  // Define image paths for different gift typess  
+  const cashImage = '/images/vola.jpg';
+
+  const vehicleImage = '/images/o.jpg';
+  const realEstateImage = '/images/trano.jpg';
+  const charityImage = '/images/coeur.jpg';
+  const otherImage = '/images/cc.jpg';
+
+  const renderGiftFields = () => {
+    switch (giftType) {
+      case 'Cash':
+        return (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <TextField
+              label="Amount"
+              value={testamentData.gift_amount}
+              onChange={(e) => handleGiftFieldsChange('gift_amount', e.target.value)}
+              margin="normal"
+              fullWidth
               sx={{ width: '200%' }} // Champ plus large
-          />
-        </Box>
-      );
+            />
+            <TextField
+              label="Beneficiary"
+              value={testamentData.gift_recipient}
+              onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+          </Box>
+        );
+      case 'Vehicle':
+        return (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <TextField
+              label="Vehicle Description"
+              value={testamentData.gift_vehicle}
+              onChange={(e) => handleGiftFieldsChange('gift_vehicle', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+            <TextField
+              label="Beneficiary"
+              value={testamentData.gift_recipient}
+              onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+          </Box>
+        );
 
 
       case 'Real Estate':
-  return (
-    <Box display="flex" flexDirection="column" alignItems="center">
-      <TextField
-        label="Description de la propriété"
-        value={testamentData.gift_property}
-        onChange={(e) => handleGiftFieldsChange('gift_property', e.target.value)}
-        margin="normal"
-        fullWidth
-        sx={{ width: '200%' }} // Champ plus large
-      />
-      <TextField
-        label="Bénéficiaire"
-        value={testamentData.gift_recipient}
-        onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
-        margin="normal"
-        fullWidth
-        sx={{ width: '200%' }} // Champ plus large
-      />
-    </Box>
-  );
-case 'Charity':
-  return (
-    <Box display="flex" flexDirection="column" alignItems="center">
-      <TextField
-        label="Nom de la charité"
-        value={testamentData.gift_charity}
-        onChange={(e) => handleGiftFieldsChange('gift_charity', e.target.value)}
-        margin="normal"
-        fullWidth
-        sx={{ width: '200%' }} // Champ plus large
-      />
-      <TextField
-        label="Montant"
-        value={testamentData.gift_amount}
-        onChange={(e) => handleGiftFieldsChange('gift_amount', e.target.value)}
-        margin="normal"
-        fullWidth
-        sx={{ width: '200%' }} // Champ plus large
-      />
-    </Box>
-  );
-case 'Other':
-  return (
-    <Box display="flex" flexDirection="column" alignItems="center">
-      <TextField
-        label="Description du don"
-        value={testamentData.gift_other}
-        onChange={(e) => handleGiftFieldsChange('gift_other', e.target.value)}
-        margin="normal"
-        fullWidth
-        sx={{ width: '200%' }} // Champ plus large
-      />
-      <TextField
-        label="Bénéficiaire"
-        value={testamentData.gift_recipient}
-        onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
-        margin="normal"
-        fullWidth
-        sx={{ width: '200%' }} // Champ plus large
-      />
-    </Box>
-  );
+        return (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <TextField
+              label="Property Description"
+              value={testamentData.gift_property}
+              onChange={(e) => handleGiftFieldsChange('gift_property', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+            <TextField
+              label="Bénéficiaire"
+              value={testamentData.gift_recipient}
+              onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+          </Box>
+        );
+      case 'Charity':
+        return (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <TextField
+              label="Charity Name"
+              value={testamentData.gift_charity}
+              onChange={(e) => handleGiftFieldsChange('gift_charity', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+            <TextField
+              label="Amount"
+              value={testamentData.gift_amount}
+              onChange={(e) => handleGiftFieldsChange('gift_amount', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+          </Box>
+        );
+      case 'Other':
+        return (
+          <Box display="flex" flexDirection="column" alignItems="center">
+            <TextField
+              label="Donation Description"
+              value={testamentData.gift_other}
+              onChange={(e) => handleGiftFieldsChange('gift_other', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+            <TextField
+              label="Beneficiary"
+              value={testamentData.gift_recipient}
+              onChange={(e) => handleGiftFieldsChange('gift_recipient', e.target.value)}
+              margin="normal"
+              fullWidth
+              sx={{ width: '200%' }} // Champ plus large
+            />
+          </Box>
+        );
 
-    // Repeat similarly for other cases...
-    default:
-      return null;
-  }
-};
+      // Repeat similarly for other cases...
+      default:
+        return null;
+    }
+  };
 
 
 
@@ -666,10 +676,10 @@ case 'Other':
                   name="etranger"
                 />
               }
-              label="Testateur étranger"
+              label="Foreign Testator"
             />
             <TextField
-              label="Nom du testateur"
+              label="Testator's Name"
               name="nom_testateur"
               value={testamentData.nom_testateur}
               onChange={handleChange}
@@ -677,7 +687,7 @@ case 'Other':
               margin="normal"
             />
             <TextField
-              label="Date de naissance"
+              label="Date of Birth"
               name="date_naissance_testateur"
               type="date"
               value={testamentData.date_naissance_testateur}
@@ -687,7 +697,7 @@ case 'Other':
               InputLabelProps={{ shrink: true }}
             />
             <TextField
-              label="Lieu de naissance"
+              label="Place of Birth"
               name="lieu_naissance_testateur"
               value={testamentData.lieu_naissance_testateur}
               onChange={handleChange}
@@ -695,7 +705,7 @@ case 'Other':
               margin="normal"
             />
             <TextField
-              label="Adresse de résidence"
+              label="Residential Address"
               name="adresse_testateur"
               value={testamentData.adresse_testateur}
               onChange={handleChange}
@@ -708,7 +718,7 @@ case 'Other':
         return (
           <>
             <TextField
-              label="Nom de l'exécuteur"
+              label="Executor's Name"
               name="nom_executant"
               value={testamentData.nom_executant}
               onChange={handleChange}
@@ -716,14 +726,13 @@ case 'Other':
               margin="normal"
             />
             <TextField
-              label="Nom de l'exécuteur alternatif"
+              label="Alternate Executor's Name"
               name="nom_executant_alternatif"
               value={testamentData.nom_executant_alternatif}
               onChange={handleChange}
               fullWidth
               margin="normal"
             />
-
 
           </>
         );
@@ -734,9 +743,9 @@ case 'Other':
               <>
                 {testamentData.heritages.map((heritage, heritageIndex) => (
                   <div key={heritageIndex}>
-                    <h3 className='heritage'>HÉRITAGE {heritageIndex + 1}</h3>
+                    <h3 className='heritage'>HERITAGE {heritageIndex + 1}</h3>
                     <TextField
-                      label="Bien légué"
+                      label="Inherited Asset"
                       name="bien_legue"
                       value={heritage.bien_legue}
                       onChange={(e) => handleChange(e, heritageIndex)}
@@ -745,18 +754,18 @@ case 'Other':
                       required
                     />
                     {/* <TextField
-                      label="Adresse du bien légué"
-                      name="adresse_bien_legue"
-                      value={heritage.adresse_bien_legue}
-                      onChange={(e) => handleChange(e, heritageIndex)}
-                      fullWidth
-                      margin="normal"
-                    /> */}
+              label="Address of the Inherited Asset"
+              name="adresse_bien_legue"
+              value={heritage.adresse_bien_legue}
+              onChange={(e) => handleChange(e, heritageIndex)}
+              fullWidth
+              margin="normal"
+            /> */}
                     {heritage.beneficiaires.map((benef, benefIndex) => (
                       <div key={benefIndex}>
-                        <h4>Bénéficiaire {benefIndex + 1}</h4>
+                        <h4>Beneficiary {benefIndex + 1}</h4>
                         <TextField
-                          label="Nom du Bénéficiaire"
+                          label="Beneficiary's Name"
                           name="benef_nom"
                           value={benef.benef_nom}
                           onChange={(e) => handleChange(e, heritageIndex, benefIndex)}
@@ -764,7 +773,7 @@ case 'Other':
                           margin="normal"
                         />
                         <TextField
-                          label="Date de Naissance"
+                          label="Date of Birth"
                           name="benef_date_naissance"
                           type="date"
                           value={benef.benef_date_naissance}
@@ -774,13 +783,13 @@ case 'Other':
                           InputLabelProps={{ shrink: true }}
                         />
                         {/* <TextField
-                          label="Adresse du Bénéficiaire"
-                          name="benef_adresse"
-                          value={benef.benef_adresse}
-                          onChange={(e) => handleChange(e, heritageIndex, benefIndex)}
-                          fullWidth
-                          margin="normal"
-                        /> */}
+                  label="Beneficiary's Address"
+                  name="benef_adresse"
+                  value={benef.benef_adresse}
+                  onChange={(e) => handleChange(e, heritageIndex, benefIndex)}
+                  fullWidth
+                  margin="normal"
+                /> */}
                         <TextField
                           label="Relation"
                           name="benef_relation"
@@ -791,20 +800,21 @@ case 'Other':
                         />
                       </div>
                     ))}
-                    <Button onClick={() => addBeneficiary(heritageIndex)}>Ajouter un Bénéficiaire</Button>
+                    <Button onClick={() => addBeneficiary(heritageIndex)}>Add Beneficiary</Button>
                   </div>
                 ))}
-                <Button onClick={addHeritage}>Ajouter un Nouveau Bien</Button>
+                <Button onClick={addHeritage}>Add New Asset</Button>
               </>
             )}
           </div>
         );
 
+
       case 3:
         return (
           <>
             <TextField
-              label="Nom du témoin 1"
+              label="Witness 1 Name"
               name="temoin1_nom"
               value={testamentData.temoin1_nom}
               onChange={handleChange}
@@ -812,7 +822,7 @@ case 'Other':
               margin="normal"
             />
             <TextField
-              label="Adresse du témoin 1"
+              label="Witness 1 Address"
               name="temoin1_adresse"
               value={testamentData.temoin1_adresse}
               onChange={handleChange}
@@ -820,7 +830,7 @@ case 'Other':
               margin="normal"
             />
             <TextField
-              label="Nom du témoin 2"
+              label="Witness 2 Name"
               name="temoin2_nom"
               value={testamentData.temoin2_nom}
               onChange={handleChange}
@@ -828,7 +838,7 @@ case 'Other':
               margin="normal"
             />
             <TextField
-              label="Adresse du témoin 2"
+              label="Witness 2 Address"
               name="temoin2_adresse"
               value={testamentData.temoin2_adresse}
               onChange={handleChange}
@@ -839,10 +849,11 @@ case 'Other':
         );
 
       case 4:
+
         return (
           <>
             <TextField
-              label="Nom du tuteur"
+              label="Guardian's Name"
               name="tuteur_nom"
               value={testamentData.tuteur_nom}
               onChange={handleChange}
@@ -850,50 +861,39 @@ case 'Other':
               margin="normal"
             />
             <TextField
-              label="Adresse du tuteur"
+              label="Guardian's Address"
               name="tuteur_adresse"
               value={testamentData.tuteur_adresse}
               onChange={handleChange}
               fullWidth
               margin="normal"
-
             />
-
-
-
 
           </>
         );
-   
-      
-        case 5: // Gift Step (Cash, Vehicle, Real Estate, Charity, Other)
+      case 5: // Gift Step (Cash, Vehicle, Real Estate, Charity, Other)
         return (
-          
           <Box display="flex" flexDirection="column" alignItems="center">
-
-<FormLabel
-        component="legend"
-        style={{
-          fontSize: '16px',
-          fontWeight: 'bold',
-          color: 'rgb(39, 39, 39)',
-          display: 'block',
-          marginBottom: '10px',
-          marginTop: '33px',
-       marginLeft:'-350px',
-        }}
-      >
-       Dons de biens personnels à des personnes spécifiques :   <br /> <br />
-      </FormLabel>
+            <FormLabel
+              component="legend"
+              style={{
+                fontSize: '16px',
+                fontWeight: 'bold',
+                color: 'rgb(39, 39, 39)',
+                display: 'block',
+                marginBottom: '10px',
+                marginTop: '33px',
+                marginLeft: '-350px',
+              }}
+            >
+              Personal gifts of belongings to specific people:   <br /> <br />
+            </FormLabel>
             <RadioGroup
               name="gift_type"
               value={giftType}
               onChange={handleGiftTypeChange}
               row
-
-
             >
-              
               <Grid container justifyContent="center" spacing={4}>
                 <Grid item>
                   <FormControlLabel
@@ -955,95 +955,97 @@ case 'Other':
                     }
                   />
                 </Grid>
-              </Grid>   
+              </Grid>
             </RadioGroup>
-  
+
             {/* Render specific inputs based on selected gift type */}
             {renderGiftFields()}
           </Box>
-        );
+        )
+          ;
 
       case 6: // Recapitulatif
         return (
           <Box>
-  <Typography variant="h6">Récapitulatif</Typography>
+            <Typography variant="h6">Summary</Typography>
 
-  {/* Informations sur le testateur */}
-  <Typography variant="body1"><strong>Testateur:</strong></Typography>
-  <Typography variant="body1">Nom: {testamentData.nom_testateur || "Non spécifié"}</Typography>
-  <Typography variant="body1">Date de naissance: {testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : "Non spécifiée"}</Typography>
-  <Typography variant="body1">Lieu de naissance: {testamentData.lieu_naissance_testateur || "Non spécifié"}</Typography>
-  <Typography variant="body1">Adresse: {testamentData.adresse_testateur || "Non spécifiée"}</Typography>
-  <Typography variant="body1">Testateur étranger: {testamentData.etranger ? "Oui" : "Non"}</Typography>
+            {/* Information about the testator */}
+            <Typography variant="body1"><strong>Testator:</strong></Typography>
+            <Typography variant="body1">Name: {testamentData.nom_testateur || "Not specified"}</Typography>
+            <Typography variant="body1">Date of birth: {testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : "Not specified"}</Typography>
+            <Typography variant="body1">Place of birth: {testamentData.lieu_naissance_testateur || "Not specified"}</Typography>
+            <Typography variant="body1">Address: {testamentData.adresse_testateur || "Not specified"}</Typography>
+            <Typography variant="body1">Foreign testator: {testamentData.etranger ? "Yes" : "No"}</Typography>
 
-  {/* Informations sur l'exécuteur */}
-  <Typography variant="body1"><strong>Exécuteur:</strong></Typography>
-  <Typography variant="body1">Nom: {testamentData.nom_executant || "Non spécifié"}</Typography>
-  <Typography variant="body1">Nom alternatif: {testamentData.nom_executant_alternatif || "Non spécifié"}</Typography>
+            {/* Information about the executor */}
+            <Typography variant="body1"><strong>Executor:</strong></Typography>
+            <Typography variant="body1">Name: {testamentData.nom_executant || "Not specified"}</Typography>
+            <Typography variant="body1">Alternate name: {testamentData.nom_executant_alternatif || "Not specified"}</Typography>
 
-  {/* Informations sur les témoins */}
-  <Typography variant="body1"><strong>Témoin 1:</strong></Typography>
-  <Typography variant="body1">Nom: {testamentData.temoin1_nom || "Non spécifié"}</Typography>
-  <Typography variant="body1">Adresse: {testamentData.temoin1_adresse || "Non spécifiée"}</Typography>
+            {/* Information about the witnesses */}
+            <Typography variant="body1"><strong>Witness 1:</strong></Typography>
+            <Typography variant="body1">Name: {testamentData.temoin1_nom || "Not specified"}</Typography>
+            <Typography variant="body1">Address: {testamentData.temoin1_adresse || "Not specified"}</Typography>
 
-  <Typography variant="body1"><strong>Témoin 2:</strong></Typography>
-  <Typography variant="body1">Nom: {testamentData.temoin2_nom || "Non spécifié"}</Typography>
-  <Typography variant="body1">Adresse: {testamentData.temoin2_adresse || "Non spécifiée"}</Typography>
+            <Typography variant="body1"><strong>Witness 2:</strong></Typography>
+            <Typography variant="body1">Name: {testamentData.temoin2_nom || "Not specified"}</Typography>
+            <Typography variant="body1">Address: {testamentData.temoin2_adresse || "Not specified"}</Typography>
 
-  {/* Boucle pour afficher les héritages et les bénéficiaires */}
-  {testamentData.heritages.map((heritage, heritageIndex) => (
-    <Box key={heritageIndex} sx={{ marginTop: '20px' }}>
-      <Typography variant="h6" gutterBottom>Héritage {heritageIndex + 1}</Typography>
+            {/* Loop to display inheritances and beneficiaries */}
+            {testamentData.heritages.map((heritage, heritageIndex) => (
+              <Box key={heritageIndex} sx={{ marginTop: '20px' }}>
+                <Typography variant="h6" gutterBottom>Inheritance {heritageIndex + 1}</Typography>
 
-      {/* Affichage du bien légué */}
-      <Typography variant="body1">Bien légué: {heritage.bien_legue || "Non spécifié"}</Typography>
+                {/* Display of the bequeathed property */}
+                <Typography variant="body1">Bequeathed property: {heritage.bien_legue || "Not specified"}</Typography>
 
-      {/* Affichage des bénéficiaires associés à ce bien */}
-      {(heritage.beneficiaires || []).map((beneficiaire, benefIndex) => (
-        <Box key={benefIndex} sx={{ marginLeft: '20px', marginTop: '10px' }}>  
-          <Typography variant="body2" gutterBottom><strong>Bénéficiaire {benefIndex + 1}:</strong></Typography>
-          <Typography variant="body2">Nom: {beneficiaire.benef_nom || "Non spécifié"}</Typography>
-          <Typography variant="body2">Date de naissance: {beneficiaire.benef_date_naissance ? new Date(beneficiaire.benef_date_naissance).toLocaleDateString() : "Non spécifiée"}</Typography>
-          <Typography variant="body2">Relation: {beneficiaire.benef_relation || "Non spécifiée"}</Typography>
-        </Box>
-      ))}
-    </Box>
-  ))}
+                {/* Display beneficiaries associated with this property */}
+                {(heritage.beneficiaires || []).map((beneficiaire, benefIndex) => (
+                  <Box key={benefIndex} sx={{ marginLeft: '20px', marginTop: '10px' }}>
+                    <Typography variant="body2" gutterBottom><strong>Beneficiary {benefIndex + 1}:</strong></Typography>
+                    <Typography variant="body2">Name: {beneficiaire.benef_nom || "Not specified"}</Typography>
+                    <Typography variant="body2">Date of birth: {beneficiaire.benef_date_naissance ? new Date(beneficiaire.benef_date_naissance).toLocaleDateString() : "Not specified"}</Typography>
+                    <Typography variant="body2">Relationship: {beneficiaire.benef_relation || "Not specified"}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            ))}
 
-  {/* Affichage des tuteurs */}
-  <Typography variant="body1"><strong>Tuteur:</strong></Typography>
-  <Typography variant="body1">Nom: {testamentData.tuteur_nom || "Non spécifié"}</Typography>
-  <Typography variant="body1">Adresse: {testamentData.tuteur_adresse || "Non spécifiée"}</Typography>
+            {/* Display of guardians */}
+            <Typography variant="body1"><strong>Guardian:</strong></Typography>
+            <Typography variant="body1">Name: {testamentData.tuteur_nom || "Not specified"}</Typography>
+            <Typography variant="body1">Address: {testamentData.tuteur_adresse || "Not specified"}</Typography>
 
-  {/* Affichage des dons */}
-  <Typography variant="body1"><strong>Dons:</strong></Typography>
+            {/* Display of gifts */}
+            <Typography variant="body1"><strong>Gifts:</strong></Typography>
 
-  {testamentData.gift_type === 'Cash' && (
-    <Typography variant="body1">{`Montant: ${testamentData.gift_amount} euros, Donné à: ${testamentData.gift_recipient}`}</Typography>
-  )}
+            {testamentData.gift_type === 'Cash' && (
+              <Typography variant="body1">{`Amount: ${testamentData.gift_amount} euros, Given to: ${testamentData.gift_recipient}`}</Typography>
+            )}
 
-  {testamentData.gift_type === 'Vehicle' && (
-    <Typography variant="body1">{`Description du véhicule: ${testamentData.gift_vehicle}, Donné à: ${testamentData.gift_recipient}`}</Typography>
-  )}
+            {testamentData.gift_type === 'Vehicle' && (
+              <Typography variant="body1">{`Vehicle description: ${testamentData.gift_vehicle}, Given to: ${testamentData.gift_recipient}`}</Typography>
+            )}
 
-  {testamentData.gift_type === 'Real Estate' && (
-    <Typography variant="body1">{`Description de la propriété: ${testamentData.gift_property}, Donné à: ${testamentData.gift_recipient}`}</Typography>
-  )}
+            {testamentData.gift_type === 'Real Estate' && (
+              <Typography variant="body1">{`Property description: ${testamentData.gift_property}, Given to: ${testamentData.gift_recipient}`}</Typography>
+            )}
 
-  {testamentData.gift_type === 'Charity' && (
-    <Typography variant="body1">{`Nom de la charité: ${testamentData.gift_charity}, Montant: ${testamentData.gift_amount}`}</Typography>
-  )}
+            {testamentData.gift_type === 'Charity' && (
+              <Typography variant="body1">{`Charity name: ${testamentData.gift_charity}, Amount: ${testamentData.gift_amount}`}</Typography>
+            )}
 
-  {testamentData.gift_type === 'Other' && (
-    <Typography variant="body1">{`Description du don: ${testamentData.gift_other}, Donné à: ${testamentData.gift_recipient}`}</Typography>
-  )}
+            {testamentData.gift_type === 'Other' && (
+              <Typography variant="body1">{`Gift description: ${testamentData.gift_other}, Given to: ${testamentData.gift_recipient}`}</Typography>
+            )}
 
-  {!testamentData.gift_type && (
-    <Typography variant="body1">Aucun don supplémentaire spécifié.</Typography>
-  )}
+            {/* Display when no gift type is specified */}
+            {!testamentData.gift_type && (
+              <Typography variant="body1">No additional gift specified.</Typography>
+            )}
 
+          </Box>
 
-</Box>
 
         );
 
@@ -1072,147 +1074,136 @@ case 'Other':
 
 
 
-  
+
   return (
     <Box sx={{ width: '100%', padding: '20px' }}>
-    <h1 style={{ fontSize: '20px', color: 'rgb(39, 39, 39)', fontWeight: 'bold',marginTop:'-26px' }}>
-      MON TESTAMENT
-    </h1>
-    <br />  <br />
-    {showTestament && (
-  <div className="testament-container">
-    <br />
-    <h2 className='monT'>Ceci est mon testament</h2>
-    {/* <p className="testament-intro">Le testament olographe doit être</p> */}
-    <br />
-    <p className="testament-declaration">
-      Je, soussigné(e)  <strong>{testamentData.nom_testateur || "Non spécifié"}</strong> , Né(e) le
-      <strong>{testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : "Non spécifiée"}</strong>
-      à <strong>{testamentData.lieu_naissance_testateur || "Non spécifié"}</strong> , Domicilié(e) au   <strong>{testamentData.adresse_testateur || "Non spécifiée"}</strong> , déclare être sain(e) d’esprit,
-      avoir la capacité juridique à gérer mes biens, et être majeur(e) ou mineur(e) de plus
-      de 16 ans. Un mineur entre 16 et 18 ans pourra léguer la moitié de ses biens, sauf s'il
-      est mineur émancipé.
-    </p>
-    <br />
-{/* 
-   
-   
-    {/* Héritages et Bénéficiaires */}
-    {testamentData.bien_legue && JSON.parse(testamentData.bien_legue).length > 0 ? (
-      JSON.parse(testamentData.bien_legue).map((bien, index) => (
-        <div key={index}>
-          <h3>Héritage {index + 1}</h3>
-          <p className='testament-declaration'>Je lègue le bien <strong>{bien.biensL || "Non spécifié"}</strong> à :</p>
+      <h1 style={{ fontSize: '20px', color: 'rgb(39, 39, 39)', fontWeight: 'bold', marginTop: '-26px' }}>
+        MY WILL
+      </h1>
+      <br />  <br />
+      {showTestament && (
+        <div className="testament-container">
+          <br />
+          <h2 className='monT'>This is my will</h2>
+          <br />
+          <p className="testament-declaration">
+            I, the undersigned <strong>{testamentData.nom_testateur || "Not specified"}</strong>, born on
+            <strong>{testamentData.date_naissance_testateur ? new Date(testamentData.date_naissance_testateur).toLocaleDateString() : "Not specified"}</strong>
+            in <strong>{testamentData.lieu_naissance_testateur || "Not specified"}</strong>, residing at <strong>{testamentData.adresse_testateur || "Not specified"}</strong>, declare that I am of sound mind, have the legal capacity to manage my assets, and am of legal age or a minor over 16 years old. A minor between 16 and 18 years old may bequeath half of their assets unless emancipated.
+          </p>
+          <br />
+          {/* Inheritances and Beneficiaries */}
+          {testamentData.bien_legue && JSON.parse(testamentData.bien_legue).length > 0 ? (
+            JSON.parse(testamentData.bien_legue).map((bien, index) => (
+              <div key={index}>
+                <h3>Inheritance {index + 1}</h3>
+                <p className='testament-declaration'>I bequeath the property <strong>{bien.biensL || "Not specified"}</strong> to:</p>
 
-          {/* Vérifie qu'il y a des bénéficiaires pour ce bien */}
-          {testamentData.adresse_bien_legue && JSON.parse(testamentData.adresse_bien_legue).length > 0 ? (
-            <ul>
-              {/* Boucle pour chaque bénéficiaire */}
-              {JSON.parse(testamentData.adresse_bien_legue).map((beneficiaire, benefIndex) => (
-                <li key={benefIndex}>
-                  <p className='testament-declaration'>
-                    <strong>{beneficiaire.nom || "Non spécifié"}</strong>, né(e) le <strong>{beneficiaire.date_naissance ? new Date(beneficiaire.date_naissance).toLocaleDateString() : "Non spécifiée"}</strong>,
-                    qui est mon/ma <strong>{beneficiaire.relation || "Non spécifiée"}</strong>
-                  </p>
-                </li>
-              ))}
-            </ul>
+                {/* Check for beneficiaries for this property */}
+                {testamentData.adresse_bien_legue && JSON.parse(testamentData.adresse_bien_legue).length > 0 ? (
+                  <ul>
+                    {/* Loop through each beneficiary */}
+                    {JSON.parse(testamentData.adresse_bien_legue).map((beneficiaire, benefIndex) => (
+                      <li key={benefIndex}>
+                        <p className='testament-declaration'>
+                          <strong>{beneficiaire.nom || "Not specified"}</strong>, born on <strong>{beneficiaire.date_naissance ? new Date(beneficiaire.date_naissance).toLocaleDateString() : "Not specified"}</strong>,
+                          who is my <strong>{beneficiaire.relation || "Not specified"}</strong>
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No beneficiaries for this inheritance.</p>
+                )}
+              </div>
+            ))
           ) : (
-            <p>Pas de bénéficiaires pour cet héritage.</p>
+            <p>No inheritance specified.</p>
           )}
+
+          <br />
+          {/* Guardian */}
+          <p className='testament-declaration'>
+            I have designated <strong>{testamentData.tuteur_nom || "Not specified"}</strong>, residing at <strong>{testamentData.tuteur_adresse || "Not specified"}</strong> as the legal guardian to manage and protect
+            my assets in case of incapacity or disability. The guardian must ensure that my wishes are respected
+            and act in the best interest of my heirs.
+          </p>
+          <br />
+          {/* Executor */}
+          <p className='testament-declaration'>
+            I have designated <strong>{testamentData.nom_executant || "Not specified"}</strong> as the executor of this will, and in case of inability, <strong>{testamentData.nom_executant_alternatif || "Not specified"}</strong> to ensure
+            the proper execution of my wishes.
+          </p>
+          <br />
+          {/* Witnesses */}
+          <p className='testament-declaration'>
+            This will has been made in the presence of witnesses whose details are as follows: <br />
+            Witness 1: <strong>{testamentData.temoin1_nom || "Not specified"}</strong>, residing at
+            <strong>{testamentData.temoin1_adresse || "Not specified"}</strong>. <br />
+            Witness 2: <strong>{testamentData.temoin2_nom || "Not specified"}</strong>, residing at
+            <strong>{testamentData.temoin2_adresse || "Not specified"}</strong>.
+          </p>
+
+
+
+          {/* Dons */}
+          <h3 className='testament-declaration'>Amount of the gift</h3>
+          {testamentData.gift_type ? (
+            <>
+              {testamentData.gift_type === 'Cash' && (
+                <p className='testament-declaration'>I bequeath an amount of <strong>{testamentData.gift_amount} euros</strong> to <strong>{testamentData.gift_recipient || "Not specified"}</strong>.</p>
+              )}
+              {testamentData.gift_type === 'Real Estate' && (
+                <p className='testament-declaration'>I bequeath the property described as <strong>{testamentData.gift_property || "Not specified"}</strong> to <strong>{testamentData.gift_recipient || "Not specified"}</strong>.</p>
+              )}
+              {testamentData.gift_type === 'Vehicle' && (
+                <p className='testament-declaration'>I bequeath the vehicle described as <strong>{testamentData.gift_vehicle}</strong> to <strong>{testamentData.gift_recipient}</strong>.</p>
+              )}
+              {testamentData.gift_type === 'Charity' && (
+                <p className='testament-declaration'>I bequeath an amount of <strong>{testamentData.gift_amount} euros</strong> to the charity <strong>{testamentData.gift_charity}</strong>.</p>
+              )}
+              {testamentData.gift_type === 'Other' && (
+                <p className='testament-declaration'>I bequeath the gift described as <strong>{testamentData.gift_other}</strong> to <strong>{testamentData.gift_recipient}</strong>.</p>
+              )}
+            </>
+          ) : (
+            <p>No additional gift specified.</p>
+          )}
+          <br />
+
+          <p className="testament-declaration">
+            I accept the terms of this will and acknowledge that my wishes must be respected.
+          </p>
+
+          <p className="testament-declaration">
+            I hereby revoke all previous wills and codicils.
+          </p>
+
+          {/* Signature */}
+          <p className="testament-signature">
+            Done on <strong>{new Date().toLocaleDateString()}</strong>, in the presence of the aforementioned witnesses.
+          </p>
+
+          <br />
+          {/* Executor */}
+          <p className='testament-signature'>
+            Signature
+          </p>
+
+          <div style={{ width: 660, height: 200 }}>     
+            <SignatureCanvas
+              ref={sigCanvas}
+              canvasProps={{ width: 660, height: 200, className: 'sigCanvas' }}
+            />
+          </div>
+          <button style={{ marginLeft: 435, fontWeight: 'bold' }} onClick={handleClearSignature}>Clear signature /</button>
+          <button style={{ fontWeight: 'bold' }} onClick={handleSaveSignature}> Save signature</button>
+
+          <button style={{ marginLeft: -630 }} onClick={handleCloseTestament}>< ArrowBackIcon /></button>
+          <button className='btn-return' onClick={handleGeneratePDF}>  <span className="rocket-icon">⬇️</span>Download as PDF</button>
         </div>
-      ))
-    ) : (
-      <p>Aucun héritage spécifié.</p>
-    )}
+      )}
 
-<br />
-    {/* Tuteur */}
-    <p className='testament-declaration'>
-      J'ai désigné <strong>{testamentData.tuteur_nom || "Non spécifié"}</strong>, domicilié à <strong>{testamentData.tuteur_adresse || "Non spécifiée"}</strong> comme tuteur légal pour assurer la gestion et la protection
-      de mes biens en cas d'incapacité ou d'invalidité. Le tuteur devra veiller à ce que mes volontés soient respectées
-      et agir dans le meilleur intérêt de mes héritiers.
-    </p>
-    <br />
-    {/* Exécuteur */}
-    <p className='testament-declaration'>
-      J’ai désigné comme exécuteur de ce testament <strong>{testamentData.nom_executant || "Non spécifié"}</strong> et,
-      en cas d’empêchement, <strong>{testamentData.nom_executant_alternatif || "Non spécifié"}</strong> pour garantir
-      la bonne exécution de mes volontés.
-    </p>
-    <br />
-    {/* Témoins */}
-    <p className='testament-declaration'>
-      Ce testament a été établi en présence de témoins dont voici les informations : <br />
-      Témoin 1 : <strong>{testamentData.temoin1_nom || "Non spécifié"}</strong>, domicilié à
-      <strong>{testamentData.temoin1_adresse || "Non spécifiée"}</strong>. <br />
-      Témoin 2 : <strong>{testamentData.temoin2_nom || "Non spécifié"}</strong>, domicilié à
-      <strong>{testamentData.temoin2_adresse || "Non spécifiée"}</strong>.
-    </p>
-
-
-    {/* Dons */}
-    <h3 className='testament-declaration'>Montant du don</h3> 
-    {testamentData.gift_type ? (
-      <>
-        {testamentData.gift_type === 'Cash' && (
-          <p className='testament-declaration'>Je lègue un montant de <strong>{testamentData.gift_amount} euros</strong> à <strong>{testamentData.gift_recipient || "Non spécifié"}</strong>.</p>
-        )}
-        {testamentData.gift_type === 'Real Estate' && (
-          <p className='testament-declaration'>Je lègue la propriété décrite comme <strong>{testamentData.gift_property || "Non spécifiée"}</strong> à <strong>{testamentData.gift_recipient || "Non spécifié"}</strong>.</p>
-        )}
-        {testamentData.gift_type === 'Vehicle' && (
-          <p className='testament-declaration'>Je lègue le véhicule décrit comme <strong>{testamentData.gift_vehicle}</strong> à <strong>{testamentData.gift_recipient}</strong>.</p>
-        )}
-        {testamentData.gift_type === 'Charity' && (
-          <p className='testament-declaration'>Je lègue un montant de <strong>{testamentData.gift_amount} euros</strong> à la charité <strong>{testamentData.gift_charity}</strong>.</p>
-        )}
-        {testamentData.gift_type === 'Other' && (
-          <p className='testament-declaration'>Je lègue le don décrit comme <strong>{testamentData.gift_other}</strong> à <strong>{testamentData.gift_recipient}</strong>.</p>
-        )}
-      </>
-    ) : (
-      <p>Aucun don supplémentaire spécifié.</p>
-    )}
- <br />
-
-<p className="testament-declaration">
-      J'accepte les conditions de ce testament et je reconnais que mes volontés doivent être respectées.
-    </p>
-
-    <p className="testament-declaration">
-      Je révoque par la présente tous les testaments et codicilles antérieurs.
-    </p> 
-
- {/* Signature */}
- <p className="testament-signature">
-      Fait le <strong>{new Date().toLocaleDateString()}</strong>, en présence des témoins susmentionnés.
-    </p>
-
-
-    <br />
-    {/* Exécuteur */}
-    <p className='testament-signature'>
-    Signature    
-    </p>
-    
-    <div style={{ width: 660, height: 200 }}>
-        <SignatureCanvas  
-          ref={sigCanvas}  
-          canvasProps={{ width: 660, height: 200, className: 'sigCanvas' }}
-        />
-      </div>   
-      <button  style={{ marginLeft: 333,fontWeight:'bold'}} onClick={handleClearSignature}>Effacer la signature / </button>
-      <button    style={{fontWeight:'bold'}} onClick={handleSaveSignature}> Sauvegarder la signature</button>
-    
-
-    <button  style={{ marginLeft: -630 }} onClick={handleCloseTestament}>< ArrowBackIcon  /></button>
-    <button className='btn-return' onClick={handleGeneratePDF}>  <span className="rocket-icon">⬇️</span>Télécharger en PDF</button>
-     
-  </div>              
-)}  
-       
-       
 
       {/* Afficher le Stepper ou le contenu du testament en fonction de l'état */}
       <GlobalStyles styles={styles} />
@@ -1226,7 +1217,7 @@ case 'Other':
               <Step key={step.label}>
                 <StepLabel
                   icon={
-                    <Box 
+                    <Box
                       sx={{
                         width: '40px',
                         height: '40px',
@@ -1240,7 +1231,7 @@ case 'Other':
                         '&::before': {
                           content: '""',
                           position: 'absolute',
-                          top: '-4px',  
+                          top: '-4px',
                           left: '-4px',
                           width: '48px',
                           height: '48px',
@@ -1282,46 +1273,46 @@ case 'Other':
           </Box>
 
           <Box sx={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-  <Button disabled={activeStep === 0} onClick={handleBack}>
-    Back
-  </Button>
-  <Button
-    variant="contained"
-    color="primary"
-    onClick={activeStep === steps.length - 1 ? handleNextA : handleNext} // Appel handleNextA à la dernière étape
-  >
-    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-  </Button>
-</Box>
+            <Button disabled={activeStep === 0} onClick={handleBack}>
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={activeStep === steps.length - 1 ? handleNextA : handleNext} // Appel handleNextA à la dernière étape
+            >
+              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            </Button>
+          </Box>
 
         </>
-        
+
       )}
-      <Box 
-  sx={{ 
-    position: 'absolute', // Permet de positionner le Box relativement à son parent
-    top: '95px', // Ajustez cette valeur pour le placer plus haut
-    right: '20px', // Ajustez cette valeur pour le placer à droite
-    textAlign: 'right' 
-  }}
->
-  <Button 
-    variant="outlined" 
-    onClick={handleShowTestament}
-    sx={{
-      backgroundColor: 'black',  // Fond noir
-      color: 'white',            // Texte blanc
-      '&:hover': {
-        backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
-      },
-    }}
-  >    <BookIcon sx={{ marginRight: '8px' }} /> 
-    Voir mon testament  
-  </Button>            
-</Box>
-     
-    </Box>    
-  );    
-};     
+      <Box
+        sx={{
+          position: 'absolute', // Permet de positionner le Box relativement à son parent
+          top: '95px', // Ajustez cette valeur pour le placer plus haut
+          right: '20px', // Ajustez cette valeur pour le placer à droite
+          textAlign: 'right'
+        }}
+      >
+        <Button
+          variant="outlined"
+          onClick={handleShowTestament}
+          sx={{
+            backgroundColor: 'black',  // Fond noir
+            color: 'white',            // Texte blanc
+            '&:hover': {
+              backgroundColor: '#333', // Couleur du bouton en hover (gris foncé)
+            },
+          }}
+        >    <BookIcon sx={{ marginRight: '8px' }} />
+View my will
+</Button>
+      </Box>
+
+    </Box>
+  );
+};
 
 export default Testament;

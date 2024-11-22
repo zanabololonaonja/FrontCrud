@@ -562,7 +562,7 @@ const verticalMenuItems = [
   onOk={handleOk}
   onCancel={handleCancel}  
   width={700}  
-  okText="Enregistrer "
+  okText="Save"
 >
   <div className="container rounded bg-white mt-3 mb-3">
     <div className="image-container" style={{ position: "relative", textAlign: "center", marginBottom: "20px" }}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, Button, Typography, Modal, TextField, Grid } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -86,21 +86,21 @@ const styles = {
 
 
 
-const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
-    
+const ArrangementsDisplay = ({ arrangements, onClose, userData }) => {
+
     // State pour la gestion de la modale de modification    
-    const [openModal, setOpenModal] = useState(false);    
+    const [openModal, setOpenModal] = useState(false);
     const [formValues, setFormValues] = useState(arrangements);
     const [isOwner, setIsOwner] = useState(false);
 
     useEffect(() => {
-      // Vérifiez dans localStorage si l'utilisateur est propriétaire
-      const userData = JSON.parse(localStorage.getItem('userData')); // Récupérer les données de l'utilisateur
-      if (userData && userData.typeofuser === 'owner') {
-        setIsOwner(true); // Si c'est un propriétaire, définir `isOwner` sur true
-      }
+        // Vérifiez dans localStorage si l'utilisateur est propriétaire
+        const userData = JSON.parse(localStorage.getItem('userData')); // Récupérer les données de l'utilisateur
+        if (userData && userData.typeofuser === 'owner') {
+            setIsOwner(true); // Si c'est un propriétaire, définir `isOwner` sur true
+        }
     }, []);
-  
+
 
     // Gestion de la modale
     const handleOpenModal = () => setOpenModal(true);
@@ -118,154 +118,152 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
 
     const generatePDF = () => {
         const doc = new jsPDF();
-        
-        // Configuration globale
+
+        // // Global Configuration
         const pageWidth = doc.internal.pageSize.getWidth();
-        const marginX = 14; // Marge horizontale
-        const marginY = 20; // Marge verticale
-        const lineSpacing = 8; // Espacement entre les lignes
-        let currentY = marginY; // Position Y de départ
-        
-        // Titre principal
+        const marginX = 14; // Horizontal margin
+        const marginY = 20; // Vertical margin
+        const lineSpacing = 8; // Line spacing
+        let currentY = marginY; // Starting Y position
+
+        // Main title
         doc.setFont('Helvetica', 'bold');
         doc.setFontSize(24);
-        doc.text('Estimation des obsèques', marginX, currentY);
-        
-        // Ajouter une image en haut à droite
+        doc.text('Funeral Estimate', marginX, currentY);
+
+        // Add an image in the top-right corner
         const imgWidth = 30;
         const imgHeight = 30;
         doc.addImage('/images/OIP.jpg', 'JPEG', pageWidth - imgWidth - marginX, marginY + 5, imgWidth, imgHeight);
-        
+
         currentY += lineSpacing * 2;
-        
-        // Texte général
+
+        // General text
         doc.setFont('Helvetica', 'normal');
         doc.setFontSize(12);
-    
-        
+
         currentY += lineSpacing;
-        doc.text("J'ai choisi que les funérailles de type :", marginX, currentY);
-        
-        // Détail du type de funérailles
+        doc.text("I have chosen funeral arrangements of type:", marginX, currentY);
+
+        // Funeral type details
         doc.setFont('Helvetica', 'bold');
-        doc.text(arrangements.typefunerailles || 'Non spécifié', marginX + 85, currentY); // Position ajustée pour être alignée
+        doc.text(arrangements.typefunerailles || 'Not specified', marginX + 85, currentY); // Adjusted position for alignment
         doc.setFont('Helvetica', 'normal');
-        
+
         currentY += lineSpacing;
         doc.text(
-          "Cela signifie que j'ai opté pour une cérémonie adaptée à mes souhaits et à mes traditions, pour que mes proches puissent rendre hommage de la manière la plus respectueuse.",
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX } // Justification du texte
+            "This means I opted for a ceremony tailored to my wishes and traditions, allowing my loved ones to pay their respects in the most meaningful way.",
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX } // Justify text
         );
-        
-        // Veillée funèbre
+
+        // Funeral vigil
         currentY += lineSpacing * 2;
         doc.setFont('Helvetica', 'bold');
-        doc.text('Veillée funèbre :', marginX, currentY);
+        doc.text('Funeral Vigil:', marginX, currentY);
         currentY += lineSpacing;
         doc.setFont('Helvetica', 'normal');
         doc.text(
-          `La veillée funèbre se tiendra à ${arrangements.lieudeces || 'Non spécifié'} pour une durée de ${arrangements.transportdistance || 'Non spécifiée'} heures.`,
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX }
+            `The funeral vigil will take place at ${arrangements.lieudeces || 'Not specified'} for a duration of ${arrangements.transportdistance || 'Not specified'} hours.`,
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX }
         );
-        
+
         currentY += lineSpacing;
         doc.text(
-          `Le défunt sera transporté avec un ${arrangements.typevehicule || 'Non spécifié'}.`,
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX }
+            `The deceased will be transported using a ${arrangements.typevehicule || 'Not specified'}.`,
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX }
         );
-        
+
         currentY += lineSpacing;
         doc.text(
-          "Cette veillée me permettra de rassembler mes proches pour rendre hommage avant les funérailles, en leur offrant un moment de recueillement et de partage.",
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX }
+            "This vigil will provide an opportunity for my loved ones to gather and pay their respects before the funeral, offering them a moment of reflection and togetherness.",
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX }
         );
-        
-        // Organisation de la cérémonie
+
+        // Ceremony organization
         currentY += lineSpacing * 2;
         doc.setFont('Helvetica', 'bold');
-        doc.text('Organisation de la cérémonie :', marginX, currentY);
+        doc.text('Ceremony Organization:', marginX, currentY);
         currentY += lineSpacing;
         doc.setFont('Helvetica', 'normal');
         const organisationText = arrangements.organisation_ceremonie
-          ? `J'ai confirmé l'organisation de la cérémonie. Elle se tiendra à ${arrangements.lieuceremonie || 'Non spécifié'}, et ce sera une cérémonie ${arrangements.typeceremonie || 'Non spécifiée'}.`
-          : "J'ai refusé l'organisation de la cérémonie.";
+            ? `I have confirmed the organization of the ceremony. It will be held at ${arrangements.lieuceremonie || 'Not specified'},
+             and it will be a ${arrangements.typeceremonie || 'Not specified'} ceremony.`
+            : "I have declined the organization of the ceremony.";
         doc.text(organisationText, marginX, currentY, { maxWidth: pageWidth - 2 * marginX });
-        
+
         currentY += lineSpacing;
         doc.text(
-          "Cela me permet de m'assurer que mes souhaits sont respectés pour cette occasion importante, en offrant à mes proches un cadre solennel.",
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX }
+            "This ensures that my wishes are respected for this significant occasion, providing a solemn setting for my loved ones.",
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX }
         );
-        
-        // Type de cercueil
+
+        // Coffin type
         currentY += lineSpacing * 2;
         doc.setFont('Helvetica', 'bold');
-        doc.text('Type de cercueil :', marginX, currentY);
+        doc.text('Coffin Type:', marginX, currentY);
         currentY += lineSpacing;
         doc.setFont('Helvetica', 'normal');
         doc.text(
-          `Concernant le type de cercueil, j'ai opté pour un ${arrangements.typecercueil || 'Non spécifié'}.`,
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX }
+            `Regarding the coffin type, I have chosen a ${arrangements.typecercueil || 'Not specified'}.`,
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX }
         );
-        
+
         currentY += lineSpacing;
         doc.text(
-          "Je souhaite que le cercueil soit en adéquation avec le type de cérémonie choisie, pour garantir la dignité et le respect de l'événement.",
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX }
+            "I want the coffin to align with the chosen type of ceremony, ensuring dignity and respect for the occasion.",
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX }
         );
-        
-        // Lieu de repos
+
+        // Resting place
         currentY += lineSpacing * 2;
         doc.setFont('Helvetica', 'bold');
-        doc.text('Lieu de repos :', marginX, currentY);
+        doc.text('Resting Place:', marginX, currentY);
         currentY += lineSpacing;
         doc.setFont('Helvetica', 'normal');
         doc.text(
-          `Le lieu de repos sera au ${arrangements.lieu_repos || 'Non spécifié'}, avec une concession prévue pour une durée de ${arrangements.concession_duree || 'Non spécifiée'} ans.`,
-          marginX,
-          currentY,
-          { maxWidth: pageWidth - 2 * marginX }
+            `The resting place will be at ${arrangements.lieu_repos || 'Not specified'}, with a concession planned for a duration of ${arrangements.concession_duree || 'Not specified'} years.`,
+            marginX,
+            currentY,
+            { maxWidth: pageWidth - 2 * marginX }
         );
-        
-        // Message personnalisé
+
+        // Personal message
         currentY += lineSpacing * 2;
         doc.setFont('Helvetica', 'bold');
-        doc.text('Message personnalisé :', marginX, currentY);
+        doc.text('Personal Message:', marginX, currentY);
         currentY += lineSpacing;
         doc.setFont('Helvetica', 'normal');
         const messageText = arrangements.message_personnel
-          ? `Le message personnalisé pour la cérémonie est : "${arrangements.message_personnel}".`
-          : "Aucun message personnalisé n'a été ajouté.";
+            ? `The personalized message for the ceremony is: "${arrangements.message_personnel}".`
+            : "No personalized message has been added.";
         doc.text(messageText, marginX, currentY, { maxWidth: pageWidth - 2 * marginX });
-        
-        // Vérifier si une nouvelle page est nécessaire
+
+        // Check if a new page is needed
         if (currentY + 30 > doc.internal.pageSize.getHeight()) {
-          doc.addPage();
-          currentY = marginY;
+            doc.addPage();
+            currentY = marginY;
         }
-        
-        // Enregistrer le PDF
-        doc.save('estimation_obseques.pdf');
-      };
-      
-      
+
+        // Save the PDF
+        doc.save('funeral_estimate.pdf');
+    };
 
 
- 
+
     // Fonction pour soumettre les changements
     const handleSubmit = async () => {
         try {
@@ -283,9 +281,9 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
 
             const data = await res.json();
             console.log('Mise à jour réussie:', data);
-      
-            toast.success('Arangement  avec succès ');       
-   
+
+            toast.success('Arangement  avec succès ');
+
             setOpenModal(false); // Fermer la modale après la mise à jour
         } catch (error) {
             console.error('Erreur lors de la mise à jour:', error);
@@ -312,99 +310,99 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
             <Box style={styles.content}>
                 <Box style={styles.textWithImages}>
                     <Typography style={styles.text}>
-                        J'ai choisi que les funérailles soient de type <strong>{arrangements.typefunerailles || 'Non spécifié'}</strong>.
+                        I have chosen funeral arrangements of type <strong>{arrangements.typefunerailles || 'Not specified'}</strong>.
                         <span style={{ display: 'block', marginTop: '8px' }}>
-                            Cela signifie que j'ai opté pour une cérémonie adaptée à mes souhaits et à mes traditions.
+                            This means I opted for a ceremony tailored to my wishes and traditions.
                         </span>
                     </Typography>
                     <img src="/images/OIP.jpg" alt="Image" style={styles.image1} />
                 </Box>
                 <Box style={styles.textWithImages}>
                     <Typography style={styles.text}>
-                        La veillée funèbre se tiendra à <strong>{arrangements.lieudeces || 'Non spécifié'}</strong> pour une durée de <strong>{arrangements.transportdistance || 'Non spécifiée'} heures</strong>.
-                        Le défunt sera transporté avec un <strong>{arrangements.typevehicule || 'Non spécifié'}</strong>.
+                        The funeral vigil will take place at <strong>{arrangements.lieudeces || 'Not specified'}</strong> for a duration of <strong>{arrangements.transportdistance || 'Not specified'} hours</strong>.
+                        The deceased will be transported using a <strong>{arrangements.typevehicule || 'Not specified'}</strong>.
                         <span style={{ display: 'block', marginTop: '8px' }}>
-                            Cette veillée me permettra de rassembler mes proches pour rendre hommage avant les funérailles.
+                            This vigil will allow my loved ones to gather and pay their respects before the funeral.
                         </span>
-                    </Typography>
-                </Box>
+                    </Typography>  
+                </Box>  
                 <Box style={styles.textWithImages}>
                     <Typography style={styles.text}>
-                        J'ai {arrangements.organisation_ceremonie ? "confirmé" : "refusé"} l'organisation de la cérémonie.
+                        I have {arrangements.organisation_ceremonie ? "confirmed" : "declined"} the organization of the ceremony.
                         {arrangements.organisation_ceremonie && (
                             <>
-                                {' '}Elle se tiendra à <strong>{arrangements.lieuceremonie || 'Non spécifié'}</strong>, et ce sera une cérémonie <strong>{arrangements.typeceremonie || 'Non spécifié'}</strong>.
+                                {' '}It will be held at <strong>{arrangements.lieuceremonie || 'Not specified'}</strong>, and it will be a <strong>{arrangements.typeceremonie || 'Not specified'}</strong> ceremony.
                             </>
                         )}
                         <span style={{ display: 'block', marginTop: '8px' }}>
-                            Cela me permet de m'assurer que mes souhaits sont respectés pour cette occasion importante.
+                            This ensures that my wishes are respected for this important occasion.
                         </span>
                     </Typography>
                 </Box>
 
-
-
                 <Box style={styles.textWithImages}>
                     <Typography style={styles.text}>
-                        Concernant le type de cercueil, j'ai opté pour un <strong>{arrangements.typecercueil || 'Non spécifié'}</strong>.
+                        Regarding the type of coffin, I have chosen a <strong>{arrangements.typecercueil || 'Not specified'}</strong>.
                         <span style={{ display: 'block', marginTop: '8px' }}>
-                            Ce choix reflète mes valeurs et mes croyances, et je souhaite que le cercueil soit en adéquation avec le type de cérémonie choisie.
+                            This choice reflects my values and beliefs, and I want the coffin to align with the type of ceremony chosen.
                         </span>
                     </Typography>
                 </Box>
                 <Box style={styles.textWithI}>
                     {/* <img src="/images/ENTR.png" alt="Image" style={styles.image} /> */}
                     <Typography style={styles.textbg}>
-                        Le lieu de repos sera au <strong>{arrangements.lieu_repos || 'Non spécifié'}</strong> avec une concession prévue pour une durée de <strong>{arrangements.concession_duree || 'Non spécifiée'} ans</strong>.
+                        The resting place will be at <strong>{arrangements.lieu_repos || 'Not specified'}</strong> with a concession planned for a duration of <strong>{arrangements.concession_duree || 'Not specified'} years</strong>.
                         <br />
-                        {arrangements.message_personnel ? ` Le message personnalisé pour la cérémonie est : "${arrangements.message_personnel}".` : " Aucun message personnalisé n'a été ajouté."}
+                        {arrangements.message_personnel
+                            ? ` The personalized message for the ceremony is: "${arrangements.message_personnel}".`
+                            : " No personalized message has been added."}
                     </Typography>
+
                 </Box>
             </Box>
             <Box style={{ display: 'flex', justifyContent: 'center' }}>
-            <Button
-  variant="text" // Utilisez "text" pour un bouton sans fond
-  onClick={onClose}
-  style={{
-    minWidth: 'auto', // Assurez-vous que la largeur du bouton est adaptée à la flèche
-    padding: 0, // Retirez tout padding inutile
-    color: 'black', // Flèche noire
-  }}
->
-  <ArrowBackIcon style={{ color: 'black' }} /> {/* Flèche noire */}
-</Button>
+                <Button
+                    variant="text" // Utilisez "text" pour un bouton sans fond
+                    onClick={onClose}
+                    style={{
+                        minWidth: 'auto', // Assurez-vous que la largeur du bouton est adaptée à la flèche
+                        padding: 0, // Retirez tout padding inutile
+                        color: 'black', // Flèche noire
+                    }}
+                >
+                    <ArrowBackIcon style={{ color: 'black' }} /> {/* Flèche noire */}
+                </Button>
 
 
 
-                 {/* {userData?.typeofuser === 'owner' && ! (
+                {/* {userData?.typeofuser === 'owner' && ! (
         <>           */}
-               <>
-      {isOwner && ( // Affiche le bouton uniquement si l'utilisateur est le propriétaire
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: '#f0f0f0',
-            marginLeft: '200px',
-            color: 'black',
-            marginTop: '9px',
-            height: '38px',
-            width: '120px',
-            '&:hover': {
-              backgroundColor: '#333',
-              color: 'white',
-            },
-          }}
-          onClick={handleOpenModal}
-        >
-          Modifier
-        </Button>
-      )}
-    </>
+                <>
+                    {isOwner && ( // Affiche le bouton uniquement si l'utilisateur est le propriétaire
+                        <Button
+                            variant="contained"
+                            sx={{
+                                backgroundColor: '#f0f0f0',
+                                marginLeft: '200px',
+                                color: 'black',
+                                marginTop: '9px',
+                                height: '38px',
+                                width: '120px',
+                                '&:hover': {
+                                    backgroundColor: '#333',
+                                    color: 'white',
+                                },
+                            }}
+                            onClick={handleOpenModal}
+                        >
+                            Modify
+
+                        </Button>
+                    )}
+                </>
                 {/* </>     
         
     )} */}
-
-
                 <Button variant="contained" sx={{
                     backgroundColor: 'black',  // Fond noir
                     color: 'white',            // Texte blanc
@@ -413,9 +411,9 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                     },
                 }}
                     onClick={generatePDF} style={styles.button}>
-                    Télécharger PDF
-                </Button>
-            </Box>    
+Download PDF
+</Button>
+            </Box>
             {/* Modale de modification */}
             <Modal open={openModal} onClose={handleCloseModal}>
                 <Box style={{
@@ -429,14 +427,14 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                     borderRadius: '8px',
                     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
                 }}>
-                    <Typography variant="h6">Modifier les arrangements</Typography>
+<Typography variant="h6">Edit Arrangements</Typography>
 
                     {/* Disposition en deux colonnes */}
                     <Grid container spacing={2}>
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                label="Type de funérailles"
+                                label="Type of Funeral"
                                 name="typefunerailles"
                                 value={formValues.typefunerailles}
                                 onChange={handleChange}
@@ -446,7 +444,7 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                label="Lieu de décès"
+                                label="Place of Death"
                                 name="lieudeces"
                                 value={formValues.lieudeces}
                                 onChange={handleChange}
@@ -466,7 +464,7 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                label="Type de véhicule"
+                                label="Type of Vehicle"
                                 name="typevehicule"
                                 value={formValues.typevehicule}
                                 onChange={handleChange}
@@ -476,7 +474,7 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                label="Type de cercueil"
+                                label="Type of Coffin"
                                 name="typecercueil"
                                 value={formValues.typecercueil}
                                 onChange={handleChange}
@@ -486,7 +484,7 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                label="Type d'urne"
+                                label="Type of Urn"
                                 name="typeurne"
                                 value={formValues.typeurne}
                                 onChange={handleChange}
@@ -503,10 +501,10 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                                 margin="normal"  
                             />
                         </Grid> */}
-                        <Grid item xs={6}> 
-                            <TextField   
-                                fullWidth     
-                                label="Lieu de la cérémonie"
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                label="Ceremony Location"
                                 name="lieuceremonie"
                                 value={formValues.lieuceremonie}
                                 onChange={handleChange}
@@ -516,7 +514,7 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                label="Type de cérémonie"
+                                label="Type of Ceremony"
                                 name="typeceremonie"
                                 value={formValues.typeceremonie}
                                 onChange={handleChange}
@@ -525,8 +523,8 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         </Grid>
                         <Grid item xs={6}>
                             <TextField
-                                fullWidth
-                                label="Lieu de repos"
+                                fullWidth 
+                             label="Place of Rest"
                                 name="lieu_repos"
                                 value={formValues.lieu_repos}
                                 onChange={handleChange}
@@ -536,7 +534,7 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         <Grid item xs={6}>
                             <TextField
                                 fullWidth
-                                label="Durée de la concession (ans)"
+                                label="Duration of the concession (years)"
                                 name="concession_duree"
                                 value={formValues.concession_duree}
                                 onChange={handleChange}
@@ -546,8 +544,8 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label="Message personnalisé"
-                                name="message_personnel"
+                                label="Personalized Message"
+                                                                name="message_personnel"
                                 value={formValues.message_personnel}
                                 onChange={handleChange}
                                 margin="normal"
@@ -557,10 +555,10 @@ const ArrangementsDisplay = ({ arrangements, onClose , userData}) => {
 
                     <Box style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20 }}>
                         <Button variant="contained" color="secondary" onClick={handleCloseModal}>
-                            Annuler
+                        Cancel
                         </Button>
                         <Button variant="contained" color="primary" onClick={handleSubmit}>
-                            Enregistrer
+                        Save
                         </Button>
                     </Box>
                 </Box>

@@ -45,7 +45,7 @@ const FormPage = () => {
       toast.info('Tous les champs sont obligatoires');
       return;
     } else if (password !== confirmPassword) {
-      toast.error('Les mots de passe ne correspondent pas!');
+      toast.error('The passwords do not match!');
       return;
     }
 
@@ -174,7 +174,7 @@ const FormPage = () => {
       }
     } catch (err) {
       console.error(err);
-      setErrorMessage('Une erreur est survenue lors de la connexion.');
+      setErrorMessage('');
     }
   };
   
