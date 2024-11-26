@@ -302,19 +302,47 @@ function Testament({ userData }) {
   };
 
 
-
   const [signatureData, setSignatureData] = useState(null);
   const sigCanvas = useRef(null);
+  const [signature, setSignature] = useState(null); // Pour afficher la signature enregistrée
+
+
 
   const handleClearSignature = () => {
     sigCanvas.current.clear();
   };
 
+  // Fonction pour enregistrer la signature
   const handleSaveSignature = () => {
-    const signature = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
-    setSignatureData(signature);
+    if (!iduser) {
+      alert('Utilisateur non connecté');
+      return;
+    }
+
+    const signatureData = sigCanvas.current.toDataURL('image/png'); // Récupérer la signature comme une image PNG
+
+    // Enregistrer la signature dans localStorage avec un ID utilisateur spécifique
+    localStorage.setItem(`signature_${iduser}`, signatureData);
+
+    // Afficher un message ou mettre à jour l'état pour afficher un retour
+    alert('Signature enregistrée!');
   };
 
+  // Fonction pour afficher la signature enregistrée
+  const handleShowSignature = () => {
+    if (!iduser) {
+      alert('Utilisateur non connecté');
+      return;
+    }
+
+    const savedSignature = localStorage.getItem(`signature_${iduser}`);
+
+    if (savedSignature) {
+      setSignature(savedSignature);
+    } else {
+      alert('Aucune signature enregistrée pour cet utilisateur.');
+    }
+  };
 
 
   const handleGeneratePDF = () => {
@@ -441,9 +469,9 @@ function Testament({ userData }) {
       20,
       currentY
     );
-    
-   
-    currentY += lineSpacing *2 ;
+
+
+    currentY += lineSpacing * 2;
 
 
     // Donations Section
@@ -501,8 +529,8 @@ function Testament({ userData }) {
     } else {
       doc.text('No additional donation specified.', 20, currentY);
     }
-   
-    currentY += lineSpacing *2;
+
+    currentY += lineSpacing * 2;
     // Final Clause
     doc.setFont('Times', 'italic');
     doc.text('I acknowledge that my wishes expressed in this will must be respected.', 20, currentY);
@@ -520,24 +548,30 @@ function Testament({ userData }) {
 
     currentY += lineSpacing * 2; // Space for the next section
 
-    // Display "Signature:" on the right
+    // Affichage de "Signature:" à droite
     doc.text('Signature:', pageWidth - 20 - doc.getTextWidth('Signature:'), currentY);
 
-    // Check for signature data
-    if (signatureData) {
-      // Add signature image if available
-      doc.addImage(signatureData, 'PNG', pageWidth - 70, currentY + lineSpacing, 50, 20); // Image added to the right
+    // Vérification des données de signature
+    const savedSignature = localStorage.getItem(`signature_${iduser}`);
+
+    if (savedSignature) {
+      // Ajouter l'image de la signature avec les mêmes dimensions
+      const signatureWidth = 195.79; // Largeur en mm
+      const signatureHeight = 66.15; // Hauteur en mm
+      const signatureX = pageWidth - 3 - signatureWidth; // Position X ajustée pour alignement à droite
+      const signatureY = currentY + lineSpacing; // Position Y en bas après "Signature:"
+
+      doc.addImage(savedSignature, 'PNG', signatureX, signatureY, signatureWidth, signatureHeight);
     } else {
-      // Display "Not provided." if no signature is provided
+      // Afficher "Not provided." si aucune signature n'est fournie
       doc.text('Not provided.', pageWidth - 20 - doc.getTextWidth('Not provided.'), currentY + lineSpacing);
     }
 
-    // Download the PDF
+    // Télécharger le PDF         
     doc.save('will.pdf');
-  }
+  };
 
-
-  // Define image paths for different gift typess  
+  // Define image paths for different gift typess        
   const cashImage = '/images/vola.jpg';
 
   const vehicleImage = '/images/o.jpg';
@@ -1186,20 +1220,70 @@ function Testament({ userData }) {
 
           <br />
           {/* Executor */}
-          <p className='testament-signature'>
-            Signature
-          </p>
+          <div>
+            <p className="testament-signature">Signature</p>
+            <div >
+              <SignatureCanvas
+                ref={sigCanvas}
+                canvasProps={{ width: 740, height: 250, className: 'sigCanvas' }}
+              />
+            </div>
 
-          <div style={{ width: 660, height: 200 }}>     
-            <SignatureCanvas
-              ref={sigCanvas}
-              canvasProps={{ width: 660, height: 200, className: 'sigCanvas' }}
-            />
+
+            {/* Affichage des boutons uniquement si l'utilisateur est le propriétaire */}
+            {userData?.typeofuser === 'owner' && (
+              <>
+                <button
+                  style={{ marginLeft: 435, fontWeight: 'bold' }}
+                  onClick={handleClearSignature}
+                >
+                  Clear signature  /
+                </button>
+                <button style={{ fontWeight: 'bold' }} onClick={handleSaveSignature}>
+                  Save signature
+                </button>
+              </>
+            )}
+            {/* Bouton Show signature visible uniquement pour les utilisateurs autres que le propriétaire */}
+            {userData?.typeofuser !== 'owner' && (
+              <>
+                <button
+                  style={{ fontWeight: 'bold', marginLeft: 486 }}
+                  onClick={handleShowSignature}
+                >
+                  Add Signature
+                </button>
+              </>
+            )}
+
+            {/* Affichage de la signature si elle existe */}
+            {signature && (
+              <div  
+                style={{
+                  width: '740px', // Même largeur que le canvas
+                  height: '250px', // Même hauteur que le canvas
+                  marginTop: '-200px', // Positionnement ajusté
+                  display: 'flex',
+                  justifyContent: 'center', // Centrer horizontalement
+                  alignItems: 'center', // Centrer verticalement
+                  position: 'relative', // Pour aligner précisément si nécessaire
+                }}
+              >
+                <img
+                  src={signature}
+                  alt="Signature"
+                  style={{
+                    width: '100%', // Occuper toute la largeur disponible
+                    height: '100%', // Occuper toute la hauteur disponible
+                    objectFit: 'contain', // Assurer un rendu proportionnel
+                  }}
+                />
+              </div>
+            )}
+
           </div>
-          <button style={{ marginLeft: 435, fontWeight: 'bold' }} onClick={handleClearSignature}>Clear signature /</button>
-          <button style={{ fontWeight: 'bold' }} onClick={handleSaveSignature}> Save signature</button>
 
-          <button style={{ marginLeft: -630 }} onClick={handleCloseTestament}>< ArrowBackIcon /></button>
+          <button style={{ marginLeft: -10, marginTop: '-44px' }} onClick={handleCloseTestament}>< ArrowBackIcon /></button>
           <button className='btn-return' onClick={handleGeneratePDF}>  <span className="rocket-icon">⬇️</span>Download as PDF</button>
         </div>
       )}
@@ -1307,8 +1391,8 @@ function Testament({ userData }) {
             },
           }}
         >    <BookIcon sx={{ marginRight: '8px' }} />
-View my will
-</Button>
+          View my will
+        </Button>
       </Box>
 
     </Box>

@@ -315,7 +315,7 @@ const FormPage = () => {
                   </div>
                   <div className="mt-3">
 
-                    <button className="btn btn-secondary d-inline" onClick={handleContactAuthClick}>Contact d'urgence</button> {/* Bouton pour afficher le contact d'urgence */}
+                    <button className="btn btn-secondary d-inline" onClick={handleContactAuthClick}>Emergency contact</button> {/* Bouton pour afficher le contact d'urgence */}
                   </div>
                 </>
               ) : (
@@ -360,14 +360,14 @@ const FormPage = () => {
                   </div>
                   <div className="mt-3">
 
-                    <button className="btn btn-secondary d-inline" onClick={handleContactAuthClick}>Contact d'urgence</button> {/* Bouton pour afficher le contact d'urgence */}
+                    <button className="btn btn-secondary d-inline" onClick={handleContactAuthClick}>Emergency contact</button> {/* Bouton pour afficher le contact d'urgence */}
                   </div>
                 </>
               )
             ) : (
               <EmergencyContactAuth onClose={handleEmergencyContactClose} />
             )}
-          </div>
+          </div>  
         </div>
       </div>
     </div>
