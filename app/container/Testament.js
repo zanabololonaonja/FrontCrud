@@ -301,7 +301,7 @@ function Testament({ userData }) {
     }
   };
 
-
+  
   const [signatureData, setSignatureData] = useState(null);
   const sigCanvas = useRef(null);
   const [signature, setSignature] = useState(null); // Pour afficher la signature enregistrée
@@ -312,37 +312,37 @@ function Testament({ userData }) {
     sigCanvas.current.clear();
   };
 
-  // Fonction pour enregistrer la signature
-  const handleSaveSignature = () => {
-    if (!iduser) {
-      alert('Utilisateur non connecté');
-      return;
-    }
+// Fonction pour enregistrer la signature
+const handleSaveSignature = () => {
+  if (!iduser) {
+    alert('Utilisateur non connecté');
+    return;
+  }
 
-    const signatureData = sigCanvas.current.toDataURL('image/png'); // Récupérer la signature comme une image PNG
+  const signatureData = sigCanvas.current.toDataURL('image/png'); // Récupérer la signature comme une image PNG
 
-    // Enregistrer la signature dans localStorage avec un ID utilisateur spécifique
-    localStorage.setItem(`signature_${iduser}`, signatureData);
+  // Enregistrer la signature dans localStorage avec un ID utilisateur spécifique
+  localStorage.setItem(`signature_${iduser}`, signatureData);
 
-    // Afficher un message ou mettre à jour l'état pour afficher un retour
-    alert('Signature enregistrée!');
-  };
+  // Afficher un message ou mettre à jour l'état pour afficher un retour
+  alert('Signature enregistrée!');
+};
 
-  // Fonction pour afficher la signature enregistrée
-  const handleShowSignature = () => {
-    if (!iduser) {
-      alert('Utilisateur non connecté');
-      return;
-    }
+// Fonction pour afficher la signature enregistrée
+const handleShowSignature = () => {
+  if (!iduser) {
+    alert('Utilisateur non connecté');
+    return;
+  }
 
-    const savedSignature = localStorage.getItem(`signature_${iduser}`);
+  const savedSignature = localStorage.getItem(`signature_${iduser}`);
 
-    if (savedSignature) {
-      setSignature(savedSignature);
-    } else {
-      alert('Aucune signature enregistrée pour cet utilisateur.');
-    }
-  };
+  if (savedSignature) {
+    setSignature(savedSignature);
+  } else {
+    alert('Aucune signature enregistrée pour cet utilisateur.');
+  }
+};     
 
 
   const handleGeneratePDF = () => {
@@ -351,7 +351,7 @@ function Testament({ userData }) {
     // Configuration globale
     doc.setFont('Times', 'normal'); // Utilisation de la police Times pour un style officiel
     doc.setFontSize(12); // Police par défaut
-
+  
     // Main Title
     doc.setFontSize(16);
     doc.setFont('Times', 'bold');
@@ -455,6 +455,7 @@ function Testament({ userData }) {
     doc.setFont('Times', 'bold');
     doc.text('Witnesses:', 20, currentY);
     doc.setFont('Times', 'normal');
+  
     currentY += lineSpacing;
     doc.text(
       `Witness 1: ${testamentData.temoin1_nom || 'Not specified'}, residing at ${testamentData.temoin1_adresse || 'Not specified'
@@ -470,8 +471,7 @@ function Testament({ userData }) {
       currentY
     );
 
-
-    currentY += lineSpacing * 2;
+    currentY += lineSpacing *2 ;
 
 
     // Donations Section
@@ -514,7 +514,7 @@ function Testament({ userData }) {
             `Type: Charity, Name: ${testamentData.gift_charity || 'Not specified'}, Amount: ${testamentData.gift_amount || 'Not specified'} euros`,
             20,
             currentY
-          );
+          ); 
           break;
         case 'Other':
           doc.text(
@@ -529,8 +529,8 @@ function Testament({ userData }) {
     } else {
       doc.text('No additional donation specified.', 20, currentY);
     }
-
-    currentY += lineSpacing * 2;
+   
+    currentY += lineSpacing *2;
     // Final Clause
     doc.setFont('Times', 'italic');
     doc.text('I acknowledge that my wishes expressed in this will must be respected.', 20, currentY);
@@ -546,33 +546,33 @@ function Testament({ userData }) {
     const pageWidth = doc.internal.pageSize.getWidth();
     doc.text(dateText, pageWidth - 20 - doc.getTextWidth(dateText), currentY); // Right-aligned text
 
-    currentY += lineSpacing * 2; // Space for the next section
+    currentY += lineSpacing ; // Space for the next section
 
-    // Affichage de "Signature:" à droite
-    doc.text('Signature:', pageWidth - 20 - doc.getTextWidth('Signature:'), currentY);
+ // Affichage de "Signature:" à droite
+doc.text('Signature:', pageWidth - 20 - doc.getTextWidth('Signature:'), currentY);
 
-    // Vérification des données de signature
-    const savedSignature = localStorage.getItem(`signature_${iduser}`);
+// Vérification des données de signature
+const savedSignature = localStorage.getItem(`signature_${iduser}`);
 
-    if (savedSignature) {
-      // Ajouter l'image de la signature avec les mêmes dimensions
-      const signatureWidth = 195.79; // Largeur en mm
-      const signatureHeight = 66.15; // Hauteur en mm
-      const signatureX = pageWidth - 3 - signatureWidth; // Position X ajustée pour alignement à droite
-      const signatureY = currentY + lineSpacing; // Position Y en bas après "Signature:"
+if (savedSignature) {
+  // Ajouter l'image de la signature avec les mêmes dimensions
+  const signatureWidth = 195.79; // Largeur en mm
+  const signatureHeight = 66.15; // Hauteur en mm
+  const signatureX = pageWidth - 3 - signatureWidth; // Position X ajustée pour alignement à droite
+  const signatureY = currentY + lineSpacing; // Position Y en bas après "Signature:"
 
-      doc.addImage(savedSignature, 'PNG', signatureX, signatureY, signatureWidth, signatureHeight);
-    } else {
-      // Afficher "Not provided." si aucune signature n'est fournie
-      doc.text('Not provided.', pageWidth - 20 - doc.getTextWidth('Not provided.'), currentY + lineSpacing);
-    }
-
-    // Télécharger le PDF         
-    doc.save('will.pdf');
-  };
+  doc.addImage(savedSignature, 'PNG', signatureX, signatureY, signatureWidth, signatureHeight);
+} else {
+  // Afficher "Not provided." si aucune signature n'est fournie
+  doc.text('Not provided.', pageWidth - 20 - doc.getTextWidth('Not provided.'), currentY + lineSpacing);
+}
+  
+  // Télécharger le PDF         
+  doc.save('will.pdf');              
+};     
 
   // Define image paths for different gift typess        
-  const cashImage = '/images/vola.jpg';
+  const cashImage = '/images/vola.jpg';   
 
   const vehicleImage = '/images/o.jpg';
   const realEstateImage = '/images/trano.jpg';
@@ -1221,69 +1221,55 @@ function Testament({ userData }) {
           <br />
           {/* Executor */}
           <div>
-            <p className="testament-signature">Signature</p>
-            <div >
-              <SignatureCanvas
-                ref={sigCanvas}
-                canvasProps={{ width: 740, height: 250, className: 'sigCanvas' }}
-              />
-            </div>
+      <p className="testament-signature">Signature</p>
+      <div >
+        <SignatureCanvas  
+          ref={sigCanvas}
+          canvasProps={{ width: 740, height: 250, className: 'sigCanvas' }}
+        />
+      </div>
 
+    
+ {/* Affichage des boutons uniquement si l'utilisateur est le propriétaire */}
+ {userData?.typeofuser === 'owner' && (        
+        <>     
+          <button
+            style={{ marginLeft: 435, fontWeight: 'bold' }}
+            onClick={handleClearSignature}
+          >
+            Clear signature  /
+          </button>
+          <button style={{ fontWeight: 'bold' }} onClick={handleSaveSignature}>
+            Save signature
+          </button>
+        </>  
+      )} 
+      {/* Bouton Show signature visible uniquement pour Emergency Contact */}
+      {userData?.typeofuser !== 'owner' && (
+        <>
+          <button
+            style={{ fontWeight: 'bold', marginLeft: '221px' }}
+            onClick={handleShowSignature}
+          > 
+            Show signature  
+          </button>   
+        </>
+      )}
 
-            {/* Affichage des boutons uniquement si l'utilisateur est le propriétaire */}
-            {userData?.typeofuser === 'owner' && (
-              <>
-                <button
-                  style={{ marginLeft: 435, fontWeight: 'bold' }}
-                  onClick={handleClearSignature}
-                >
-                  Clear signature  /
-                </button>
-                <button style={{ fontWeight: 'bold' }} onClick={handleSaveSignature}>
-                  Save signature
-                </button>
-              </>
-            )}
-            {/* Bouton Show signature visible uniquement pour les utilisateurs autres que le propriétaire */}
-            {userData?.typeofuser !== 'owner' && (
-              <>
-                <button
-                  style={{ fontWeight: 'bold', marginLeft: 486 }}
-                  onClick={handleShowSignature}
-                >
-                  Add Signature
-                </button>
-              </>
-            )}
-
-            {/* Affichage de la signature si elle existe */}
-            {signature && (
-              <div  
-                style={{
-                  width: '740px', // Même largeur que le canvas
-                  height: '250px', // Même hauteur que le canvas
-                  marginTop: '-200px', // Positionnement ajusté
-                  display: 'flex',
-                  justifyContent: 'center', // Centrer horizontalement
-                  alignItems: 'center', // Centrer verticalement
-                  position: 'relative', // Pour aligner précisément si nécessaire
-                }}
-              >
-                <img
-                  src={signature}
-                  alt="Signature"
-                  style={{
-                    width: '100%', // Occuper toute la largeur disponible
-                    height: '100%', // Occuper toute la hauteur disponible
-                    objectFit: 'contain', // Assurer un rendu proportionnel
-                  }}
-                />
-              </div>
-            )}
-
-          </div>
-
-          <button style={{ marginLeft: -10, marginTop: '-44px' }} onClick={handleCloseTestament}>< ArrowBackIcon /></button>
+      {/* Si une signature est enregistrée, l'afficher */}
+      {signature && (
+        <div style={{ marginTop: '-260px', marginLeft: '171px' }}>
+          <img
+            src={signature}
+            alt="Signature"
+            style={{width: 770, height: 280, className: 'sigCanvas' }}
+          />
+        </div>
+      )}   
+     
+    </div>    
+  
+      <button style={{ marginLeft: -20 ,marginTop:'-12px'}} onClick={handleCloseTestament}>< ArrowBackIcon /></button>
           <button className='btn-return' onClick={handleGeneratePDF}>  <span className="rocket-icon">⬇️</span>Download as PDF</button>
         </div>
       )}
@@ -1299,8 +1285,8 @@ function Testament({ userData }) {
           <Stepper activeStep={activeStep} orientation="horizontal">
             {steps.map((step, index) => (
               <Step key={step.label}>
-                <StepLabel
-                  icon={
+                <StepLabel  
+                  icon={  
                     <Box
                       sx={{
                         width: '40px',
@@ -1391,8 +1377,8 @@ function Testament({ userData }) {
             },
           }}
         >    <BookIcon sx={{ marginRight: '8px' }} />
-          View my will
-        </Button>
+View my will
+</Button>
       </Box>
 
     </Box>
