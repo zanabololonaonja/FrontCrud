@@ -150,7 +150,7 @@ const FormPage = () => {
   
         // Afficher le Swal en attendant la redirection et le chargement de la page
         Swal.fire({
-          title: 'Ouverture de la page...',
+          title: 'Loading in progress...',
           // html: 'Chargement en cours. Veuillez patienter.',
           allowOutsideClick: false,
           allowEscapeKey: false,

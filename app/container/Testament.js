@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import './Testament.css';
 import BookIcon from '@mui/icons-material/Book';
+import Swal from 'sweetalert2';
+
 import {
   Stepper,
   Step,
@@ -184,23 +186,6 @@ function Testament({ userData }) {
       setTestamentData(testament);
       setShowTestament(true); // Afficher les données du testament
 
-      // Afficher une alerte
-      // alert(`Détails du testament :  
-      //         Nom du testateur : ${testament.nom_testateur}
-      //         Date de naissance : ${testament.date_naissance_testateur}
-      //         Lieu de naissance : ${testament.lieu_naissance_testateur}
-      //         Adresse : ${testament.adresse_testateur}
-      //         Bien légué : ${testament.bien_legue}
-      //         Adresse du bien : ${testament.adresse_bien_legue}
-      //        ${testament.temoin1_adresse}
-      //        ${testament.temoin1_nom}
-      //        ${testament.temoin2_nom}
-      //        ${testament.temoin2_adresse}
-      //        ${testament.tuteur_nom}
-      //        ${testament.tuteur_adresse}
-
-      //         Description du don : ${testament.gift_type}
-      //         Montant du don : ${testament.gift_amount}`);
     } catch (error) {
       console.error('Erreur lors de la récupération du testament :', error);
       alert("Erreur lors de la récupération des données du testament.");
@@ -324,8 +309,17 @@ const handleSaveSignature = () => {
   // Enregistrer la signature dans localStorage avec un ID utilisateur spécifique
   localStorage.setItem(`signature_${iduser}`, signatureData);
 
+Swal.fire({
+ 
+  imageUrl: '/images/icon testament.png',
+  title: 'Testament signed',
+  imageWidth: 100, 
+  imageHeight: 100, 
+  imageAlt: 'Icône de réussite', 
+    confirmButtonText: 'OK',   
+});
   // Afficher un message ou mettre à jour l'état pour afficher un retour
-  alert('Signature enregistrée!');
+  // alert('Signature enregistrée!');
 };
 
 // Fonction pour afficher la signature enregistrée
@@ -1252,9 +1246,9 @@ if (savedSignature) {
             onClick={handleShowSignature}
           > 
             Show signature  
-          </button>   
+          </button> 
         </>
-      )}
+      )}  
 
       {/* Si une signature est enregistrée, l'afficher */}
       {signature && (

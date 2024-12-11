@@ -35,7 +35,7 @@ const AlbumFamille = ({ userData }) => {
 
     setAlbumPhotos(fetchedPhotos);
   };
-
+  
   // Appel de la fonction pour charger les albums lors du premier rendu
   useEffect(() => {
     loadAlbums();

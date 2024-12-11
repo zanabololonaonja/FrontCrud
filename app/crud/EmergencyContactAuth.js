@@ -8,7 +8,7 @@ const EmergencyContactAuth = ({ toggleForm, onClose }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleAuthSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     try {
       const response = await fetch('http://localhost:5000/api/auth', {
         method: 'POST',
@@ -39,7 +39,7 @@ const EmergencyContactAuth = ({ toggleForm, onClose }) => {
           console.log('ID du propriétaire:', owner.iduser);
           console.log('Informations du propriétaire:', owner);
           Swal.fire({
-            title: 'Ouverture de la page...',
+            title: 'Loading in progress...',
             // html: 'Chargement en cours. Veuillez patienter.',
             allowOutsideClick: false,
             allowEscapeKey: false,
